@@ -1,0 +1,17 @@
+# Extension-less executables #
+##############################
+*
+!*.*
+!*/
+
+# Binaries #
+###################
+*.bak
+*.log
+*.aux
+*.pdf
+
+# Packages #
+############
+*.gz
+
