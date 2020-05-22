@@ -1,3 +1,28 @@
 %! TEX ROOT = ./main.tex
 
 \section{ABCD around a nominal trajectory}
+
+\subsection{Preliminaries of Abstraction-based Controller Design}
+
+\smallskip
+\noindent\textbf{Finite-state Abstraction of Control System.}\
+Let $\Sigma = (X, U, W, f)$ be a control system, $\tau>0$ be the sampling time, and $\Xh$ be a given \emph{finite partition} of $X$.
+A \emph{finite-state abstraction} of $\Sigma$ is a finite transition system $(\Xh,U,\fh)$ s.t.\ $\xh'$ is in $\fh(\xh,u)$ iff there is a pair of states $x\in \xh$ and $x'\in \xh'$ s.t.\ there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
+In this work, we will use rectangular partition elements to construct the set $\Xh$ from the set $X$.
+
+\smallskip
+\noindent\textbf{Feedback Refinement Relation.}\
+Let $\Sigma$ be a control system, $\Sigma_\tau$ be its sampled-time abstraction, and $\widehat{\Sigma}$ be its finite-state abstraction.
+A \emph{feedback refinement relation} (FRR) from $\Sigma_\tau$ to $\widehat{\Sigma}$ 
+is a relation $Q\subseteq X\times \Xh$ s.t.\ 
+for all $x\in X$ there is some $\xh\in \Xh$ such that $Q(x,\xh)$ and
+for all $(x,\xh)\in Q$, we have
+\begin{inparaenum}[(i)]
+ \item $U_{\widehat{\Sigma}}(\xh)\subseteq U_{\Sigma_\tau}(x)$, and 
+ \item $u\in U_{\widehat{\Sigma}}(\xh) \Rightarrow Q(f_\tau(x,u))\subseteq \fh(\xh,u)$,
+\end{inparaenum}
+where $U_{\Sigma_\tau}(x):=\set{u\in U \mid f_\tau(x,u)\neq \emptyset}$ and $U_{\widehat{\Sigma}}(\xh):=\set{u\in U \mid \fh(\xh,u)\neq \emptyset}$.
+We write $\Sigma_\tau \frr{Q} \widehat{\Sigma}$ if $Q$ is an FRR from $\Sigma_\tau$ to $\widehat{\Sigma}$.
+
+\smallskip
+\noindent\textbf{Abstraction-based Controller Design.}\

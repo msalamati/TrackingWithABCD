@@ -1,3 +1,32 @@
 %! TEX ROOT = ./main.tex
 
 \section{The Problem Statement}
+
+We consider reach-avoid control problems in this paper.
+A reach-avoid control problem for a given control system $\Sigma=(X,U,W,f)$ is a tuple $(\reach,\avoid,x_0)$, where $\reach$ and $\avoid$ are subsets of the state space $X$, and $x_0$ is a designated initial state.
+For a given sampling time $\tau>0$, a controller $C$ \emph{realizes the reach-avoid specification on} $\Sigma$ if the closed loop behavior $\Beh(x_0)$ of $\Sigma_\tau\parallel C$ satisfies the following condition: For \emph{every} infinite sequence $(x_0,x_1,\ldots)$ in $\Beh(x_0)$, there \emph{exists} a $T$ s.t.\ $x_T\in \reach$ and for \emph{every} $t\leq T$, $x_t\notin \avoid$. 
+In linear temporal logic (LTL) notation \cite{Baier book}, this specification can be succinctly written as:
+\begin{equation}
+	x_0 \wedge (\lnot \avoid\; \mathcal{U}\;\reach).
+\end{equation}
+
+\begin{problem}\label{prob:reach-avoid}
+	Given a control system $\Sigma$, a reach-avoid control problem, and a sampling time, find a controller that realizes the reach-avoid specification on $\Sigma$.
+\end{problem}
+
+Prob.~\ref{prob:reach-avoid} is a well-studied problem in the literature; we divide the available techniques into two broad categories called $\mathit{fast}$ and $\mathit{sound}$.
+The category $\mathit{fast}$ consists of techniques which are extremely efficient, but do not provide formal worst-case robustness guarantee against external disturbances \cite{Altro, AI and path planning methods}.
+The category $\mathit{sound}$ consists of techniques which are not so efficient, but provides strong formal guarantee on the correctness of the controller \cite{ABCD, Hamilton-Jacobi, LQR tree}.
+We propose a solution approach for Prob.~\ref{prob:reach-avoid} that marries the $\mathit{fast}$ and the $\mathit{sound}$ solution techniques.
+Our approach is a two-stage procedure: 
+First, we ignore the disturbance from the system and consider the nominal system model $\Sigma^\nom=(X,U,\set{0},f)$.
+We use a $\mathit{fast}$ technique to quickly find a nominal controller $C^\nom$ for $\Sigma^\nom$.
+We expect that $C^\nom$ will work correctly for $\Sigma$ when there is no external disturbance, and might fail when there is a non-zero external disturbance.
+This leads us to the second stage where we use a $\mathit{sound}$ method to build the desired sound controller by only ``robustifying'' $C^\nom$ against external disturbances.
+Performing this second stage is the main contribution of this paper, and is formally stated in the following:
+
+\begin{problem}
+	Let $\Sigma=(X,U,W,f)$ be a given control system, $\tau>0$ be a given sampling time, $C^\nom:X\rightarrow U$ be a given nominal controller originally designed for the nominal system $\Sigma^\nom=(X,U,\set{0},f)$, and $\varepsilon>0$ be a precision parameter.
+	Find a controller $C$ for $\Sigma$ s.t.\ for every sequence $(x_0,x_1,\ldots)$ that is in the closed-loop behavior $\mathcal{B}(x_0)$ of $\Sigma_\tau\parallel C$ and for every $i > 0$, there exists a 
+	\KM{To finish.}
+\end{problem}
