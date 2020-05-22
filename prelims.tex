@@ -33,14 +33,23 @@ Let $\Sigma = (X, U, W, f)$ be a control system and $\tau>0$ be the sampling tim
 A \emph{sampled-time abstraction} of $\Sigma$ is a transition system $(X,U,f_\tau)$, s.t.\ $x'$ is in $f_\tau(x,u)$ iff there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
 
 \smallskip
-\noindent\textbf{Controller and Closed Loop.}
+\noindent\textbf{Open-loop Controller and Controlled Trajectory.}\
 Let $\Sigma_\tau=(X,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,U,W,f)$.
-A state feedback controller, or simply a \emph{controller}, of $\Sigma_\tau$ is a function $C:X\rightarrow U$.
-The controlled \emph{closed loop} is obtained when we connect $C$ with $\Sigma_\tau$ in feedback, and is formalized using the transition system $\Sigma_\tau\parallel C = (X,U,f_\tau^C)$ s.t.\ $x'$ is in $f_\tau^C(x,u)$ iff $x'$ is in $f_\tau(x,u)$ and $C(x)=u$.
-The controller $C$ can be interpreted as a zero-order-hold controller for the control system $\Sigma$.
+An \emph{open-loop controller} of $\Sigma_\tau$ is a function $C:[0;K]\rightarrow U$ for some given time horizon $K>0$.
+The \emph{open-loop} is obtained when we connect $C$ with $\Sigma_\tau$ serially, and is formalized using the transition system $C \triangleright \Sigma_\tau = (X\times [0;K],U,f_\tau^C)$ s.t.\ $(x',k+1)$ is in $f_\tau^C((x,k),u)$ iff $x'$ is in $f_\tau(x,u)$ and $C(k)=u$.
 
 Suppose $x_0$ be a given initial state of $\Sigma_\tau$.
-The \emph{closed-loop behavior} $\Beh(x_0)$ of $\Sigma_\tau\parallel C$ is the set of all infinite state sequences $(x_0,x_1,\ldots)$ s.t.\ for all $i\geq 0$, there exists an input $u$ with $x_{i+1}\in f_\tau^C(x_i,u)$.
+The \emph{open-loop behavior} $\Beh^\ol(x_0)$ of $C \triangleright\Sigma_\tau$ is the set of all infinite state sequences $(x_0,x_1,\ldots)$ s.t.\ for all $k\geq 0$, there exists an input $u$ with $(x_{k+1},k+1)\in f_\tau^C((x_k,k),u)$.
+
+\smallskip
+\noindent\textbf{Feedback Controller and Closed-loop.}
+Let $\Sigma_\tau=(X,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,U,W,f)$.
+A \emph{feedback controller} of $\Sigma_\tau$ is a function $C:X\rightarrow U$.
+The \emph{closed-loop} is obtained when we connect $C$ with $\Sigma_\tau$ in feedback, and is formalized using the transition system $C\parallel\Sigma_\tau = (X,U,f_\tau^C)$ s.t.\ $x'$ is in $f_\tau^C(x,u)$ iff $x'$ is in $f_\tau(x,u)$ and $C(x)=u$.
+The feedback controller $C$ can be interpreted as a zero-order-hold controller for the control system $\Sigma$.
+
+Suppose $x_0$ be a given initial state of $\Sigma_\tau$.
+The \emph{closed-loop behavior} $\Beh^\cl(x_0)$ of $C\parallel\Sigma_\tau$ is the set of all infinite state sequences $(x_0,x_1,\ldots)$ s.t.\ for all $k\geq 0$, there exists an input $u$ with $x_{k+1}\in f_\tau^C(x_k,u)$.
 
 
 %\smallskip

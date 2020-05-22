@@ -2,13 +2,15 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{xcolor}
-\usepackage{enumitem}
+\usepackage{enumerate}
+%\usepackage{enumitem}
 \usepackage{paralist}
+%\usepackage{amsthm}
 
 % comment macros
-\newcommand{\KM}[1]{{\color{red} #1}}
-\newcommand{\MS}[1]{{\color{blue} #1}}
-\newcommand{\MZ}[1]{{\color{green} #1}}
+\newcommand{\KM}[1]{{\color{red} \textbf{KM:} #1}}
+\newcommand{\MS}[1]{{\color{blue} \textbf{MS:} #1}}
+\newcommand{\MZ}[1]{{\color{green} \textbf{MZ:} #1}}
 
 % macros
 \newcommand{\Sol}{\mathit{Sol}}
@@ -20,5 +22,11 @@
 \newcommand{\nom}{\mathit{nom}}
 \newcommand{\reach}{\mathit{Reach}}
 \newcommand{\avoid}{\mathit{Avoid}}
-\newcommand{\set}[1]{\lbrace~#1~\rbrace}
+\newcommand{\set}[1]{\{ #1 \}}
 \newcommand{\frr}[1]{\preceq_{#1}}
+\newcommand{\ol}{\mathrm{OL}}
+\newcommand{\cl}{\mathrm{CL}}
+\newcommand{\findAbs}{\mathit{ComputeAbstraction}}
+
+% environments
+\newtheorem{subproblem}{Subproblem}

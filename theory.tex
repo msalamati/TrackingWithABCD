@@ -26,3 +26,15 @@ We write $\Sigma_\tau \frr{Q} \widehat{\Sigma}$ if $Q$ is an FRR from $\Sigma_\t
 
 \smallskip
 \noindent\textbf{Abstraction-based Controller Design.}\
+The abstraction-based controller design (ABCD) \cite{FRR} is a $3$-step method to find a robust controller for the sampled-time abstraction $\Sigma_\tau$ of the system $\Sigma$:
+First, we compute a finite state abstraction $\widehat{\Sigma}$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
+Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow U$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
+Finally, we obtain the desired controller $C$ as $C:=\widehat{C}\circ Q$.
+It is known that this three step process produces a controller $C$ that realizes the given specification on $\Sigma_\tau$ \cite{FRR}.
+
+\smallskip
+\noindent\textbf{Computation of the Finite-State Abstraction.}\
+When we want to compute the finite state abstraction of a control system, we need to inevitably restrict ourselves to a closed and bounded region of the state space.
+We assume that there is a black-box procedure named $\findAbs$ that takes as input the description of $\Sigma = (X,U,W,f)$, $\tau$, and a closed and bounded subset $X'$ of the state space, and computes a finite-state abstraction .
+
+\subsection{Local Abstraction and Synthesis}
