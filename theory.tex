@@ -5,17 +5,27 @@
 \subsection{Preliminaries of Abstraction-based Controller Design}
 
 \smallskip
+\noindent\textbf{An Additional Safety Restriction.}\
+When the state space of the control system is open or unbounded and the trajectories in \eqref{equ:def_f} are allowed to grow in an unbounded fashion, a finite-state abstraction, in a sense that is going to be formalized soon, will be technically infeasible.
+So we impose an additional restriction that the system should always remain inside a compact subset of states $\bound$, which is determined according to some known bounds on the state variables.
+This is a standard practice in the literature \cite{FRR}, and we will assume that if there is a controller $C$ that realizes the specification \eqref{eq:spec}, then $C$ also realizes the following modified specification:
+\begin{equation}\label{eq:modified spec}
+	x_0 \wedge (\lnot \avoid \; \mathcal{U} \; \reach) \wedge \square \bound.
+\end{equation}
+
+\smallskip
 \noindent\textbf{Finite-state Abstraction of Control System.}\
-Let $\Sigma = (X, U, W, f)$ be a control system, $\tau>0$ be the sampling time, and $\Xh$ be a given \emph{finite partition} of $X$.
+Let $\Sigma = (X, U, W, f)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $X$ which imposes a safety specification as in \eqref{eq:modified spec}, and $\Xh$ be a given \emph{finite partition} of $\bound$.
+%Note that, since $X$ is unbounded, hence some partition element of $\Xh$ will inevitably be unbounded set.
 A \emph{finite-state abstraction} of $\Sigma$ is a finite transition system $(\Xh,U,\fh)$ s.t.\ $\xh'$ is in $\fh(\xh,u)$ iff there is a pair of states $x\in \xh$ and $x'\in \xh'$ s.t.\ there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
-In this work, we will use rectangular partition elements to construct the set $\Xh$ from the set $X$.
+In this work, we will use rectangular partition elements to construct the set $\Xh$ from the set $\bound$.
 
 \smallskip
 \noindent\textbf{Feedback Refinement Relation.}\
 Let $\Sigma$ be a control system, $\Sigma_\tau$ be its sampled-time abstraction, and $\widehat{\Sigma}$ be its finite-state abstraction.
 A \emph{feedback refinement relation} (FRR) from $\Sigma_\tau$ to $\widehat{\Sigma}$ 
-is a relation $Q\subseteq X\times \Xh$ s.t.\ 
-for all $x\in X$ there is some $\xh\in \Xh$ such that $Q(x,\xh)$ and
+is a relation $Q\subseteq \bound\times \Xh$ s.t.\ 
+for all $x\in \bound$ there is some $\xh\in \Xh$ such that $Q(x,\xh)$ and
 for all $(x,\xh)\in Q$, we have
 \begin{inparaenum}[(i)]
  \item $U_{\widehat{\Sigma}}(\xh)\subseteq U_{\Sigma_\tau}(x)$, and 
@@ -34,7 +44,29 @@ It is known that this three step process produces a controller $C$ that realizes
 
 \smallskip
 \noindent\textbf{Computation of the Finite-State Abstraction.}\
-When we want to compute the finite state abstraction of a control system, we need to inevitably restrict ourselves to a closed and bounded region of the state space.
-We assume that there is a black-box procedure named $\findAbs$ that takes as input the description of $\Sigma = (X,U,W,f)$, $\tau$, and a closed and bounded subset $X'$ of the state space, and computes a finite-state abstraction .
+We assume that there is a black-box procedure named $\findAbs$ that takes as input the description of $\Sigma = (X,U,W,f)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,U,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
+The actual implementation of $\findAbs$ can be found in \cite{FRR}.
 
 \subsection{Local Abstraction and Synthesis}
+
+We introduce some notation.
+Given a state $x\in X$ of a control system $\Sigma$, and given a positive real number $\varepsilon$, we use the notation $\ball_\varepsilon(x)$ to denote the ball of radius $\varepsilon$ centered around $x$.
+Formally, $\ball_\varepsilon(x):= \set{x'\in X\mid \| x-x' \|\leq \varepsilon}$.
+
+Alg.~\ref{alg:abcd-for-tracking} outlines the steps for solving Prob.~\ref{prob:tracking} using finite state abstraction.
+
+\begin{algorithm}
+	\caption{ABCD-for-tracking}
+	\label{alg:abcd-for-tracking}
+	\begin{algorithmic}[1]
+		\Require $\Sigma=(X,U,W,f)$, $\tau>0$, $(x_0^\nom,\ldots,x_K^\nom)$, $\varepsilon>0$
+		\Ensure Feedback controller $C:X\rightarrow U$ (partial function)
+		\State $\bound\gets \emptyset$
+		\For{$k$ from $0$ to $K$}
+			\State $\bound\gets \ball_\varepsilon(x_k^\nom)$
+		\EndFor
+		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, \bound, \tau)$
+		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the reach-avoid specification $(\ball_\varepsilon(x_K^\nom), \emptyset, x_0^\nom)$
+		\State \Return $\widehat{C}\circ Q$
+	\end{algorithmic}
+\end{algorithm}

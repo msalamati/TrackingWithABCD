@@ -6,7 +6,7 @@ We consider reach-avoid control problems in this paper.
 A reach-avoid control problem for a given control system $\Sigma=(X,U,W,f)$ is a tuple $(\reach,\avoid,x_0)$, where $\reach$ and $\avoid$ are subsets of the state space $X$, and $x_0$ is a designated initial state.
 For a given sampling time $\tau>0$, a feedback controller $C$ \emph{realizes the reach-avoid specification on} $\Sigma_\tau$ if the closed-loop behavior $\Beh^\cl(x_0)$ of $C\parallel\Sigma_\tau$ satisfies the following condition: For \emph{every} infinite sequence $(x_0,x_1,\ldots)$ in $\Beh^\cl(x_0)$, there \emph{exists} a $K$ s.t.\ $x_K\in \reach$ and for \emph{every} $k\leq K$, $x_k\notin \avoid$. 
 In linear temporal logic (LTL) notation \cite{Baier book}, this specification can be succinctly written as:
-\begin{equation}
+\begin{equation}\label{eq:spec}
 	x_0 \wedge (\lnot \avoid\; \mathcal{U}\;\reach).
 \end{equation}
 
@@ -25,7 +25,7 @@ Thus, $C^\nom$ is presumably a non-robust controller which might not work well i
 In the second stage we use a $\mathit{sound}$ method to compute a sound feedback controller which tracks the nominal trajectory up to a given precision.
 The main contribution of this paper is an efficient implementation of this second stage, which is formalized as a separate problem in the following:
 
-\begin{problem}
+\begin{problem}\label{prob:tracking}
 	Let $\Sigma=(X,U,W,f)$ be a control system, $\tau>0$ be a sampling time, $(x_0^\nom,\ldots,x_K^\nom)$ be a given trajectory, and $\varepsilon>0$ be a given precision parameter.
 	Suppose $x_0\in X$ be any initial state s.t.\ $\| x_0-x_0^\nom \|\leq \varepsilon$.
 	Find a feedback controller $C$ for $\Sigma_\tau$ s.t.\ for every sequence $(x_0,x_1,\ldots)$ in the closed-loop behavior $\Beh^\cl(x_0)$ of $C \parallel \Sigma_\tau$, the following are satisfied:
