@@ -8,17 +8,23 @@
 \noindent\textbf{An Additional Safety Restriction.}\
 When the state space of the control system is open or unbounded and the trajectories in \eqref{equ:def_f} are allowed to grow in an unbounded fashion, a finite-state abstraction, in a sense that is going to be formalized soon, will be technically infeasible.
 So we impose an additional restriction that the system should always remain inside a compact subset of states $\bound$, which is determined according to some known bounds on the state variables.
-This is a standard practice in the literature \cite{FRR}, and we will assume that if there is a controller $C$ that realizes the specification \eqref{eq:spec}, then $C$ also realizes the following modified specification:
+This is a standard practice in the literature \cite{FRR}, and we will implicitly assume that if there is a controller $C$ that realizes the specification \eqref{eq:spec}, then $C$ also realizes the following modified specification:
 \begin{equation}\label{eq:modified spec}
 	x_0 \wedge (\lnot \avoid \; \mathcal{U} \; \reach) \wedge \square \bound.
 \end{equation}
 
 \smallskip
 \noindent\textbf{Finite-state Abstraction of Control System.}\
-Let $\Sigma = (X, U, W, f)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $X$ which imposes a safety specification as in \eqref{eq:modified spec}, and $\Xh$ be a given \emph{finite partition} of $\bound$.
+Let $\Sigma = (X, U, W, f)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $X$ which imposes a safety specification as in \eqref{eq:modified spec}, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$.
 %Note that, since $X$ is unbounded, hence some partition element of $\Xh$ will inevitably be unbounded set.
-A \emph{finite-state abstraction} of $\Sigma$ is a finite transition system $(\Xh,U,\fh)$ s.t.\ $\xh'$ is in $\fh(\xh,u)$ iff there is a pair of states $x\in \xh$ and $x'\in \xh'$ s.t.\ there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
-In this work, we will use rectangular partition elements to construct the set $\Xh$ from the set $\bound$.
+A \emph{finite-state abstraction} of $\Sigma$ is a finite transition system $(\Xh,\Uh,\fh)$ s.t.\ $\xh'$ is in $\fh(\xh,u)$ iff there is a pair of states $x\in \xh$ and $x'\in \xh'$ s.t.\ there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
+
+In this work, we will use uniformly sized rectangular partition elements to construct the set $\Xh$ from the set $\bound$.
+Without going into the detail of the construction, we assume that the size of the partition elements is provided as a vector $\eta\in \mathbb{R}^n_{>0}$ which is an input to the abstraction procedure.
+Note that, the larger $\eta$ is (where comparison is made dimension-wise), the smaller is the state space $\Xh$ resulting in an efficient computation.
+On the other hand, the smaller $\eta$ is, the better is the precision of the abstraction $\widehat{\Sigma}$ increasing the chance of a successful controller synthesis.
+
+Similar to the state-space partition size $\eta$, we also assume that the set $\Uh$ is chosen based on an input-space discretization parameter $\omega\in \mathbb{R}^n_{>0}$ that governs the distance between the points in $\Uh$.
 
 \smallskip
 \noindent\textbf{Feedback Refinement Relation.}\
@@ -28,29 +34,29 @@ is a relation $Q\subseteq \bound\times \Xh$ s.t.\
 for all $x\in \bound$ there is some $\xh\in \Xh$ such that $Q(x,\xh)$ and
 for all $(x,\xh)\in Q$, we have
 \begin{inparaenum}[(i)]
- \item $U_{\widehat{\Sigma}}(\xh)\subseteq U_{\Sigma_\tau}(x)$, and 
+ \item $\Uh_{\widehat{\Sigma}}(\xh)\subseteq U_{\Sigma_\tau}(x)$, and 
  \item $u\in U_{\widehat{\Sigma}}(\xh) \Rightarrow Q(f_\tau(x,u))\subseteq \fh(\xh,u)$,
 \end{inparaenum}
-where $U_{\Sigma_\tau}(x):=\set{u\in U \mid f_\tau(x,u)\neq \emptyset}$ and $U_{\widehat{\Sigma}}(\xh):=\set{u\in U \mid \fh(\xh,u)\neq \emptyset}$.
+where $U_{\Sigma_\tau}(x):=\set{u\in U \mid f_\tau(x,u)\neq \emptyset}$ and $\Uh_{\widehat{\Sigma}}(\xh):=\set{u\in \Uh \mid \fh(\xh,u)\neq \emptyset}$.
 We write $\Sigma_\tau \frr{Q} \widehat{\Sigma}$ if $Q$ is an FRR from $\Sigma_\tau$ to $\widehat{\Sigma}$.
 
 \smallskip
 \noindent\textbf{Abstraction-based Controller Design.}\
 The abstraction-based controller design (ABCD) \cite{FRR} is a $3$-step method to find a robust controller for the sampled-time abstraction $\Sigma_\tau$ of the system $\Sigma$:
 First, we compute a finite state abstraction $\widehat{\Sigma}$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
-Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow U$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
+Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow \Uh$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
 Finally, we obtain the desired controller $C$ as $C:=\widehat{C}\circ Q$.
 It is known that this three step process produces a controller $C$ that realizes the given specification on $\Sigma_\tau$ \cite{FRR}.
 
 \smallskip
 \noindent\textbf{Computation of the Finite-State Abstraction.}\
-We assume that there is a black-box procedure named $\findAbs$ that takes as input the description of $\Sigma = (X,U,W,f)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,U,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
+We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,U,W,f)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta$ and $\omega$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
 The actual implementation of $\findAbs$ can be found in \cite{FRR}.
 
 \subsection{Local Abstraction and Synthesis}
 
 We introduce some notation.
-Given a state $x\in X$ of a control system $\Sigma$, and given a positive real number $\varepsilon$, we use the notation $\ball_\varepsilon(x)$ to denote the ball of radius $\varepsilon$ centered around $x$.
+Given a state $x\in X$ of a control system $\Sigma$, and given a positive real number $\varepsilon$, we use the notation $\ball_\varepsilon(x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$.
 Formally, $\ball_\varepsilon(x):= \set{x'\in X\mid \| x-x' \|\leq \varepsilon}$.
 
 Alg.~\ref{alg:abcd-for-tracking} outlines the steps for solving Prob.~\ref{prob:tracking} using finite state abstraction.
@@ -59,13 +65,13 @@ Alg.~\ref{alg:abcd-for-tracking} outlines the steps for solving Prob.~\ref{prob:
 	\caption{ABCD-for-tracking}
 	\label{alg:abcd-for-tracking}
 	\begin{algorithmic}[1]
-		\Require $\Sigma=(X,U,W,f)$, $\tau>0$, $(x_0^\nom,\ldots,x_K^\nom)$, $\varepsilon>0$
+		\Require $\Sigma=(X,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta\in \mathbb{R}^n_{>0}$, $\omega\in \mathbb{R}^n_{>0}$, $(x_0^\nom,\ldots,x_K^\nom)$, $\varepsilon \in \mathbb{R}_{>0}$
 		\Ensure Feedback controller $C:X\rightarrow U$ (partial function)
 		\State $\bound\gets \emptyset$
 		\For{$k$ from $0$ to $K$}
 			\State $\bound\gets \ball_\varepsilon(x_k^\nom)$
 		\EndFor
-		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, \bound, \tau)$
+		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, \bound, \tau, \eta, \omega)$
 		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the reach-avoid specification $(\ball_\varepsilon(x_K^\nom), \emptyset, x_0^\nom)$
 		\State \Return $\widehat{C}\circ Q$
 	\end{algorithmic}
