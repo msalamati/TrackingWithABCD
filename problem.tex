@@ -31,10 +31,10 @@ The main contribution of this paper is an efficient implementation of this secon
 	Let $\Sigma=(X,U,W,f)$ be a control system, $\tau>0$ be a sampling time, $(x_0^\nom,\ldots,x_K^\nom)$ be a given finite nominal trajectory, and $\varepsilon>0$ be a given precision parameter.
 	Find a feedback controller $C$ for $\Sigma_\tau$ s.t.\ 
 	% for every initial state $x_0\in X$ with $\| x_0-x_0^\nom \|\leq \varepsilon$, and 
-	for every infinite trajectory $(x_0^\nom,x_1,\ldots)$ in the closed-loop behavior $\Beh^\cl(x_0^\nom)$ of $C \parallel \Sigma_\tau$, the following are satisfied:
+	for every infinite trajectory $(x_0,x_1,\ldots)$ in the closed-loop behavior $\Beh^\cl(x_0^\nom)$ of $C \parallel \Sigma_\tau$, the following are satisfied:
 	\begin{enumerate}
-		\item for every $k > 0$, there exists a $j>0$, s.t.\ $\| x_k-x_j^\nom \| \leq \varepsilon$, and
-		\item there exists a $k>0$, s.t.\ $\| x_k-x_K^\nom \|\leq \varepsilon$.
+		\item there exists a $k^\ast>0$, s.t.\ $\| x_{k^\ast}-x_K^\nom \|\leq \varepsilon$, and
+		\item for every $0<k < k^\ast$, there exists a $j\geq0$, s.t.\ $\| x_k-x_j^\nom \| \leq \varepsilon$.
 	\end{enumerate} 
 \end{problem}
 

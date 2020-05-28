@@ -25,11 +25,11 @@ We collect all such solutions in the set $\Sol_\Sigma(x_0,u,\tau)$.
 
 \smallskip
 \noindent\textbf{Transition System.}\
-A \emph{transition system} $S=(Q,\Sigma,\delta)$ consists of a state space $Q$, an input space $\Sigma$, and a transition function $\delta:Q\times \Sigma \rightarrow 2^Q$. 
-A system $S$ is \emph{finite} if $Q$ and $\Sigma$ are finite. 
-A trajectory $\rho\in Q^\infty$ is a maximal sequence of states compatible with $\delta$:
-for all $1\leq k < |\rho|$ there exists $\sigma\in \Sigma$ s.t.\ $\rho(k)\in \delta(\rho(k-1),\sigma)$ and 
-if $|\rho| < \infty$ then $\delta(\rho(|\rho|),\delta)= \emptyset$ for all $\sigma\in \Sigma$.
+A \emph{transition system} $S=(X,U,\delta)$ consists of a state space $Q$, an input space $\Sigma$, and a transition function $\delta:X\times \Sigma \rightarrow 2^X$. 
+A system $S$ is \emph{finite} if $X$ and $U$ are finite. 
+A trajectory $\rho\in X^\infty$ is a maximal sequence of states compatible with $\delta$:
+for all $1\leq k < |\rho|$ there exists $u\in U$ s.t.\ $\rho(k)\in \delta(\rho(k-1),u)$ and 
+if $|\rho| < \infty$ then $\delta(\rho(|\rho|),\delta)= \emptyset$ for all $u\in U$.
 %For $D\subseteq X$, a $D$-trajectory is a trajectory $\xi$ with $\xi(0)\in D$.
 
 \smallskip

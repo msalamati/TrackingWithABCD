@@ -20,11 +20,11 @@ Let $\Sigma = (X, U, W, f)$ be a control system, $\tau>0$ be the sampling time, 
 A \emph{finite-state abstraction} of $\Sigma$ is a finite transition system $(\Xh,\Uh,\fh)$ s.t.\ $\xh'$ is in $\fh(\xh,u)$ if there is a pair of states $x\in \xh$ and $x'\in \xh'$ s.t.\ there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
 
 In this work, we will use uniformly sized rectangular partition elements to construct the set $\Xh$ from the set $\bound$.
-Without going into the detail of the construction, we assume that the size of the partition elements is provided as a vector $\eta\in \mathbb{R}^n_{>0}$ which is an input to the abstraction procedure.
-Note that, the larger $\eta$ is (where comparison is made dimension-wise), the smaller is the state space $\Xh$ resulting in an efficient computation.
-On the other hand, the smaller $\eta$ is, the better is the precision of the abstraction $\widehat{\Sigma}$ increasing the chance of a successful controller synthesis.
+Without going into the detail of the construction, we assume that the size of the partition elements is provided as a vector $\eta_x\in \mathbb{R}^n_{>0}$ which is an input to the abstraction procedure.
+Note that, the larger $\eta_x$ is (where comparison is made dimension-wise), the smaller is the state space $\Xh$ resulting in an efficient computation.
+On the other hand, the smaller $\eta_x$ is, the better is the precision of the abstraction $\widehat{\Sigma}$ increasing the chance of a successful controller synthesis.
 
-Similar to the state-space partition size $\eta$, we also assume that the set $\Uh$ is chosen based on an input-space discretization parameter $\omega\in \mathbb{R}^n_{>0}$ that governs the distance between the points in $\Uh$.
+Similar to the state-space partition size $\eta_x$, we also assume that the set $\Uh$ is chosen based on an input-space discretization parameter $\eta_u\in \mathbb{R}^m_{>0}$ that governs the distance between the points in $\Uh$.
 
 \smallskip
 \noindent\textbf{Feedback Refinement Relation.}\
@@ -50,7 +50,7 @@ It is known that this three step process produces a controller $C$ that realizes
 
 \smallskip
 \noindent\textbf{Computation of the Finite-State Abstraction.}\
-We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,U,W,f)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta$ and $\omega$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
+We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,U,W,f)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta_x$ and $\eta_u$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
 The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
 
 \subsection{Local Abstraction and Synthesis}
@@ -65,13 +65,13 @@ Alg.~\ref{alg:abcd-for-tracking} outlines the steps for solving Prob.~\ref{prob:
 	\caption{ABCD-for-tracking}
 	\label{alg:abcd-for-tracking}
 	\begin{algorithmic}[1]
-		\Require $\Sigma=(X,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta\in \mathbb{R}^n_{>0}$, $\omega\in \mathbb{R}^n_{>0}$, $(x_0^\nom,\ldots,x_K^\nom)$, $\varepsilon \in \mathbb{R}_{>0}$
+		\Require $\Sigma=(X,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $(x_0^\nom,\ldots,x_K^\nom)$, $\varepsilon \in \mathbb{R}_{>0}$
 		\Ensure Feedback controller $C:X\rightarrow U$ (partial function)
 		\State $\bound\gets \emptyset$
 		\For{$k$ from $0$ to $K$}
 			\State $\bound\gets \ball_\varepsilon(x_k^\nom)$
 		\EndFor
-		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, \bound, \tau, \eta, \omega)$
+		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, \bound, \tau, \eta_x, \eta_u)$
 		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the reach-avoid specification $(\ball_\varepsilon(x_K^\nom), \emptyset, x_0^\nom)$
 		\State \Return $\widehat{C}\circ Q$
 	\end{algorithmic}
