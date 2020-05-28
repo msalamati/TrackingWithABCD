@@ -5,7 +5,7 @@
 We consider reach-avoid control problems in this paper.
 A reach-avoid control problem for a given control system $\Sigma=(X,U,W,f)$ is a tuple $(\reach,\avoid,x_0)$, where $\reach$ and $\avoid$ are subsets of the state space $X$, and $x_0$ is a designated initial state.
 For a given sampling time $\tau>0$, a feedback controller $C$ \emph{realizes the reach-avoid specification on} $\Sigma_\tau$ if the closed-loop behavior $\Beh^\cl(x_0)$ of $C\parallel\Sigma_\tau$ satisfies the following condition: For \emph{every} infinite sequence $(x_0,x_1,\ldots)$ in $\Beh^\cl(x_0)$, there \emph{exists} a $K$ s.t.\ $x_K\in \reach$ and for \emph{every} $k\leq K$, $x_k\notin \avoid$. 
-In linear temporal logic (LTL) notation \cite{Baier book}, this specification can be succinctly written as:
+In linear temporal logic (LTL) notation \cite{baier2008principles}, this specification can be succinctly written as:
 \begin{equation}\label{eq:spec}
 	x_0 \wedge (\lnot \avoid\; \mathcal{U}\;\reach).
 \end{equation}
@@ -15,13 +15,13 @@ In linear temporal logic (LTL) notation \cite{Baier book}, this specification ca
 \end{problem}
 
 Prob.~\ref{prob:reach-avoid} is a well-studied problem in the literature; we divide the available techniques into two broad categories, namely the $\mathit{fast}$ ones and the $\mathit{sound}$ ones.
-The $\mathit{fast}$ ones are those which are extremely efficient, but do not provide formal worst-case robustness guarantee of the controller against external disturbances \cite{Altro, AI and path planning methods}.
-The $\mathit{sound}$ ones are those which are not so efficient, but provide strong formal guarantee on the correctness of the controller \cite{ABCD, Hamilton-Jacobi, LQR tree}.
+The $\mathit{fast}$ ones are those which are extremely efficient, but do not provide formal worst-case robustness guarantee of the controller against external disturbances \cite{howell2019altro,choset2005principles}.
+The $\mathit{sound}$ ones are those which are not so efficient, but provide strong formal guarantee on the correctness of the controller \cite{reissig2016feedback,fisac2015reach,tedrake2009lqr}.
 
 We propose a solution approach for Prob.~\ref{prob:reach-avoid} that marries the $\mathit{fast}$ and the $\mathit{sound}$ solution techniques.
 Our approach is a two-stage procedure: 
 First, we deploy an off-the-shelf $\mathit{fast}$ method to quickly obtain a (open-loop or feedback) controller $C^\nom$ and the witness \emph{nominal trajectory} $(x_0^\nom,\ldots,x_K^\nom)$ of the controlled system (open-loop or closed-loop) that fulfills the reach-avoid specification.
-While, in principle, any $\mathit{fast}$ could be used for this first phase, in this work we use ALTRO \cite{altro}.
+While, in principle, any $\mathit{fast}$ method could be used for this first phase, in this work we use ALTRO \cite{howell2019altro}.
 ALTRO requires us to ignore the external disturbance (i.e.\ set $W=\set{0}$) at first, and only gives us an open-loop controller $C^\nom$.
 Thus, $C^\nom$ is presumably a non-robust controller which might not work well in practice on the actual system $\Sigma_\tau$ in the presence of disturbances.
 In the second stage we use a $\mathit{sound}$ method to compute a sound feedback controller which tracks the nominal trajectory up to a given precision.

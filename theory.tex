@@ -8,7 +8,7 @@
 \noindent\textbf{An Additional Safety Restriction.}\
 When the state space of the control system is open or unbounded and the trajectories in \eqref{equ:def_f} are allowed to grow in an unbounded fashion, a finite-state abstraction, in a sense that is going to be formalized soon, will be technically infeasible.
 So we impose an additional restriction that the system should always remain inside a compact subset of states $\bound$, which is determined according to some known bounds on the state variables.
-This is a standard practice in the literature \cite{FRR}, and we will implicitly assume that if there is a controller $C$ that realizes the specification \eqref{eq:spec}, then $C$ also realizes the following modified specification:
+This is a standard practice in the literature \cite{reissig2016feedback}, and we will implicitly assume that if there is a controller $C$ that realizes the specification \eqref{eq:spec}, then $C$ also realizes the following modified specification:
 \begin{equation}\label{eq:modified spec}
 	x_0 \wedge (\lnot \avoid \; \mathcal{U} \; \reach) \wedge \square \bound.
 \end{equation}
@@ -17,7 +17,7 @@ This is a standard practice in the literature \cite{FRR}, and we will implicitly
 \noindent\textbf{Finite-state Abstraction of Control System.}\
 Let $\Sigma = (X, U, W, f)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $X$ which imposes a safety specification as in \eqref{eq:modified spec}, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$.
 %Note that, since $X$ is unbounded, hence some partition element of $\Xh$ will inevitably be unbounded set.
-A \emph{finite-state abstraction} of $\Sigma$ is a finite transition system $(\Xh,\Uh,\fh)$ s.t.\ $\xh'$ is in $\fh(\xh,u)$ iff there is a pair of states $x\in \xh$ and $x'\in \xh'$ s.t.\ there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
+A \emph{finite-state abstraction} of $\Sigma$ is a finite transition system $(\Xh,\Uh,\fh)$ s.t.\ $\xh'$ is in $\fh(\xh,u)$ if there is a pair of states $x\in \xh$ and $x'\in \xh'$ s.t.\ there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
 
 In this work, we will use uniformly sized rectangular partition elements to construct the set $\Xh$ from the set $\bound$.
 Without going into the detail of the construction, we assume that the size of the partition elements is provided as a vector $\eta\in \mathbb{R}^n_{>0}$ which is an input to the abstraction procedure.
@@ -42,16 +42,16 @@ We write $\Sigma_\tau \frr{Q} \widehat{\Sigma}$ if $Q$ is an FRR from $\Sigma_\t
 
 \smallskip
 \noindent\textbf{Abstraction-based Controller Design.}\
-The abstraction-based controller design (ABCD) \cite{FRR} is a $3$-step method to find a robust controller for the sampled-time abstraction $\Sigma_\tau$ of the system $\Sigma$:
+The abstraction-based controller design (ABCD) \cite{reissig2016feedback} is a $3$-step method to find a robust controller for the sampled-time abstraction $\Sigma_\tau$ of the system $\Sigma$:
 First, we compute a finite state abstraction $\widehat{\Sigma}$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
 Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow \Uh$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
 Finally, we obtain the desired controller $C$ as $C:=\widehat{C}\circ Q$.
-It is known that this three step process produces a controller $C$ that realizes the given specification on $\Sigma_\tau$ \cite{FRR}.
+It is known that this three step process produces a controller $C$ that realizes the given specification on $\Sigma_\tau$ \cite{reissig2016feedback}.
 
 \smallskip
 \noindent\textbf{Computation of the Finite-State Abstraction.}\
 We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,U,W,f)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta$ and $\omega$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
-The actual implementation of $\findAbs$ can be found in \cite{FRR}.
+The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
 
 \subsection{Local Abstraction and Synthesis}
 
