@@ -1,17 +1,36 @@
 %! TEX ROOT = ./main.tex
 
 \section{The Problem Statement}
+%\textcolor{blue}{
+In this paper we consider planning problem for heterogeneous swarm robotic systems with $N$  robots under the presence of model uncertainty. Each individual robot's model can be non-linear and contain bounded inaccuracy. We further assume that different robots interact each-other only through their environment and not directly. A correctly synthesized controller for a robot swarm system ensures that (1) the robot swarm reaches to its final destination in finite time, (2) the robots must not collide with each other during the execution, (3) The robots must avoid collision with static obstacles in their environment.%}
 
-We consider reach-avoid control problems in this paper.
-A reach-avoid control problem for a given control system $\Sigma=(X,U,W,f)$ is a tuple $(\reach,\avoid,x_0)$, where $\reach$ and $\avoid$ are subsets of the state space $X$, and $x_0$ is a designated initial state.
-For a given sampling time $\tau>0$, a feedback controller $C$ \emph{realizes the reach-avoid specification on} $\Sigma_\tau$ if the closed-loop behavior $\Beh^\cl(x_0)$ of $C\parallel\Sigma_\tau$ satisfies the following condition: For \emph{every} infinite sequence $(x_0,x_1,\ldots)$ in $\Beh^\cl(x_0)$, there \emph{exists} a $K$ s.t.\ $x_K\in \reach$ and for \emph{every} $k\leq K$, $x_k\notin \avoid$. 
-In linear temporal logic (LTL) notation \cite{baier2008principles}, this specification can be succinctly written as:
+%\textcolor{blue}{%We consider planning problem for multi-robot systems modelled collectively as control system $\Sigma$ with order $n=\sum_{i=1}^N n_i$. Each of $N$ robots can be represented as a control system of order $n_i$ 
+Model for each robot is given by the tuple $\Sigma^i = (X^i, U^i, W^i, f^i)$ %that consists of a state space $X^i= \reals^{n_i}$, an input space $U^i\subseteq\mathbb{R}^{m_i}$, 
+%a compact disturbance set $W^i\subset \reals^{n_i}$, and 
+%a function $f^i: X^i\times U^i\rightarrow X^i$ s.t. $f^i(\cdot,u^i)$ is locally Lipschitz for all $u^i\in U^i$. 
+The overall \emph{control system} is represented by $\Sigma = (X, U, W, f)$ wherein $X=X^1\times X^2\times\dots\times X^N=\reals^n$, $U=U^1\times\dots\times U^N\subset \reals^m$, $W=W^1\times\dots\times W^N\subset \reals^n$ and $f=\begin{bmatrix}f^{1^T} & f^{2^T}& \dots f^{N^T}\end{bmatrix}^T$. We consider a setting wherein each individual robot starts from a (known) initial state $x_0^i\in X^i$ and is asked to go into a \emph{neighborhood} of its corresponding goal state $x_G^i\in X^i$ under the presence of non-zero disturbance. Concatenated initial and goal states of the collective swarm robot system are denoted by $x_0=\begin{bmatrix}{x_0^{1^T},\ldots,x_0^{N^T}}\end{bmatrix}$ and $x_G=\begin{bmatrix}{x_G^{1^T},\ldots,x_G^{N^T}}\end{bmatrix}$.
+We denote by $\obs$ the set of polytopic (static) obstacles scattered in $\reals^2$ and by $\reach\subset X$ for the targetted neighborhood of the collective system.%}
+
+
+%We consider a setting wherein each individual robot starts from a (known) initial state $x_0^i$ and is asked to go into a \emph{neighborhood} of its corresponding goal state $x_G^i$. We denote by $\obs$ the set of polytopic (static) obstacles scattered in $\reals^2$. %For a given control system $\widetilde\Sigma$, the targetted problem is denoted by a tuple $(\reach,obs,x_0)$, where $x_0\in X$ is a designated initial state, and $\reach$ and $obs$ are subsets of the state spaces $X$.
+ %Any collision avoidance scheme ensures that minimum distance between robots is always greater than By (static) obstacle $\avoid$ is selected so that it consists a neighbour
+For a given sampling time $\tau>0$ and positive constants $\delta_{\col}$ and $\delta_{\obs}$, a feedback controller $C$ \emph{realizes} the desired specification on $\Sigma_\tau$ if the closed-loop behavior $\Beh^\cl(x_0)$ of $C\parallel\Sigma_\tau$ satisfies the following condition: For \emph{every} infinite sequence $(x_0,x_1,\ldots)$ in $\Beh^\cl(x_0)$,
+\begin{itemize}
+ \item there \emph{exists} a $K$ s.t.\ $x_K\in \reach$ 
+ 
+ \item for \emph{every} $k\leq K$ and every $1\leq i,j \leq N$ we have $d(x^i_k,x^j_k)>\delta_{\col}$ for $i\neq j$, and
+ 
+ \item for \emph{every} $k\leq K$ and every $1\leq i\le N$ we have $D(x^i_k,obs)>\delta_{\obs}$.
+ 
+ \end{itemize}
+ %We denote by $\avoid$ the subset of state-time space at which the second condition above does not hold.
+ For a given control system $\Sigma$, the targetted problem is denoted by a tuple $(x_0, \reach,\obs, \delta_{\obs},\delta_{\col})$. In linear temporal logic (LTL) notation \cite{baier2008principles}, the above conditions can be succinctly written as:
 \begin{equation}\label{eq:spec}
-	x_0 \wedge (\lnot \avoid\; \mathcal{U}\;\reach).
+	x_0 \wedge ([\bigwedge_{1\leq i\leq N}D(x^i,\obs)>\delta_{obs}\; \bigwedge_{1\leq i,j\leq N\;i\neq j}  d(x^i,x^j)>\delta_{\col}]\; \mathcal{U}\;\reach) .
 \end{equation}
 
 \begin{problem}\label{prob:reach-avoid}
-	Given a control system $\Sigma$, a reach-avoid control problem, and a sampling time, find a controller that realizes the reach-avoid specification on $\Sigma_\tau$.
+	Given a control system $\Sigma$, an instance of control problem $(x_0, \reach,\obs, \delta_{\obs},\delta_{\col})$, and a sampling time, find a controller that realizes the specification given by Eq. \eqref{eq:spec} on $\Sigma_\tau$.
 \end{problem}
 
 Prob.~\ref{prob:reach-avoid} is a well-studied problem in the literature; we divide the available techniques into two broad categories, namely the $\mathit{fast}$ ones and the $\mathit{sound}$ ones.
@@ -20,24 +39,33 @@ The $\mathit{sound}$ ones are those which are not so efficient, but provide stro
 
 We propose a solution approach for Prob.~\ref{prob:reach-avoid} that marries the $\mathit{fast}$ and the $\mathit{sound}$ solution techniques.
 Our approach is a two-stage procedure: 
-First, we deploy an off-the-shelf $\mathit{fast}$ method to quickly obtain a (open-loop or feedback) controller $C^\nom$ and the witness \emph{nominal trajectory} $(x_0^\nom,\ldots,x_K^\nom)$ of the controlled system (open-loop or closed-loop) that fulfills the reach-avoid specification.
+First, we deploy an off-the-shelf $\mathit{fast}$ method to quickly obtain a (open-loop or feedback) controller $C^\nom$ and the witness \emph{nominal trajectory} $(x_0^\nom,\ldots,x_K^\nom)$ of the controlled system (open-loop or closed-loop) that fulfills the specification formulated in Eq.~\eqref{eq:spec}.
 While, in principle, any $\mathit{fast}$ method could be used for this first phase, in this work we use ALTRO \cite{howell2019altro}.
 ALTRO requires us to ignore the external disturbance (i.e.\ set $W=\set{0}$) at first, and only gives us an open-loop controller $C^\nom$.
 Thus, $C^\nom$ is presumably a non-robust controller which might not work well in practice on the actual system $\Sigma_\tau$ in the presence of disturbances.
 In the second stage we use a $\mathit{sound}$ method to compute a sound feedback controller which tracks the nominal trajectory up to a given precision.
 The main contribution of this paper is an efficient implementation of this second stage, which is formalized as a separate problem in the following:
 
-\begin{problem}\label{prob:tracking}
-	Let $\Sigma=(X,U,W,f)$ be a control system, $\tau>0$ be a sampling time, $(x_0^\nom,\ldots,x_K^\nom)$ be a given finite nominal trajectory, and $\varepsilon>0$ be a given precision parameter.
+%\begin{problem}\label{prob:tracking}
+%	Let $\Sigma=(X,U,W,f)$ be a control system, $\tau>0$ be a sampling time, $(x_0^\nom,\ldots,x_K^\nom)$ be a given finite nominal trajectory, and $\varepsilon>0$ be a given precision parameter.
+%	Find a feedback controller $C$ for $\Sigma_\tau$ s.t.\ 
+%	% for every initial state $x_0\in X$ with $\| x_0-x_0^\nom \|\leq \varepsilon$, and 
+%	for every infinite trajectory $(x_0^\nom,x_1,\ldots)$ in the closed-loop behavior $\Beh^\cl(x_0^\nom)$ of $C \parallel \Sigma_\tau$, the following are satisfied:
+%	\begin{enumerate}
+%		\item there exists a $k^\ast>0$, s.t.\ $\| x_{k^\ast}-x_K^\nom \|\leq \varepsilon$, and
+%		\item for every $0<k < k^\ast$, there exists a $j\geq0$, s.t.\ $\| x_k-x_j^\nom \| \leq \varepsilon$.
+%	\end{enumerate} 
+%\end{problem}
+
+%\textcolor{red}{
+\begin{problem}\label{prob:tracking_with_time}
+	Let $\Sigma=(X,U,W,f)$ be a control system corresponding to a swarm robot system, $\tau>0$ be a sampling time, $(x_0^\nom,\ldots,x_K^\nom)$ be a given finite nominal trajectory, and $\varepsilon>0$ be a given precision parameter.
 	Find a feedback controller $C$ for $\Sigma_\tau$ s.t.\ 
 	% for every initial state $x_0\in X$ with $\| x_0-x_0^\nom \|\leq \varepsilon$, and 
-	for every infinite trajectory $(x_0^\nom,x_1,\ldots)$ in the closed-loop behavior $\Beh^\cl(x_0^\nom)$ of $C \parallel \Sigma_\tau$, the following are satisfied:
-	\begin{enumerate}
-		\item there exists a $k^\ast>0$, s.t.\ $\| x_{k^\ast}-x_K^\nom \|\leq \varepsilon$, and
-		\item for every $0<k < k^\ast$, there exists a $j\geq0$, s.t.\ $\| x_k-x_j^\nom \| \leq \varepsilon$.
-	\end{enumerate} 
+	for every finite trajectory $(x_0^\nom,x_1,\ldots,x_K)$ in the closed-loop behavior $\Beh^\cl(x_0^\nom)$ of $C \parallel \Sigma_\tau$, for every $0\leq k \leq K$, $\| x_k-x_k^\nom \| \leq \varepsilon$.
 \end{problem}
-
+%Difference of Problem 2 and Problem 3 is lied on time. In problem 3 trajectory generated by controller (for fixed starting point as a initial point of nominal trajectory ) with a any bounded disturbance less than $w$ at each time step will be close to nominal trajectory but in Problem 2 the trajectory produced by controller (with same initial state) just follow the path of nominal trajectory. It means that, controller of problem 2 can bring the trajectory to target faster or slower than nominal trajectory. For example with controller of problem 3, 10th point of every finite trajectory generated by controller(with same initial point) will be in close to exactly 10th point of nominal trajectory but controller of problem 2 lead trajectory to a region as long as there exist a close point in trajectory  
+%}
 
 %First, we simply ignore the external disturbance (i.e.\ set $W=\set{0}$).
 %This enables us to use one of the $\mathit{fast}$ methods to quickly compute an initial controller candidate $C^\nom$.

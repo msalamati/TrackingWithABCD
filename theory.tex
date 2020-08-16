@@ -10,7 +10,7 @@ When the state space of the control system is open or unbounded and the trajecto
 So we impose an additional restriction that the system should always remain inside a compact subset of states $\bound$, which is determined according to some known bounds on the state variables.
 This is a standard practice in the literature \cite{reissig2016feedback}, and we will implicitly assume that if there is a controller $C$ that realizes the specification \eqref{eq:spec}, then $C$ also realizes the following modified specification:
 \begin{equation}\label{eq:modified spec}
-	x_0 \wedge (\lnot \avoid \; \mathcal{U} \; \reach) \wedge \square \bound.
+	x_0 \wedge ([\bigwedge_{1\leq i\leq N}D(x^i,\obs)>\delta_{obs}\; \bigwedge_{1\leq i,j\leq N\;i\neq j}  d(x^i,x^j)>\delta_{\col}]\; \mathcal{U}\;\reach) \wedge \square \bound.
 \end{equation}
 
 \smallskip
@@ -55,24 +55,69 @@ The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedbac
 
 \subsection{Local Abstraction and Synthesis}
 
+%We introduce some notation.
+%Given a state $x\in X$ of a control system $\Sigma$, and given a positive real number $\varepsilon$, we use the notation $\ball_\varepsilon(x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$.
+%Formally, $\ball_\varepsilon(x):= \set{x'\in X\mid \| x-x' \|\leq \varepsilon}$. 
+In order to be able to break Problem~\ref{prob:reach-avoid} into synthesizing controller $C^{\nom}$ and solving for Problem~\ref{prob:tracking_with_time}, we need to augment the state vector of $\Sigma$ with aditional state variable time.
+Adding time as a state variable, the corresponding augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $.
+%Adding the time variable, the augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $. 
 We introduce some notation.
-Given a state $x\in X$ of a control system $\Sigma$, and given a positive real number $\varepsilon$, we use the notation $\ball_\varepsilon(x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$.
-Formally, $\ball_\varepsilon(x):= \set{x'\in X\mid \| x-x' \|\leq \varepsilon}$.
+Given a state $\widetilde x=\begin{bmatrix} x &t \end{bmatrix}^T$ of a control system $\widetilde \Sigma$, and given a positive real number $\varepsilon$, we use the notation $\ball_\varepsilon(\widetilde x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$ and radius zero for time $t$.
+Formally, \[\ball_\varepsilon(\widetilde{x}=\begin{bmatrix} x^T &t \end{bmatrix}^T):= \set{\widetilde{x}'=\begin{bmatrix}x' & t' \end{bmatrix}^T
+	\in \widetilde{X}\mid  (x'^T \in \ball(x)) \land (t=t')}.\] 
+We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:tracking_with_time} using finite abstraction.
+% It means we embedding extra state variable, which represents time. Here we use notation $\Psi_\epsilon(\widetilde{x})$ which is very similar to $\ball_\varepsilon(x)$.
+%$\Psi_\epsilon$ denotes the ball radius $\varepsilon$ centered around $X$ and radius zero for time $t$.
+%Formally:\\ $\Psi_\epsilon(\widetilde{x}=\begin{bmatrix} x \\t \end{bmatrix}):= \set{\widetilde{x}'=\begin{bmatrix}
+%	x' \\
+%	t'
+%	\end{bmatrix}
+%	\in \widetilde{X}\mid  \| x-x' \|\leq \varepsilon \land (t=t')}$\\
+%we are using Alg \ref{alg:abcd-with-time-for-tracking} for solving Prob \ref{prob:tracking_with_time} using finite abstraction
 
-Alg.~\ref{alg:abcd-for-tracking} outlines the steps for solving Prob.~\ref{prob:tracking} using finite state abstraction.
+
+
+%Alg.~\ref{alg:abcd-for-tracking} outlines the steps for solving Prob.~\ref{prob:tracking} using finite state abstraction.
 
 \begin{algorithm}
 	\caption{ABCD-for-tracking}
-	\label{alg:abcd-for-tracking}
+	\label{alg:abcd-with-time-for-tracking}
 	\begin{algorithmic}[1]
-		\Require $\Sigma=(X,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $(x_0^\nom,\ldots,x_K^\nom)$, $\varepsilon \in \mathbb{R}_{>0}$
+		\Require $\widetilde{\Sigma}=(\widetilde{X},U,W,\widetilde{f})$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $((x_0^\nom,t_0),\ldots,(x_K^\nom,t_k))$, $\varepsilon \in \mathbb{R}_{>0}$
 		\Ensure Feedback controller $C:X\rightarrow U$ (partial function)
 		\State $\bound\gets \emptyset$
 		\For{$k$ from $0$ to $K$}
-			\State $\bound\gets \ball_\varepsilon(x_k^\nom)$
+		\State $\bound\gets \Psi_\varepsilon(x_k^\nom,t_k)$
 		\EndFor
-		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, \bound, \tau, \eta_x, \eta_u)$
-		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the reach-avoid specification $(\ball_\varepsilon(x_K^\nom), \emptyset, x_0^\nom)$
+		\State $(\widehat{\Sigma},Q) \gets \findAbs(\widetilde{\Sigma}, \bound, \tau, \eta_{\widetilde{x}} , \eta_u)$
+		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the reach-avoid specification $(\Psi_\varepsilon(x_K^\nom,t_k), \emptyset, (x_0^\nom,t_0))$
 		\State \Return $\widehat{C}\circ Q$
 	\end{algorithmic}
 \end{algorithm}
+
+%\textcolor{red}{
+%\subsection{Local Abstraction considering time and synthesis }
+%For this purpose, we build a new control system $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ from $\Sigma = (X,U,W,f)$ with $\widetilde{X}=\begin{bmatrix} X\\ t\end{bmatrix}$ and $\widetilde{f}=\begin{bmatrix} X\\ 1\end{bmatrix} $. It means we embedding extra state variable, which represents time. Here we use notation $\Psi_\epsilon(\widetilde{x})$ which is very similar to $\ball_\varepsilon(x)$.
+%$\Psi_\epsilon$ denotes the ball radius $\varepsilon$ centered around $X$ and radius zero for time $t$.
+%Formally:\\ $\Psi_\epsilon(\widetilde{x}=\begin{bmatrix} x \\t \end{bmatrix}):= \set{\widetilde{x}'=\begin{bmatrix}
+%x' \\
+%t'
+%\end{bmatrix}
+%\in \widetilde{X}\mid  (x' \in \ball(x)) \land (t=t')}$\\
+%we are using Alg \ref{alg:abcd-with-time-for-tracking} for solving Prob \ref{prob:tracking_with_time} using finite abstraction.
+%}
+%\begin{algorithm}
+%	\caption{ABCD-for-tracking}
+%	\label{alg:abcd-with-time-for-tracking}
+%	\begin{algorithmic}[1]
+%		\Require $\widetilde{\Sigma}=(\widetilde{X},U,W,\widetilde{f})$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $((x_0^\nom,t_0),\ldots,(x_K^\nom,t_k))$, $\varepsilon \in \mathbb{R}_{>0}$
+%		\Ensure Feedback controller $C:X\rightarrow U$ (partial function)
+%		\State $\bound\gets \emptyset$
+%		\For{$k$ from $0$ to $K$}
+%			\State $\bound\gets \Psi_\varepsilon(x_k^\nom,t_k)$
+%		\EndFor
+%		\State $(\widehat{\Sigma},Q) \gets \findAbs(\widetilde{\Sigma}, \bound, \tau, \eta_{\widetilde{x}} , \eta_u)$
+%		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the reach-avoid specification $(\Psi_\varepsilon(x_K^\nom,t_k), \emptyset, (x_0^\nom,t_0))$
+%		\State \Return $\widehat{C}\circ Q$
+%	\end{algorithmic}
+%\end{algorithm}

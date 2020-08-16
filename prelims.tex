@@ -5,10 +5,14 @@
 \smallskip
 \noindent\textbf{Notation.}\
 We use the notation $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the set of real numbers and the set of positive real numbers respectively.
-The norm $\| \cdot \|$ denotes the infinity norm.
+The norm $\| \cdot \|$ denotes the infinity norm. %\textcolor{blue}{
+We use $d(x,y)$ and $D(x,A)$ to denote geometric distance between a point $x$ to point $y$ and to polytope $A$, respectively.%}
 
 \smallskip
 \noindent\textbf{Control System.}\
+%\textcolor{blue}{Although $\Sigma$ can represent any control system in general, we mainly consider multi-agent systems in this paper. }
+
+
 A \emph{control system} $\Sigma = (X, U, W, f)$
 consists of a state space $X= \mathbb{R}^n$, an input space $U\subseteq\mathbb{R}^m$, 
 a compact disturbance set $W\subset \mathbb{R}^n$, and 
@@ -25,7 +29,7 @@ We collect all such solutions in the set $\Sol_\Sigma(x_0,u,\tau)$.
 
 \smallskip
 \noindent\textbf{Transition System.}\
-A \emph{transition system} $S=(X,U,\delta)$ consists of a state space $Q$, an input space $\Sigma$, and a transition function $\delta:X\times \Sigma \rightarrow 2^X$. 
+A \emph{transition system} $S=(X,U,\delta)$ consists of a state space $X$, an input space $U$, and a transition function $\delta:X\times U \rightarrow 2^X$. 
 A system $S$ is \emph{finite} if $X$ and $U$ are finite. 
 A trajectory $\rho\in X^\infty$ is a maximal sequence of states compatible with $\delta$:
 for all $1\leq k < |\rho|$ there exists $u\in U$ s.t.\ $\rho(k)\in \delta(\rho(k-1),u)$ and 

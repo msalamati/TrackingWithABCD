@@ -97,6 +97,39 @@ sin(\psi) & cos(\psi) & 0\\
 
 Starting from an initial state $x_0^{nom}=\begin{bmatrix}0&0&0&0&0&0\end{bmatrix}^\top$, the control goal is to converge to $\varepsilon-$neighbourhood of the point 
 $x_d=\begin{bmatrix}1&1&0&0&0&0\end{bmatrix}^\top$. We first consider the undisturbed system and use ALTRO to generate a (nominal) trajectory $(x_0^\nom,\ldots,x_K^\nom)$ such that $x_K^{nom}\approx x_d$. Setting the time step $\tau=3[sec]$, and $K=8$, generating the nominal trajectory takes around 3.16 seconds. Next, we use SCOTS in order to synthesize a controller such that the nominal trajectory is not violated beyond $\varepsilon$, under different levels of disturbance. Taking state space $X=[-.3,1.25]^2\times[-.3,.7]\times[-.03,.12]\times[-.03,.075]\times[-.085,.095]$, input space $U=[-2,2]^3$, state space discretization step $\eta_x=\begin{bmatrix}.05&.05&.05&.005&.005&.005\end{bmatrix}^\top$ and input space discretization step $\eta_u=\begin{bmatrix}.5&.5&.5\end{bmatrix}^\top$, we used ALg.~\ref{alg:abcd-for-tracking} to compute controller for $\varepsilon=2\eta_s$ and $W=[-.001,.001]^3\times[-.0001,.0001]^3$. By decreasing size of state space from $5.4\times 10^8$ into $4.5*10^6$, abstraction and synthesis over reduced state space take $1539.28$ and $413.726$ seconds, respectively. Surprisingly, abstraction and synthesis for full state space could not be performed on our cluster machine in this example.
+
+%\textcolor{red}{
+\subsection{Multi Agent Problem}\label{sec:MultiAgent}
+In this example, we are solving a controller design problem for a multi agent systems. The multi agent system consist of 10 unicycle model . Each agent should start from own initial point and reach target set (which is shown in Fig. \ref{fig:MA}) while it avoids obstacles and collision with other agents. each unicycle has radius $0.1$. Unicycle model is described in below.
+\begin{equation}\label{eq:unicycle_ss}
+	f^{u}(x(t),u(t))=
+	\begin{bmatrix}
+	u_1cos(x_3)\\
+	u_1sin(x_3)\\
+	u_2
+	\end{bmatrix}.
+\end{equation}
+In Eq. \ref{eq:unicycle_ss} $u_1$ is linear speed and $u_2$ is  angular speed and $x_1$ and $x_2$ represents positions and $x_3$ is the angle. Here goal of the problem is designing a controller which can do the reach avoid task for all of 10 unicycles at same time without having collision with each other. For this purpose, at first we combine all of unicycle dynamics to create a centralized model of the multi agent system. The centralized model has $10\times3$ dimension for state space and $10\times2$ dimension for input space. For initial state of centralized dynamic we combine all of initial states in order(For goal state we do it as well). Collision in the centralized model is modelled with avoiding with the Obstacles configuration below:\\
+\begin{equation}
+\forall i,j \in [1,10]: \sqrt{(x_i-x_j)^2+(y_i-y_j)^2}< \gamma
+\end{equation}
+In next step we solve the problem for the setup without disturbance to design an open loop controller for the centralized multi agent system (generating a nominal trajectory). ALTRO solved the problem in 138 seconds with $\gamma=1.5$ and $\tau=0.05$ and 200 knots trajectory points. Result of ALTRO is illustrated in fig \ref{fig:MA}. 
+In next step we obtain close loop controller using SCOTS. As we mentioned in Prob. \ref{alg:abcd-with-time-for-tracking} we are able to design a controller that is able to track the trajectory with $\varepsilon$ distance in every time step. Therefore we are able to split the centralized system to 10 separate system and design a close loop controller for each one of them separately. In order to do this step, we select $\varepsilon$ in a way that it satisfies $\gamma> 2\varepsilon$ (since tubes should not intersect with each other). Then we are able to design a formally guarantied controller for each agent independently with Alg. \ref{alg:abcd-with-time-for-tracking} and SCOTS. We select parameters in this way:\\
+$\varepsilon=0.32$\\
+$\widetilde{X}=[-1:11]*[-1:11]*[-\pi,\pi]*[0,1]$\\
+$U=[-3,3]*[-3,3]$\\
+$\eta_{\widetilde{X}}=[0.04,0.04,0.04,0.05]$\\
+$\eta_{U}=[0.6,0.6]$\\
+Controller designed in this way is able to overcome bounded additive disturbance $w=[0.03,0.03,0.03]$. Nominal controller with presence of this disturbance will be pushed outside of the tube. As it shown in the Fig.\ref{fig:MA}, trajectory 1 and 2 will have collision with this value of disturbance(using nominal controller) . Abstraction in total for 10 systems takes about 12 minutes(average 100 seconds for each system) and synthesizing controller takes about 2 minutes(near 10 seconds for each system).
+\begin{figure}[t]\label{fig:MA}
+	\centering
+	\includegraphics[width=0.85\textwidth]{MA.png}
+	\caption{Trajectories of multi agent unicycle when open loop controller produced by ALTRO and formally synthesized controller produced by SCOTS were used.}
+\end{figure}
+
+
+
+
  %Figure~\ref{fig:inv_pend} demonstrates variations of disturbance limit under which SCOTS is able to find a controller for different tube width. %It can be observed that by increasing the tube width, SCOTS is able to synthesize a controller for larger disturbance levels. Figure~\ref{fig:invpend_traj} demonstartes trajectories of the system  \eqref{eq:inv_pend_ssq} governed by controllers synthesized by ALTRO and SCOTS under appliance of constant disturbance vector \MS{$[??,??]$}. As expected, the controller designed by ALTRO is not able to tackle disturbance, while using the controller generated by SCOTS, the trajectory remains within the desired bound.
 
 %\begin{figure}\label{fig:inv_pend}
@@ -107,6 +140,14 @@ $x_d=\begin{bmatrix}1&1&0&0&0&0\end{bmatrix}^\top$. We first consider the undist
 %	\includegraphics[]{}
 %	\caption{}
 %\end{figure}
+%\textcolor{red}{
+\subsection{Cart-pole and 1D vehicle}
+In this example, we show the method can handle multiple heterogeneous dynamical systems. Here we design controller for 2 systems: 1- a cart pole system with dynamics given in \cite{6313077} 2- a vehicle with dynamics 
+$\begin{bmatrix} \dot{x_1}\\ \dot{x_2} \end{bmatrix}=\begin{bmatrix} x_2\\ u \end{bmatrix}  $.
+$x_1$ represent position and $x_2$ speed. The process of controller synthesize is similar to Sec. \ref{sec:MultiAgent}; At first we make the centralized dynamics by combining dynamics. In the next step we define constraints(obstacles) and solve trajectory generation problem without presence of disturbance. In the final step, we use our method using SCOTS to synthesize robust controller which can track the trajectory with a bounded error.  
+%} 
+
+
 
 \section{Present Challenges}
 
