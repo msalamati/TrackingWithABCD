@@ -10,11 +10,15 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{graphicx}
+\usepackage{comment}
+\usepackage{mathtools}
+\usepackage{braket}
 
 % comment macros
 \newcommand{\KM}[1]{{\color{red} \textbf{KM:} #1}}
 \newcommand{\MS}[1]{{\color{blue} \textbf{MS:} #1}}
 \newcommand{\MZ}[1]{{\color{green} \textbf{MZ:} #1}}
+\newcommand{\new}[1]{{\color{cyan} #1}}
 
 % macros
 \newcommand{\Sol}{\mathit{Sol}}
@@ -27,16 +31,21 @@
 \newcommand{\reach}{\mathit{Reach}}
 \newcommand{\avoid}{\mathit{Avoid}}
 \newcommand{\bound}{\mathit{Domain}}
-\newcommand{\set}[1]{\{ #1 \}}
+%\newcommand{\set}[1]{\{ #1 \}}
 \newcommand{\frr}[1]{\preceq_{#1}}
 \newcommand{\ol}{\mathrm{OL}}
 \newcommand{\cl}{\mathrm{CL}}
 \newcommand{\findAbs}{\mathit{ComputeAbstraction}}
 \newcommand{\ball}{\Omega}
-\newcommand{\obs}{\mathit{obs}}
-\newcommand{\col}{\mathit{col}}
+\newcommand{\obs}{\mathit{Obs}}
+\newcommand{\col}{\mathit{Col}}
 \def\reals{\mathbb{R}}
 \def\ints{\mathbb{Z}}
+\newcommand{\sem}[1]{{\color{blue} \mathbf{#1}}}
+\def\goal{\mathit{Goal}}
+\def\avoidl{\mathit{AvoidLoc}}
+\def\avoidg{\mathit{AvoidGlob}}
+\def\init{\mathit{Init}}
 
 
 % environments

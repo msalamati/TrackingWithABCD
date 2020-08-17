@@ -2,15 +2,62 @@
 
 \section{The Problem Statement}
 %\textcolor{blue}{
-In this paper we consider planning problem for heterogeneous swarm robotic systems with $N$  robots under the presence of model uncertainty. Each individual robot's model can be non-linear and contain bounded inaccuracy. We further assume that different robots interact each-other only through their environment and not directly. A correctly synthesized controller for a robot swarm system ensures that (1) the robot swarm reaches to its final destination in finite time, (2) the robots must not collide with each other during the execution, (3) The robots must avoid collision with static obstacles in their environment.%}
+In this paper, we consider the planning problem for a heterogeneous swarm of $N$ robots under the presence of external disturbances and model uncertainties. 
+The robots' nominal dynamics can be non-linear and there can be bounded noise in the model, capturing the effect of the disturbances and uncertainties.
+We further assume that the robots are incapable of synchronizing their actions through communication among each other during run-time.
+%We further assume that the robots interact among each other only through their environment and not directly. 
+We want to synthesize \emph{local} controllers for every robot so that the following conditions are fulfilled:
+%A correctly synthesized controller for a robot swarm system needs to ensure that 
+\begin{description}
+	\item[Local specification:] Every robot starts from a designated initial state, always avoids a set of designated obstacle states, and eventually reaches a designated target state.
+	\item[Global specification:] No two robots should ever collide with each other. 
+	For the sake of simplicity, at the controller synthesis stage, we ignore the geometry of the robots and model them as point masses.
+	Then the collision avoidance requirement is formalized by requiring the robots to maintain certain minimum distance from every other robot, as if there is a bounding box around each point mass robot and we require that no two bounding boxes should ever come in contact with each other.
+\end{description}
 
 %\textcolor{blue}{%We consider planning problem for multi-robot systems modelled collectively as control system $\Sigma$ with order $n=\sum_{i=1}^N n_i$. Each of $N$ robots can be represented as a control system of order $n_i$ 
-Model for each robot is given by the tuple $\Sigma^i = (X^i, U^i, W^i, f^i)$ %that consists of a state space $X^i= \reals^{n_i}$, an input space $U^i\subseteq\mathbb{R}^{m_i}$, 
-%a compact disturbance set $W^i\subset \reals^{n_i}$, and 
-%a function $f^i: X^i\times U^i\rightarrow X^i$ s.t. $f^i(\cdot,u^i)$ is locally Lipschitz for all $u^i\in U^i$. 
-The overall \emph{control system} is represented by $\Sigma = (X, U, W, f)$ wherein $X=X^1\times X^2\times\dots\times X^N=\reals^n$, $U=U^1\times\dots\times U^N\subset \reals^m$, $W=W^1\times\dots\times W^N\subset \reals^n$ and $f=\begin{bmatrix}f^{1^T} & f^{2^T}& \dots f^{N^T}\end{bmatrix}^T$. We consider a setting wherein each individual robot starts from a (known) initial state $x_0^i\in X^i$ and is asked to go into a \emph{neighborhood} of its corresponding goal state $x_G^i\in X^i$ under the presence of non-zero disturbance. Concatenated initial and goal states of the collective swarm robot system are denoted by $x_0=\begin{bmatrix}{x_0^{1^T},\ldots,x_0^{N^T}}\end{bmatrix}$ and $x_G=\begin{bmatrix}{x_G^{1^T},\ldots,x_G^{N^T}}\end{bmatrix}$.
-We denote by $\obs$ the set of polytopic (static) obstacles scattered in $\reals^2$ and by $\reach\subset X$ for the targetted neighborhood of the collective system.%}
+We fomalize the problem statement in the following.
+We start with the following six ingredients that are required to be provided as inputs:
+\begin{description}
+	\item[System model:] Every robot is modeled as a control system $\Sigma^i = (X^i, U^i, W^i, f^i)$ for $i\in [1;N]$. 
+	We denote the associated metric on the state space $\sem{X^i}$ by $d^i$.
+	We assume that there is a set of \emph{global state variables} $Z$ such that for every $i\in [1;N]$, $Z\subseteq X^i$.
+	We also assume that there is a metric $e$ on the set $\sem{Z}$ such that $(\sem{Z},e)$ is a metric space, and moreover, the metric $e$ agrees with $d^i$, for every $i\in [1;N]$, on the global state variables.
+	Formally, we require that for every pair $x_0,x_1\in \sem{X^i}$ with $x_0[X^i\setminus Z]\equiv x_1[X^i\setminus Z]$, we have $d^i(x_0,x_1)=e(x_0,x_1)$.
+	For every $\Sigma^i$, every state variable that is not global is called a \emph{local state variable}.
+	We assume that the set of local state variables of all the systems are pairwise disjoint.
+	\item[Sampling time:] A sampling time $\tau\in \mathbb{R}_{>0}$.
+	\item[Initial states:] Every robot has a designated initial state $\init^i\in \sem{X^i}$ for $i\in [1;N]$.
+	\item[Target states:] Every robot has a designated set of goal states $\goal^i\subseteq \sem{X^i}$  for $i\in [1;N]$.
+	\item[Static obstacles:] Every robot has a, possibly empty, set of static obstacles $\obs^i\subseteq \sem{X^i}$  for $i\in [1;N]$.
+%	\item[Global (static) obstacles:] A, possibly empty, set of global static obstacles $\avoidg\subseteq \sem{Z}$.
+	\item[Safety margins:] A pair of positive reals $\delta_{\col}$ and $\delta_{\obs}$, which denotes the required minimum distance between every two robots and the required minimum distance between every robot and the obstacles.
+\end{description}
 
+%We separate out the specification in the tuple $(\set{\init^i}, \set{\goal^i}, \set{\obs^i}, \delta_\col, \delta_\obs)$.
+A set of \emph{local} feedback controllers $\set{C^i}_{i\in [1;N]}$ for the systems $\set{\Sigma_\tau^i}_{i\in [1;N]}$ \emph{realizes} the given specification $(\set{\init^i}_{i\in [1;N]}, \set{\goal^i}_{i\in [1;N]}, \set{\obs^i}_{i\in [1;N]}, \delta_\col, \delta_\obs)$, as defined above, if the following conditions are satisfied:
+
+\begin{description}
+	\item[Local specification:] For \emph{every} $i\in [1;N]$ and for \emph{every} infinite behavior $(x_0,x_1,\ldots)\in \Beh^\cl(x_0)$ of the closed loop $C^i\parallel \Sigma_\tau^i$ starting at $x_0=\init^i$,
+		\begin{enumerate}
+			\item there \emph{exists} a $K$ s.t.\ $x_K\in \goal^i$ and
+			 \item for \emph{every} $k\leq K$, we have $d(x^i_k,\obs^i)>\delta_{\obs}$.
+		\end{enumerate}
+	\item[Global specification:] 
+		Suppose $i,j\in [1;N]$ be any two arbitrary and distinct set of indices of the given systems.
+		Consider any arbitrary infinite behavior $(x_0^i,x_1^i,\ldots)\in \Beh^\cl(x_0^i)$ of $C^i\parallel \Sigma_\tau^i$ starting at $x_0^i=\init^i$ 
+		and any arbitrary infinite behavior $(x_o^j, x_1^j,\ldots)\in \Beh^\cl(x_0^j)$ of $C^j\parallel \Sigma_\tau^j$ starting at $x_0^j=\init^j$. 
+		Then for every $k\leq K$ we require the following to be satisfied: $e(x^i_k[Z],x^j_k[Z])>\delta_{\col}$.
+\end{description}
+
+\begin{comment} % Mahmoud's version
+\KM{I am not sure if the highlighted text below is used anywhere so far.}
+\new{
+We define the \emph{product control system} $\Sigma = (X, U, W, f)$ wherein $X=X^1\times X^2\times\dots\times X^N=\reals^n$, $U=U^1\times\dots\times U^N\subset \reals^m$, $W=W^1\times\dots\times W^N\subset \reals^n$ and $f=f^{1}\oplus \ldots\oplus f^{N}$. 
+Intuitively, the product control system models the joint behavior of the robotic swarm.
+}
+We consider a setting wherein each individual robot starts from a (known) initial state $x_0^i\in X^i$ and is asked to go into a \emph{neighborhood} of its corresponding goal state $x_G^i\in X^i$ under the presence of non-zero disturbance. Concatenated initial and goal states of the collective swarm robot system are denoted by $x_0=\begin{bmatrix}{x_0^{1^T},\ldots,x_0^{N^T}}\end{bmatrix}$ and $x_G=\begin{bmatrix}{x_G^{1^T},\ldots,x_G^{N^T}}\end{bmatrix}$.
+We denote by $\obs$ the set of polytopic (static) obstacles scattered in $\reals^2$ and by $\reach\subset X$ for the targetted neighborhood of the collective system.%}
 
 %We consider a setting wherein each individual robot starts from a (known) initial state $x_0^i$ and is asked to go into a \emph{neighborhood} of its corresponding goal state $x_G^i$. We denote by $\obs$ the set of polytopic (static) obstacles scattered in $\reals^2$. %For a given control system $\widetilde\Sigma$, the targetted problem is denoted by a tuple $(\reach,obs,x_0)$, where $x_0\in X$ is a designated initial state, and $\reach$ and $obs$ are subsets of the state spaces $X$.
  %Any collision avoidance scheme ensures that minimum distance between robots is always greater than By (static) obstacle $\avoid$ is selected so that it consists a neighbour
@@ -28,23 +75,55 @@ For a given sampling time $\tau>0$ and positive constants $\delta_{\col}$ and $\
 \begin{equation}\label{eq:spec}
 	x_0 \wedge ([\bigwedge_{1\leq i\leq N}D(x^i,\obs)>\delta_{obs}\; \bigwedge_{1\leq i,j\leq N\;i\neq j}  d(x^i,x^j)>\delta_{\col}]\; \mathcal{U}\;\reach) .
 \end{equation}
+\end{comment}
 
 \begin{problem}\label{prob:reach-avoid}
-	Given a control system $\Sigma$, an instance of control problem $(x_0, \reach,\obs, \delta_{\obs},\delta_{\col})$, and a sampling time, find a controller that realizes the specification given by Eq. \eqref{eq:spec} on $\Sigma_\tau$.
+	Given a set of control systems $\set{\Sigma^i}_{i\in [1;N}$, a sampling time $\tau\in \mathbb{R}_{>0}$, and a specification $(\set{\init^i}_{i\in [1;N]}, \set{\goal^i}_{i\in [1;N]}, \set{\obs^i}_{i\in [1;N]}, \delta_\col, \delta_\obs)$, find a set of local controllers $\set{C_i}_{i\in [1;N]}$ for the systems $\set{\Sigma_\tau^i}_{i\in [1;N]}$ which realizes the given specification.
 \end{problem}
 
-Prob.~\ref{prob:reach-avoid} is a well-studied problem in the literature; we divide the available techniques into two broad categories, namely the $\mathit{fast}$ ones and the $\mathit{sound}$ ones.
+\KM{An weird thing I noted is that the systems cannot violate their "local" obstacle avoidance specification until all the systems have reached their targets. This is stronger than a simple "until" type local specification for each robot, where it is required that the obstacles are not hit before reaching the target for the first time. This is just an observation: nothing breaks.}
+
+We divide the available controller synthesis techniques from the existing literature into two broad categories, namely the $\mathit{fast}$ ones and the $\mathit{sound}$ ones.
 The $\mathit{fast}$ ones are those which are extremely efficient, but do not provide formal worst-case robustness guarantee of the controller against external disturbances \cite{howell2019altro,choset2005principles}.
 The $\mathit{sound}$ ones are those which are not so efficient, but provide strong formal guarantee on the correctness of the controller \cite{reissig2016feedback,fisac2015reach,tedrake2009lqr}.
+%In Sec.~\ref{sec:nominal trajectory} and Sec.~\ref{sec:tracking}, we propose a hierarchical solution approach for Prob.~\ref{prob:reach-avoid} that marries the $\mathit{fast}$ and the $\mathit{sound}$ solution techniques.
 
-We propose a solution approach for Prob.~\ref{prob:reach-avoid} that marries the $\mathit{fast}$ and the $\mathit{sound}$ solution techniques.
+We propose a hierarchical solution approach for Prob.~\ref{prob:reach-avoid} that marries the $\mathit{fast}$ and the $\mathit{sound}$ solution techniques.
 Our approach is a two-stage procedure: 
-First, we deploy an off-the-shelf $\mathit{fast}$ method to quickly obtain a (open-loop or feedback) controller $C^\nom$ and the witness \emph{nominal trajectory} $(x_0^\nom,\ldots,x_K^\nom)$ of the controlled system (open-loop or closed-loop) that fulfills the specification formulated in Eq.~\eqref{eq:spec}.
-While, in principle, any $\mathit{fast}$ method could be used for this first phase, in this work we use ALTRO \cite{howell2019altro}.
-ALTRO requires us to ignore the external disturbance (i.e.\ set $W=\set{0}$) at first, and only gives us an open-loop controller $C^\nom$.
-Thus, $C^\nom$ is presumably a non-robust controller which might not work well in practice on the actual system $\Sigma_\tau$ in the presence of disturbances.
-In the second stage we use a $\mathit{sound}$ method to compute a sound feedback controller which tracks the nominal trajectory up to a given precision.
+\begin{itemize}
+	\item First, we deploy an off-the-shelf $\mathit{fast}$ method to quickly solve the controller synthesis problem, and obtain a set of  \emph{valid} (controlled) \emph{nominal trajectories} $\set{(x_{0_\nom}^i,\ldots,x_{K_\nom}^i)}_{i\in [1;N]}$, for the systems $\set{\Sigma_\tau^i}_{i\in [1;N]}$, such that the following conditions are met:
+	\begin{itemize}
+		\item For every $i\in [1;N]$, there exists $k\in [0;K]$, such that $x_{k_\nom}^i\in \goal^i$,
+		\item for every $i\in [1;N]$ and for every $k\in [0;K]$, $d^i(x_{k_\nom}^i,\obs^i) > \delta_\obs$, and
+		\item for every $(i,j)\in [1;N]\times [1;N]$ and for every $k\in [0;K]$, $e(x_{k_\nom}^i[X^i\cap Z], x_{k_\nom}^j[X^j\cap Z]) > \delta_\col$.
+	\end{itemize}
+	(Essentially, a set of valid nominal trajectories is a witness trajectory for the satisfaction of the specification.)
+	While, in principle, any $\mathit{fast}$ method could be used for this first phase, in this work we solve the given problem \emph{centrally} using the tool called ALTRO \cite{howell2019altro}.
+	\item Second, for every $\Sigma^i_\tau$, for $i\in [1;N]$, we use a $\mathit{sound}$ method to compute a sound feedback controller which tracks the respective nominal trajectory of system $\Sigma^i_\tau$ up to a given precision.
 The main contribution of this paper is an efficient implementation of this second stage, which is formalized as a separate problem in the following:
+		\begin{problem}\label{prob:tracking_with_time}
+			Let $\Sigma=(X,U,W,f)$ be a control system, $\tau>0$ be a sampling time, $\goal\subseteq \sem{X}$ be a designated target set, $(x_{0_\nom},\ldots,x_{K_\nom})$ be a given finite nominal trajectory, and $\varepsilon>0$ be a precision parameter chosen in such a way that there exists a state $g\in \goal$ such that the following holds:
+			\begin{equation}\label{eq:choice of eps}
+				\sup_{(x,u)\in \sem{X}\times U} \sup_{x'\in f_\tau(x,u)} d(x,x')	\leq \varepsilon \leq d(g, \sem{X}\setminus \goal). 
+			\end{equation}
+			Find a feedback controller $C$ for $\Sigma_\tau$ such that 
+			% for every initial state $x_0\in X$ with $\| x_0-x_0^\nom \|\leq \varepsilon$, and 
+			for every finite trajectory $(x_{0_\nom},x_1,\ldots,x_K)$ in the closed-loop behavior $\Beh^\cl(x_{0_\nom})$ of $C \parallel \Sigma_\tau$, for every $0\leq k \leq K$, $d(x_k, x_{k_\nom}) \leq \varepsilon$.
+			We call such a controller $C$ a \emph{tracking} controller.
+		\end{problem}
+\end{itemize}
+
+Some discussion on \eqref{eq:choice of eps} is in order.
+The first inequality is there to ensure that $\varepsilon$ is large enough that a \emph{continuous} tube can be constructed by stitching together $\varepsilon$-neighborhoods around the sampled nominal trajectory points, as otherwise there could be ``gaps'' between some consecutive $\varepsilon$-neighborhoods.
+The second inequality is there to ensure that there exists a goal state, so ``deep'' within the set $\goal$, that its whole $\varepsilon$-neighborhood is included in $\goal$, so that a tracking controller surely satisfies the original specification.
+\KM{Please check! Not sure.}
+
+It is worthwhile to mention that we do not use the synthesized controllers in the first phase themselves; we only will use the nominal trajectories.
+Then one could argue that, instead of using a fast \emph{controller synthesis} method to generate nominal trajecories, one could simply employ fast \emph{planners} \cite{rrt etc.} to generate a geometric plan.
+However, since geometric planners do not take into consideration the dynamics and control constraints, so, in our experience, the generated plans (i.e.\ the nominal trajectories) are often doomed to be infeasible for certain class of systems.
+
+The two solution stages are presented in Sec.~\ref{sec:nominal trajectory} and Sec.~\ref{sec:tracking} respectively.
+
 
 %\begin{problem}\label{prob:tracking}
 %	Let $\Sigma=(X,U,W,f)$ be a control system, $\tau>0$ be a sampling time, $(x_0^\nom,\ldots,x_K^\nom)$ be a given finite nominal trajectory, and $\varepsilon>0$ be a given precision parameter.
@@ -58,12 +137,10 @@ The main contribution of this paper is an efficient implementation of this secon
 %\end{problem}
 
 %\textcolor{red}{
-\begin{problem}\label{prob:tracking_with_time}
-	Let $\Sigma=(X,U,W,f)$ be a control system corresponding to a swarm robot system, $\tau>0$ be a sampling time, $(x_0^\nom,\ldots,x_K^\nom)$ be a given finite nominal trajectory, and $\varepsilon>0$ be a given precision parameter.
-	Find a feedback controller $C$ for $\Sigma_\tau$ s.t.\ 
-	% for every initial state $x_0\in X$ with $\| x_0-x_0^\nom \|\leq \varepsilon$, and 
-	for every finite trajectory $(x_0^\nom,x_1,\ldots,x_K)$ in the closed-loop behavior $\Beh^\cl(x_0^\nom)$ of $C \parallel \Sigma_\tau$, for every $0\leq k \leq K$, $\| x_k-x_k^\nom \| \leq \varepsilon$.
-\end{problem}
+
+
+
+
 %Difference of Problem 2 and Problem 3 is lied on time. In problem 3 trajectory generated by controller (for fixed starting point as a initial point of nominal trajectory ) with a any bounded disturbance less than $w$ at each time step will be close to nominal trajectory but in Problem 2 the trajectory produced by controller (with same initial state) just follow the path of nominal trajectory. It means that, controller of problem 2 can bring the trajectory to target faster or slower than nominal trajectory. For example with controller of problem 3, 10th point of every finite trajectory generated by controller(with same initial point) will be in close to exactly 10th point of nominal trajectory but controller of problem 2 lead trajectory to a region as long as there exist a close point in trajectory  
 %}
 
