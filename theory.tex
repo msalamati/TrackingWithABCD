@@ -21,7 +21,8 @@ A \emph{finite-state abstraction} of $\Sigma$ is a finite transition system $(\X
 
 In this work, we will use uniformly sized rectangular partition elements to construct the set $\Xh$ from the set $\bound$.
 Without going into the detail of the construction, we assume that the size of the partition elements is provided as a vector $\eta_x\in \mathbb{R}^n_{>0}$ which is an input to the abstraction procedure.
-Note that, the larger $\eta_x$ is (where comparison is made dimension-wise), the smaller is the state space $\Xh$ resulting in an efficient computation.
+Note that, the larger $\eta_x$ is \MZ{"is what?"} (where comparison is made dimension-wise), the smaller is the state space $\Xh$ resulting in an efficient computation.
+
 On the other hand, the smaller $\eta_x$ is, the better is the precision of the abstraction $\widehat{\Sigma}$ increasing the chance of a successful controller synthesis.
 
 Similar to the state-space partition size $\eta_x$, we also assume that the set $\Uh$ is chosen based on an input-space discretization parameter $\eta_u\in \mathbb{R}^m_{>0}$ that governs the distance between the points in $\Uh$.
@@ -58,8 +59,8 @@ The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedbac
 %We introduce some notation.
 %Given a state $x\in X$ of a control system $\Sigma$, and given a positive real number $\varepsilon$, we use the notation $\ball_\varepsilon(x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$.
 %Formally, $\ball_\varepsilon(x):= \set{x'\in X\mid \| x-x' \|\leq \varepsilon}$. 
-In order to be able to break Problem~\ref{prob:reach-avoid} into synthesizing controller $C^{\nom}$ and solving for Problem~\ref{prob:tracking_with_time}, we need to augment the state vector of $\Sigma$ with aditional state variable time.
-Adding time as a state variable, the corresponding augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $.
+In order to be able to break Problem~\ref{prob:reach-avoid} into synthesizing controller $C^{\nom}$ and solving for Problem~\ref{prob:tracking_with_time}, we need to augment the state vector of $\Sigma$ with additional state variable time.
+Adding time as a state variable, the corresponding augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ \MZ{"Time is also discretized"} and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $.
 %Adding the time variable, the augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $. 
 We introduce some notation.
 Given a state $\widetilde x=\begin{bmatrix} x &t \end{bmatrix}^T$ of a control system $\widetilde \Sigma$, and given a positive real number $\varepsilon$, we use the notation $\ball_\varepsilon(\widetilde x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$ and radius zero for time $t$.
@@ -90,7 +91,7 @@ We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:t
 		\State $\bound\gets \Psi_\varepsilon(x_k^\nom,t_k)$
 		\EndFor
 		\State $(\widehat{\Sigma},Q) \gets \findAbs(\widetilde{\Sigma}, \bound, \tau, \eta_{\widetilde{x}} , \eta_u)$
-		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the reach-avoid specification $(\Psi_\varepsilon(x_K^\nom,t_k), \emptyset, (x_0^\nom,t_0))$
+		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the reach-avoid specification $(\Psi_\varepsilon(x_K^\nom,t_k), \emptyset, (x_0^\nom,t_0))$ \MZ{it needs to get edited}
 		\State \Return $\widehat{C}\circ Q$
 	\end{algorithmic}
 \end{algorithm}
