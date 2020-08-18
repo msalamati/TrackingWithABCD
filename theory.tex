@@ -1,7 +1,7 @@
 %! TEX ROOT = ./main.tex
 
 \section{Centralized Computation of Nominal Trajectories}\label{sec:nominal trajectory}
-We use the notation ``$\sqcup$'' to denote the disjoint union of sets.
+We use the notation ``$\sqcup$'' to denote the disjoint union\MZ{disjoint union ? why not product space?} of sets.
 We define the \emph{product control system} $\Sigma = (X, U, \set{0^n}, f)$ wherein $X=X^1\sqcup \ldots \sqcup X^N$ and we assume that $|X|=n$, $U=U^1\times\dots\times U^N\subset \reals^m$, and $f=f^{1}\oplus \ldots\oplus f^{N}$. 
 Since we use ALTRO to compute the controlled nominal trajectories, and since ALTRO does not support external disturbances, so we ignore the external disturbances in this stage.
 Intuitively, the product control system models the joint behavior of the robotic swarm in the absence of external disturbances.
@@ -21,7 +21,8 @@ We first lift the given specification $(\set{\init^i}_{i\in [1;N]}, \set{\goal^i
 					\end{array}}.
 		\end{equation}
 \end{itemize}
-
+\MZ{Remark:
+ obstacle avoidance and collision avoidance are not involving all of dimensions. for example in car example just x and y are involved. so we should change notation of comparing infinity norm with a scalar epsilon. $\delta$ is fine to ba a scalar.}
 When the sets $\obs^i$, for every $i\in [1;N]$, are polytopic and the metric $d^i$, for every $i\in [1;N]$, and the metric $e$ are both the infinity norms, then the set $\obs$ is also polytopic.
 This is an useful property from the perspective of implementation.
 
@@ -37,7 +38,9 @@ It can be shown that the set $\set{(x_0[X^i],\ldots,x_K[X^i])}_{i\in [1;N]}$ is 
 It is worthwhile to mention that, ALTRO requires to provide a fixed target state, whereas we work with a set of target states.
 Our heuristic choice of the single target state for ALTRO within the set $\goal$ was driven by the constant $\varepsilon$ introduced in Prob.~\ref{prob:tracking_with_time}:
 We choose a state $g\in \goal$ as target so that for every $i\in [1;N]$, $d^i(g[X^i], \sem{X^i}\setminus \goal^i) \geq \varepsilon$.
-The existence of such a $g$ for a system $\Sigma^i$ is guaranteed by the choice of $\varepsilon$ in Prob.~\ref{prob:tracking_with_time}.
+The existence of such a $g$ for a system $\Sigma^i$ is guaranteed by the choice of $\varepsilon$ in Prob.~\ref{prob:tracking_with_time}. \MZ{Remarks: \\
+1- obstacle avoidance and collision avoidance are not involving all of dimensions. for example in car example just x and y are involved. \\
+2-}
 
 %The following proposition provides us a way to obtain a set of nominal trajectories $\set{(x_{0_\nom}^i,\ldots,x_{K_\nom}^i)}_{i\in [1;N]}$ from a central controller synthesis problem on the product system:
 %
@@ -80,9 +83,9 @@ We will use the notation $\mathbf{1}$ to denote the function $\mathbb{R}_{\geq 0
 \subsection{Translation of Prob.~\ref{prob:tracking_with_time} to an LTL Formula}
 First, we translate the tracking problem given in Prob.~\ref{prob:tracking_with_time} for the system $\Sigma=(X,U,W,f)$ to an equivalent controller synthesis problem for an LTL specification $\varphi$ for a different system $\widetilde{\Sigma}$.
 Essentially, $\widetilde{\Sigma}$ is obtained by appending the state of the system $\Sigma$ with a variable that varies at the same rate as time.
-Formally, the system $\widetilde{\Sigma}$ is defined as the tuple $(\widetilde{X}, U, W, \widetilde{f})$ where $\widetilde{X}\coloneqq X\cup \set{s}$, $s$ being a variable taking values in non-negative reals, and $\widetilde{f} \equiv f \oplus \mathbf{1}$.
+Formally, the system $\widetilde{\Sigma}$ is defined as the tuple $(\widetilde{X}, U, W, \widetilde{f})$ where $\widetilde{X}\coloneqq X\cup \set{s}$ \MZ{union means product?}, $s$ being a variable taking values in non-negative reals, and $\widetilde{f} \equiv f \oplus \mathbf{1}$.
 We extend the metric $d$ defined on the set $\sem{X}$ to the metric $\widetilde{d}$ for the set $\sem{\widetilde{X}}$ as follows:
-$\widetilde{d}\colon ((x,s),(x',s')) \mapsto \max\set{d(x,x'), |s-s'|}$, where $|\cdot|$ denotes the absolute value.
+$\widetilde{d}\colon ((x,s),(x',s')) \mapsto \max\set{d(x,x'), |s-s'|}$\MZ{we need to discuss about it}, where $|\cdot|$ denotes the absolute value.
 Observe that when $d$ is same as the infinity norm, then so is $\widetilde{d}$.
 
 On the other hand, the specification $\varphi$ is obtained as in the following:
@@ -155,7 +158,7 @@ The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedbac
 %Adding time as a state variable, the corresponding augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $.
 %%Adding the time variable, the augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $. 
 We introduce some notation.
-Given a state $\widetilde x=(x,t)$ of a control system $\widetilde \Sigma$, and given a positive real number $\varepsilon$, we use the notation $\ball_\varepsilon(\widetilde x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$ and radius zero for time $t$.
+Given a state $\widetilde x=(x,t)$ of a control system $\widetilde \Sigma$, and given a positive real number\MZ{it should be a vector} $\varepsilon$, we use the notation $\ball_\varepsilon(\widetilde x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$ and radius zero for time $t$.
 Formally, \[\ball_\varepsilon(\widetilde{x})\coloneqq \set{\widetilde{x}'
 	\in \sem{\widetilde{X}} \mid  (x'[X] \in \ball(x)) \land (x'[\set{s}]\equiv x[\set{s}])}.\] 
 We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:tracking_with_time} using finite abstraction.
@@ -177,7 +180,7 @@ We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:t
 	\label{alg:abcd-with-time-for-tracking}
 	\begin{algorithmic}[1]
 		\Require $\widetilde{\Sigma}=(\widetilde{X},U,W,\widetilde{f})$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $((x_0^\nom,t_0),\ldots,(x_K^\nom,t_k))$, $\varepsilon \in \mathbb{R}_{>0}$
-		\KM{Did not change the notation in the algo}
+		\KM{Did not change the notation in the algo} \MZ{It should get edited}
 		\Ensure Feedback controller $C:X\rightarrow U$ (partial function)
 		\State $\bound\gets \emptyset$
 		\For{$k$ from $0$ to $K$}

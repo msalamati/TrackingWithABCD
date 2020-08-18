@@ -25,7 +25,7 @@ We start with the following six ingredients that are required to be provided as 
 	We also assume that there is a metric $e$ on the set $\sem{Z}$ such that $(\sem{Z},e)$ is a metric space, and moreover, the metric $e$ agrees with $d^i$, for every $i\in [1;N]$, on the global state variables.
 	Formally, we require that for every pair $x_0,x_1\in \sem{X^i}$ with $x_0[X^i\setminus Z]\equiv x_1[X^i\setminus Z]$, we have $d^i(x_0,x_1)=e(x_0,x_1)$.
 	For every $\Sigma^i$, every state variable that is not global is called a \emph{local state variable}.
-	We assume that the set of local state variables of all the systems are pairwise disjoint.
+	We assume that the set of local state variables of all the systems are pairwise disjoint. \MZ{this part is ambiguous to me. I don't understand Z}
 	\item[Sampling time:] A sampling time $\tau\in \mathbb{R}_{>0}$.
 	\item[Initial states:] Every robot has a designated initial state $\init^i\in \sem{X^i}$ for $i\in [1;N]$.
 	\item[Target states:] Every robot has a designated set of goal states $\goal^i\subseteq \sem{X^i}$  for $i\in [1;N]$.
@@ -41,7 +41,7 @@ A set of \emph{local} feedback controllers $\set{C^i}_{i\in [1;N]}$ for the syst
 	\item[Local specification:] For \emph{every} $i\in [1;N]$ and for \emph{every} infinite behavior $(x_0,x_1,\ldots)\in \Beh^\cl(x_0)$ of the closed loop $C^i\parallel \Sigma_\tau^i$ starting at $x_0=\init^i$,
 		\begin{enumerate}
 			\item there \emph{exists} a $K$ s.t.\ $x_K\in \goal^i$ and
-			 \item for \emph{every} $k\leq K$, we have $d(x^i_k,\obs^i)>\delta_{\obs}$.
+			 \item for \emph{every} $k\leq K$, we have $d(x^i_k,\obs^i)>\delta_{\obs}$. 
 		\end{enumerate}
 	\item[Global specification:] 
 		Suppose $i,j\in [1;N]$ be any two arbitrary and distinct set of indices of the given systems.
@@ -81,7 +81,7 @@ For a given sampling time $\tau>0$ and positive constants $\delta_{\col}$ and $\
 	Given a set of control systems $\set{\Sigma^i}_{i\in [1;N}$, a sampling time $\tau\in \mathbb{R}_{>0}$, and a specification $(\set{\init^i}_{i\in [1;N]}, \set{\goal^i}_{i\in [1;N]}, \set{\obs^i}_{i\in [1;N]}, \delta_\col, \delta_\obs)$, find a set of local controllers $\set{C_i}_{i\in [1;N]}$ for the systems $\set{\Sigma_\tau^i}_{i\in [1;N]}$ which realizes the given specification.
 \end{problem}
 
-\KM{An weird thing I noted is that the systems cannot violate their "local" obstacle avoidance specification until all the systems have reached their targets. This is stronger than a simple "until" type local specification for each robot, where it is required that the obstacles are not hit before reaching the target for the first time. This is just an observation: nothing breaks.}
+\KM{An weird thing I noted is that the systems cannot violate their "local" obstacle avoidance specification until all the systems have reached their targets. This is stronger than a simple "until" type local specification for each robot, where it is required that the obstacles are not hit before reaching the target for the first time. This is just an observation: nothing breaks.} \MZ{"This point is needed to be discussed"}
 
 We divide the available controller synthesis techniques from the existing literature into two broad categories, namely the $\mathit{fast}$ ones and the $\mathit{sound}$ ones.
 The $\mathit{fast}$ ones are those which are extremely efficient, but do not provide formal worst-case robustness guarantee of the controller against external disturbances \cite{howell2019altro,choset2005principles}.
@@ -95,7 +95,7 @@ Our approach is a two-stage procedure:
 	\begin{itemize}
 		\item For every $i\in [1;N]$, there exists $k\in [0;K]$, such that $x_{k_\nom}^i\in \goal^i$,
 		\item for every $i\in [1;N]$ and for every $k\in [0;K]$, $d^i(x_{k_\nom}^i,\obs^i) > \delta_\obs$, and
-		\item for every $(i,j)\in [1;N]\times [1;N]$ and for every $k\in [0;K]$, $e(x_{k_\nom}^i[X^i\cap Z], x_{k_\nom}^j[X^j\cap Z]) > \delta_\col$.
+		\item for every $(i,j)\in [1;N]\times [1;N]$ and for every $k\in [0;K]$, $e(x_{k_\nom}^i[X^i\cap Z], x_{k_\nom}^j[X^j\cap Z]) > \delta_\col$. \MZ{I know it is about collision avoidance but I can't understand the notation(for example why intersection with $Z$?)}
 	\end{itemize}
 	(Essentially, a set of valid nominal trajectories is a witness trajectory for the satisfaction of the specification.)
 	While, in principle, any $\mathit{fast}$ method could be used for this first phase, in this work we solve the given problem \emph{centrally} using the tool called ALTRO \cite{howell2019altro}.
@@ -114,12 +114,12 @@ The main contribution of this paper is an efficient implementation of this secon
 \end{itemize}
 
 Some discussion on \eqref{eq:choice of eps} is in order.
-The first inequality is there to ensure that $\varepsilon$ is large enough that a \emph{continuous} tube can be constructed by stitching together $\varepsilon$-neighborhoods around the sampled nominal trajectory points, as otherwise there could be ``gaps'' between some consecutive $\varepsilon$-neighborhoods.
-The second inequality is there to ensure that there exists a goal state, so ``deep'' within the set $\goal$, that its whole $\varepsilon$-neighborhood is included in $\goal$, so that a tracking controller surely satisfies the original specification.
+The first inequality is there to ensure that $\varepsilon$ is large enough that a \emph{continuous} tube can be constructed by stitching together $\varepsilon$-neighborhoods around the sampled nominal trajectory points, as otherwise there could be ``gaps'' between some consecutive $\varepsilon$-neighborhoods. \MZ{ what is the problem with gaps ? }
+The second inequality is there to ensure that there exists a goal state, so ``deep'' within the set $\goal$, that its whole $\varepsilon$-neighborhood is included in $\goal$, so that a tracking controller surely satisfies the original specification. \MZ{with current implementation that domain includes all of the points in target set it shouldn't be a problem  }
 \KM{Please check! Not sure.}
 
 It is worthwhile to mention that we do not use the synthesized controllers in the first phase themselves; we only will use the nominal trajectories.
-Then one could argue that, instead of using a fast \emph{controller synthesis} method to generate nominal trajecories, one could simply employ fast \emph{planners} \cite{rrt etc.} to generate a geometric plan.
+Then one could argue that, instead of using a fast \emph{controller synthesis} method to generate nominal trajectories, one could simply employ fast \emph{planners} \cite{rrt etc.} to generate a geometric plan.
 However, since geometric planners do not take into consideration the dynamics and control constraints, so, in our experience, the generated plans (i.e.\ the nominal trajectories) are often doomed to be infeasible for certain class of systems.
 
 The two solution stages are presented in Sec.~\ref{sec:nominal trajectory} and Sec.~\ref{sec:tracking} respectively.
