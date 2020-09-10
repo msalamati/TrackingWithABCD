@@ -5,15 +5,9 @@
 \smallskip
 \noindent\textbf{Notation.}\
 We use the notation $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the set of real numbers and the set of positive real numbers respectively.
-The norm $\| \cdot \|$ denotes the infinity norm. 
-%\textcolor{blue}{
-%We use $d(x,y)$ to denote geometric distance between two points $x$ and $y$, and
-%use $D(x,Y)$ to denote the geometric distance between the point $x$ and a set $Y$, defined as: $D(x,A):=\inf_y\set{d(x,y)\mid y\in Y}$.
-%\KM{Before, the set was a polytope: does it have to be a polytope at this point? Also, by geometric distance between $x$ and $y$, do you mean the infinity norm or the euclidean norm?}
-
-Let $(S,d)$ be a metric space, where $S$ is a set and $d\colon S\times S\rightarrow \mathbb{R}$ is the metric on $S$.
-For any set $R\subseteq S$ and any element $s\in S$, we generalize the metric $d$ to measure the ``distance'' between the set $R$ and the element $s$ as follows:
-$d(s,R)\coloneqq \inf_{r\in R}\set{d(s,r)}$.
+We use superscript $n>0$ with $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the cartesian product of $n$ copies of $\mathbb{R}$ and $\mathbb{R}_{>0}$ respectively.
+Given two points $x=(x_1,\ldots, x_n)$ and $y=(y_1,\ldots, y_n)$ in $ \mathbb{R}^n$ (or $\mathbb{R}^n_{>0}$) and a relational symbol $\triangleright\in \set{\leq, <, = , >, \geq}$, we write $x\triangleright y$ if for every $i=1,\ldots,n$, $x_i\triangleright y_i$.
+The symbols $|\cdot |$ and $\| \cdot \|$ denote the absolute value and the infinity norm respectively.  
 
 Let $f\colon A\to B$ and $g\colon C\to D$ be two functions.
 We define the product function $f\oplus g\colon A\times C\to B\times D $, $f\oplus g \colon (a,c)\mapsto (f(a),g(c))$.
@@ -24,6 +18,11 @@ We use the notation $\sem{V}$ (same symbol but in boldface blue) to denote the s
 It is easy to see that $\sem{V} = \mathbb{R}^{|V|}$.
 Let $U\subset V$ be a set.
 For any $v\in \sem{V}$, we use the notation $v[U]$ to denote the valuation in $\sem{U}$ that assigns the same values to the variables in $U$ as assigned by $v$; $v[U]$ is called the projection of $v$ on to $U$.
+
+Let $V$ be a finite set of real-valued variables, as above.
+Given any two points $u,v\in \sem{V}$ with $u=(u_1,\ldots,u_{|V|})$ and $v=(v_1,\ldots,v_{|V|})$, we introduce the \emph{element-wise distance function} $d_V\colon \sem{V}\times \sem{V}\to \mathbb{R}^{|V|}_{>0} $, $d_V\colon (x,y) \mapsto (|x_1-y_1|,\ldots, |x_{|V|}-y_{|V|}|)$.
+We sometime exploit the notation and use the same $d_V$ to measure the distance between a set $W\subseteq \sem{V}$ and a point $v\in \sem{V}$ as follows:
+$d_V(v,W)= \inf_{w\in W}\set{d(v,w)}$.
  
 \smallskip
 \noindent\textbf{Control System.}\
@@ -35,7 +34,7 @@ a compact \emph{disturbance set} $W\subset \mathbb{R}^n$, and
 a \emph{nominal dynamics} $f:\sem{X}\times U\rightarrow \sem{X}$ such that $f(\cdot,u)$ is locally Lipschitz for all $u\in U$. 
 %
 We call each element of the set $\sem{X}$ a \emph{state}, and the set $\sem{X} = \mathbb{R}^{|X|}$ the \emph{state space} of $\Sigma$.
-Throughout, we will assume that there is a metric $d\colon \sem{X}\times \sem{X}\to \mathbb{R}$ on the set $\sem{X}$ such that $(\sem{X},d)$ is a metric space. 
+%Throughout, we will assume that there is a metric $d\colon \sem{X}\times \sem{X}\to \mathbb{R}$ on the set $\sem{X}$ such that $(\sem{X},d)$ is a metric space. 
 
 Given an initial state $x_0\in \sem{X}$, a sampling time $\tau>0$, and a constant input $u\in U$, 
 a \emph{trajectory} of $\Sigma$ 
