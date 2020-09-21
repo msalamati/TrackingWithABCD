@@ -6,25 +6,25 @@ We define the \emph{product control system} $\Sigma = (X, U, \set{0^n}, f)$ wher
 Since we use ALTRO to compute the controlled nominal trajectories, and since ALTRO does not support external disturbances, so we ignore the external disturbances in this stage.
 Intuitively, the product control system models the joint behavior of the robotic swarm in the absence of external disturbances.
 
-We first lift the given specification $(\set{\init^i}_{i\in [1;N]}, \set{\goal^i}_{i\in [1;N]}, \set{\obs^i}_{i\in [1;N]}, \delta_\col, \delta_\obs)$ to a specification $(\init, \goal, \obs)$ for a \emph{centralized} controller synthesis problem, where $\init$, $\goal$, and $\obs$ are defined in the following:
+We first lift the given specification $(\set{\init^i}_{i\in [1;N]}, \set{\goal^i}_{i\in [1;N]}, \set{\obs^i}_{i\in [1;N]}, \delta_\col, \set{\delta_{\obs,i}}_{i\in [1;N]})$ to a specification $(\init, \goal, \obs)$ for a \emph{centralized} controller synthesis problem, where $\init$, $\goal$, and $\obs$ are defined in the following:
 \begin{itemize}
 	\item The initial state $\init\in \sem{X}$ define as $\init \coloneqq (\init^1, \ldots, \init^N) \in \sem{X}$,
-	\item the target set $\goal\subseteq \sem{X}$ defined as $\goal \coloneqq \goal^1\times \ldots \times \goal^N \subseteq \sem{X}$, and
-	\item the static obstacle $\obs\subseteq \sem{X}$ defined as 
+	\item The target set $\goal\subseteq \sem{X}$ defined as $\goal \coloneqq \goal^1\times \ldots \times \goal^N \subseteq \sem{X}$, and
+	\item The static obstacle at every time point $k>0$ is denoted by $\obs\subseteq \sem{X}$ and defined as 
 		\begin{equation}
 			\obs \coloneqq 
 				\Set{ x\in \sem{X} | 
 					\begin{array}{c}
-						\exists i\in [1;N]\;.\; d^i(x[X^i], \obs^i)\leq \delta_{\obs}\\
+						\exists i\in [1;N]\;.\; d_{X_i}(x_k^i,\obs^i) \leq \delta_{\obs,i}\\
 						\wedge\\
-						 \exists (i,j)\in [1;N]\times [1;N]\;.\; e(x[X^i\cap Z],x[X^j\cap Z])\leq \delta_{\col}
+						 \exists (i,j)\in [1;N]\times [1;N]\;.\; d_{Z}(x^i_k[Z],x^j_k[Z])\leq\delta_{\col}
 					\end{array}}.
 		\end{equation}
 \end{itemize}
 \MZ{Remark:
  obstacle avoidance and collision avoidance are not involving all of dimensions. for example in car example just x and y are involved. so we should change notation of comparing infinity norm with a scalar epsilon. $\delta$ is fine to ba a scalar.}
-When the sets $\obs^i$, for every $i\in [1;N]$, are polytopic and the metric $d^i$, for every $i\in [1;N]$, and the metric $e$ are both the infinity norms, then the set $\obs$ is also polytopic.
-This is an useful property from the perspective of implementation.
+%When the sets $\obs^i$, for every $i\in [1;N]$, are polytopic and the metric $d^i$, for every $i\in [1;N]$, and the metric $e$ are both the infinity norms, then the set $\obs$ is also polytopic.
+%This is an useful property from the perspective of implementation.
 
 We say that a central controller $C$ of the system $\Sigma_\tau$ realizes the lifted specification $(\init,\goal,\obs)$ if every closed-loop behavior satisfies the following Linear Temporal Logic (LTL) specification:
 \begin{equation}\label{eq:spec}
@@ -32,12 +32,12 @@ We say that a central controller $C$ of the system $\Sigma_\tau$ realizes the li
 \end{equation} 
 
 We use ALTRO to find an open-loop controller for $\Sigma_\tau$ so that the unique open-loop behavior---\emph{unique}, because of absence of disturbance---of $C \triangleright\Sigma_\tau$ satisfies the LTL formula in \eqref{eq:spec}.
-Let the unique open-loop behavior of the controlled system $C \triangleright\Sigma_\tau$ be $(x_0,\ldots,x_K)$ for some $K\in \mathbb{N}$.
+Let the unique behavior of the  open-loop controlled system $C \triangleright\Sigma_\tau$ be $(x_0,\ldots,x_K)$ for some $K\in \mathbb{N}$.
 It can be shown that the set $\set{(x_0[X^i],\ldots,x_K[X^i])}_{i\in [1;N]}$ is a set of valid nominal trajectories for the systems $\set{\Sigma^i_\tau}_{i\in [1;N]}$.
 
 It is worthwhile to mention that, ALTRO requires to provide a fixed target state, whereas we work with a set of target states.
 Our heuristic choice of the single target state for ALTRO within the set $\goal$ was driven by the constant $\varepsilon$ introduced in Prob.~\ref{prob:tracking_with_time}:
-We choose a state $g\in \goal$ as target so that for every $i\in [1;N]$, $d^i(g[X^i], \sem{X^i}\setminus \goal^i) \geq \varepsilon$.
+We choose a state $g=(g^1,g^2,\dots,g^N)\in \goal$ as target so that for every $i\in [1;N]$, $d_{X_i}(g^i, \sem{X^i}\setminus \goal^i) \geq \varepsilon$.
 The existence of such a $g$ for a system $\Sigma^i$ is guaranteed by the choice of $\varepsilon$ in Prob.~\ref{prob:tracking_with_time}. \MZ{Remarks: \\
 1- obstacle avoidance and collision avoidance are not involving all of dimensions. for example in car example just x and y are involved. \\
 2-}
@@ -83,15 +83,15 @@ We will use the notation $\mathbf{1}$ to denote the function $\mathbb{R}_{\geq 0
 \subsection{Translation of Prob.~\ref{prob:tracking_with_time} to an LTL Formula}
 First, we translate the tracking problem given in Prob.~\ref{prob:tracking_with_time} for the system $\Sigma=(X,U,W,f)$ to an equivalent controller synthesis problem for an LTL specification $\varphi$ for a different system $\widetilde{\Sigma}$.
 Essentially, $\widetilde{\Sigma}$ is obtained by appending the state of the system $\Sigma$ with a variable that varies at the same rate as time.
-Formally, the system $\widetilde{\Sigma}$ is defined as the tuple $(\widetilde{X}, U, W, \widetilde{f})$ where $\widetilde{X}\coloneqq X\cup \set{s}$ \MZ{union means product?}, $s$ being a variable taking values in non-negative reals, and $\widetilde{f} \equiv f \oplus \mathbf{1}$.
-We extend the metric $d$ defined on the set $\sem{X}$ to the metric $\widetilde{d}$ for the set $\sem{\widetilde{X}}$ as follows:
-$\widetilde{d}\colon ((x,s),(x',s')) \mapsto \max\set{d(x,x'), |s-s'|}$\MZ{we need to discuss about it}, where $|\cdot|$ denotes the absolute value.
-Observe that when $d$ is same as the infinity norm, then so is $\widetilde{d}$.
+Formally, the system $\widetilde{\Sigma}$ is defined as the tuple $(\widetilde{X}, U, W, \widetilde{f})$ where $\widetilde{X}\coloneqq X\cup \set{s}$ \MZ{union means product?}, $s$ being a variable taking values in non-negative reals, and $\widetilde{f} \equiv f \oplus \mathbf{1}$. Note that disturbance does not affect the appended state variable. Therefore, for $\widetilde{x}=(x,s)$ and $\widetilde{x}'=(x',s)$, we have that $d_{\widetilde{X}}(\widetilde{x},\widetilde{x}')=d_X(x,x')$.
+%We extend the metric $d$ defined on the set $\sem{X}$ to the metric $\widetilde{d}$ for the set $\sem{\widetilde{X}}$ as follows:
+%$\widetilde{d}\colon ((x,s),(x',s')) \mapsto \max\set{d(x,x'), |s-s'|}$\MZ{we need to discuss about it}, where $|\cdot|$ denotes the absolute value.
+%Observe that when $d$ is same as the infinity norm, then so is $\widetilde{d}$.
 
-On the other hand, the specification $\varphi$ is obtained as in the following:
-First, define the set $P = \Set{(x,k)\in \sem{\widetilde{X}} | \widetilde{d}(x, x_{k_\nom}) > \varepsilon}$.
-Owing to the first inequality in \eqref{eq:choice of eps}, $P$ is a connected set.
-\KM{Please check!}
+The specification $\varphi$ is obtained as in the following:
+First, define the set $P = \Set{(x,k)\in \sem{\widetilde{X}} | d_{{X}}(x, x_{k_\nom}) < \varepsilon}$. 
+%Owing to the first inequality in \eqref{eq:choice of eps}, $P$ is a connected set.
+%\KM{Please check!}
 We define $\varphi\coloneqq \square P$:
 It can be shown that if a feedback controller $C$ of $\Sigma_\tau$ ensures that all the closed loop behaviors of $C\parallel \Sigma_\tau$ satisfies the specification $\varphi$, then $C$ is a tracking controller for the given nominal trajectory.
 \KM{TODO: perhaps it's good idea to prove this formally?}
@@ -111,7 +111,7 @@ This is a standard practice in the literature \cite{reissig2016feedback}, and we
 
 \smallskip
 \noindent\textbf{Finite-state Abstraction of Control System.}\
-Let $\Sigma = (X, U, W, f)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $X$ which imposes a safety specification, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$.
+Let $\Sigma = (X, U, W, f)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $\sem{X}$ which imposes a safety specification, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$.
 %Note that, since $X$ is unbounded, hence some partition element of $\Xh$ will inevitably be unbounded set.
 A \emph{finite-state abstraction} of $\Sigma$ is a finite transition system $(\Xh,\Uh,\fh)$ s.t.\ $\xh'$ is in $\fh(\xh,u)$ if there is a pair of states $x\in \xh$ and $x'\in \xh'$ s.t.\ there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
 
@@ -146,7 +146,7 @@ It is known that this three step process produces a controller $C$ that realizes
 
 \smallskip
 \noindent\textbf{Computation of the Finite-State Abstraction.}\
-We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,U,W,f)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta_x$ and $\eta_u$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
+We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,U,W,f)$, a compact subset $\bound$ of the set $\sem{X}$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta_x$ and $\eta_u$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
 The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
 
 \subsection{Local Abstraction and Synthesis}
@@ -158,9 +158,9 @@ The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedbac
 %Adding time as a state variable, the corresponding augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $.
 %%Adding the time variable, the augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $. 
 We introduce some notation.
-Given a state $\widetilde x=(x,t)$ of a control system $\widetilde \Sigma$, and given a positive real number\MZ{it should be a vector} $\varepsilon$, we use the notation $\ball_\varepsilon(\widetilde x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$ and radius zero for time $t$.
+Given a state $\widetilde x=(x,k)$ of a control system $\widetilde \Sigma$, and given a positive real number\MZ{it should be a vector} $\varepsilon$, we use the notation $\ball_\varepsilon(\widetilde x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$ and radius zero for time $t$.
 Formally, \[\ball_\varepsilon(\widetilde{x})\coloneqq \set{\widetilde{x}'
-	\in \sem{\widetilde{X}} \mid  (x'[X] \in \ball(x)) \land (x'[\set{s}]\equiv x[\set{s}])}.\] 
+	\in \sem{\widetilde{X}} \mid  (x'[X] \in \ball_{\varepsilon}(x)) \land (x'[\set{s}]\equiv x[\set{s}])}.\] 
 We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:tracking_with_time} using finite abstraction.
 % It means we embedding extra state variable, which represents time. Here we use notation $\Psi_\epsilon(\widetilde{x})$ which is very similar to $\ball_\varepsilon(x)$.
 %$\Psi_\epsilon$ denotes the ball radius $\varepsilon$ centered around $X$ and radius zero for time $t$.
@@ -179,15 +179,15 @@ We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:t
 	\caption{ABCD-for-tracking}
 	\label{alg:abcd-with-time-for-tracking}
 	\begin{algorithmic}[1]
-		\Require $\widetilde{\Sigma}=(\widetilde{X},U,W,\widetilde{f})$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $((x_0^\nom,t_0),\ldots,(x_K^\nom,t_k))$, $\varepsilon \in \mathbb{R}_{>0}$
+		\Require $\widetilde{\Sigma}=(\widetilde{X},U,W,\widetilde{f})$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $((x_0^\nom,0),\ldots,(x_K^\nom,k))$, $\varepsilon \in \mathbb{R}_{>0}$
 		\KM{Did not change the notation in the algo} \MZ{It should get edited}
 		\Ensure Feedback controller $C:X\rightarrow U$ (partial function)
-		\State $\bound\gets \emptyset$
+		\State $P \gets \emptyset$
 		\For{$k$ from $0$ to $K$}
-		\State $\bound\gets \Psi_\varepsilon(x_k^\nom,t_k)$
+		\State $P \gets \ball_{\varepsilon}(x_k^\nom,k)$
 		\EndFor
-		\State $(\widehat{\Sigma},Q) \gets \findAbs(\widetilde{\Sigma}, \bound, \tau, \eta_{\widetilde{x}} , \eta_u)$
-		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the reach-avoid specification $(\Psi_\varepsilon(x_K^\nom,t_k), \emptyset, (x_0^\nom,t_0))$
+		\State $(\widehat{\Sigma},Q) \gets \findAbs(\widetilde{\Sigma}, P, \tau, \eta_{x} , \eta_u)$
+		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the specification $\square P$ %$(\ball_{\varepsilon}(x_K^\nom,k), \emptyset, (x_0^\nom,0))$
 		\State \Return $\widehat{C}\circ Q$
 	\end{algorithmic}
 \end{algorithm}
