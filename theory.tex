@@ -1,7 +1,7 @@
 %! TEX ROOT = ./main.tex
 
 \section{Centralized Computation of Nominal Trajectories}\label{sec:nominal trajectory}
-We use the notation ``$\sqcup$'' to denote the disjoint union\MZ{disjoint union ? why not product space?} of sets.
+We use the notation ``$\sqcup$'' to denote the disjoint union of sets.
 We define the \emph{product control system} $\Sigma = (X, U, \set{0^n}, f)$ wherein $X=X^1\sqcup \ldots \sqcup X^N$ and we assume that $|X|=n$, $U=U^1\times\dots\times U^N\subset \reals^m$, and $f=f^{1}\oplus \ldots\oplus f^{N}$. 
 Since we use ALTRO to compute the controlled nominal trajectories, and since ALTRO does not support external disturbances, so we ignore the external disturbances in this stage.
 Intuitively, the product control system models the joint behavior of the robotic swarm in the absence of external disturbances.
@@ -83,7 +83,9 @@ We will use the notation $\mathbf{1}$ to denote the function $\mathbb{R}_{\geq 0
 \subsection{Translation of Prob.~\ref{prob:tracking_with_time} to an LTL Formula}
 First, we translate the tracking problem given in Prob.~\ref{prob:tracking_with_time} for the system $\Sigma=(X,U,W,f)$ to an equivalent controller synthesis problem for an LTL specification $\varphi$ for a different system $\widetilde{\Sigma}$.
 Essentially, $\widetilde{\Sigma}$ is obtained by appending the state of the system $\Sigma$ with a variable that varies at the same rate as time.
-Formally, the system $\widetilde{\Sigma}$ is defined as the tuple $(\widetilde{X}, U, W, \widetilde{f})$ where $\widetilde{X}\coloneqq X\cup \set{s}$ \MZ{union means product?}, $s$ being a variable taking values in non-negative reals, and $\widetilde{f} \equiv f \oplus \mathbf{1}$. Note that disturbance does not affect the appended state variable. Therefore, for $\widetilde{x}=(x,s)$ and $\widetilde{x}'=(x',s)$, we have that $d_{\widetilde{X}}(\widetilde{x},\widetilde{x}')=d_X(x,x')$.
+Formally, the system $\widetilde{\Sigma}$ is defined as the tuple $(\widetilde{X}, U, W, \widetilde{f})$ where $\widetilde{X}\coloneqq X\cup \set{s}$, $s$ being a variable taking values in non-negative reals, and $\widetilde{f} \equiv f \oplus \mathbf{1}$. 
+Note that disturbance does not affect the appended state variable. 
+%Therefore, for $\widetilde{x}=(x,s)$ and $\widetilde{x}'=(x',s)$, we have that $d_{\widetilde{X}}(\widetilde{x},\widetilde{x}')=d_X(x,x')$.
 %We extend the metric $d$ defined on the set $\sem{X}$ to the metric $\widetilde{d}$ for the set $\sem{\widetilde{X}}$ as follows:
 %$\widetilde{d}\colon ((x,s),(x',s')) \mapsto \max\set{d(x,x'), |s-s'|}$\MZ{we need to discuss about it}, where $|\cdot|$ denotes the absolute value.
 %Observe that when $d$ is same as the infinity norm, then so is $\widetilde{d}$.
@@ -158,9 +160,9 @@ The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedbac
 %Adding time as a state variable, the corresponding augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $.
 %%Adding the time variable, the augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $. 
 We introduce some notation.
-Given a state $\widetilde x=(x,k)$ of a control system $\widetilde \Sigma$, and given a positive real number\MZ{it should be a vector} $\varepsilon$, we use the notation $\ball_\varepsilon(\widetilde x)$ to denote the ball (with infinity norm) of radius $\varepsilon$ centered around $x$ and radius zero for time $t$.
-Formally, \[\ball_\varepsilon(\widetilde{x})\coloneqq \set{\widetilde{x}'
-	\in \sem{\widetilde{X}} \mid  (x'[X] \in \ball_{\varepsilon}(x)) \land (x'[\set{s}]\equiv x[\set{s}])}.\] 
+Given a state $\widetilde x=(x,k)$ of a control system $\widetilde \Sigma$, and given the parameter $\varepsilon\in \mathbb{R}_{>0}^{|X|}$, we use the notation $\ball_\varepsilon(\widetilde x)$ to denote the ball centered around $x$ and having radius $\varepsilon$ in the state variables and having radius zero for the time variable $s$.
+Formally, \[\ball_\varepsilon(\widetilde{x})\coloneqq \set{(x',k')
+	\in \sem{\widetilde{X}} \mid  d_X(x'[X],x[X])\leq \varepsilon \land (x'[\set{s}]\equiv x[\set{s}])}.\] 
 We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:tracking_with_time} using finite abstraction.
 % It means we embedding extra state variable, which represents time. Here we use notation $\Psi_\epsilon(\widetilde{x})$ which is very similar to $\ball_\varepsilon(x)$.
 %$\Psi_\epsilon$ denotes the ball radius $\varepsilon$ centered around $X$ and radius zero for time $t$.
@@ -179,12 +181,11 @@ We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:t
 	\caption{ABCD-for-tracking}
 	\label{alg:abcd-with-time-for-tracking}
 	\begin{algorithmic}[1]
-		\Require $\widetilde{\Sigma}=(\widetilde{X},U,W,\widetilde{f})$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $((x_0^\nom,0),\ldots,(x_K^\nom,k))$, $\varepsilon \in \mathbb{R}_{>0}$
-		\KM{Did not change the notation in the algo} \MZ{It should get edited}
+		\Require $\widetilde{\Sigma}=(\widetilde{X},U,W,\widetilde{f})$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $((x_{0_\nom},0),\ldots,(x_{K_\nom},K))$, $\varepsilon \in \mathbb{R}_{>0}^{n}$
 		\Ensure Feedback controller $C:X\rightarrow U$ (partial function)
 		\State $P \gets \emptyset$
 		\For{$k$ from $0$ to $K$}
-		\State $P \gets \ball_{\varepsilon}(x_k^\nom,k)$
+		\State $P \gets \ball_{\varepsilon}((x_k^\nom,k))$
 		\EndFor
 		\State $(\widehat{\Sigma},Q) \gets \findAbs(\widetilde{\Sigma}, P, \tau, \eta_{x} , \eta_u)$
 		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the specification $\square P$ %$(\ball_{\varepsilon}(x_K^\nom,k), \emptyset, (x_0^\nom,0))$
