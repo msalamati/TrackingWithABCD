@@ -11,37 +11,64 @@ on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with
 RAM.
 
 %\textcolor{red}{
-\subsection{Unicycle example}\label{sec:MultiAgent}
-In this example, we are focusing on number of robots. This example consist of 10 identical unicycle model . Each unicycle should start from own initial point and reach target set which is shown in Fig. \ref{fig:MA} with green points and red points. while it avoids obstacles and collision with other agents. Unicycle model is described in below.
+\subsection{Multi-car path planning}\label{sec:MultiAgent}
+
+In this example, we consider a planning scenario for ten robots modeled identically as tuple $\Sigma=(X,U,W,f^u)$. The set of state variables $X$ consists of $x_1$, $x_2$ and $x_3$ which denote position in $2-D$ plane and movement angle, respectively. The set of input variables includes $u_1$ and $u_2$ which represent linear and angular speeds of each robot. Finally,
 \begin{equation}\label{eq:unicycle_ss}
 	f^{u}(x(t),u(t))=
 	\begin{bmatrix}
-	\dot{x_1}\\
-	\dot{x_2}\\
-	\dot{x_3}
+		\dot{x_1}\\
+		\dot{x_2}\\
+		\dot{x_3}
 	\end{bmatrix}=
 	\begin{bmatrix}
-	u_1cos(x_3)\\
-	u_1sin(x_3)\\
-	u_2
+		u_1cos(x_3)\\
+		u_1sin(x_3)\\
+		u_2
 	\end{bmatrix}.
 \end{equation}
-In Eq. \ref{eq:unicycle_ss} $u_1$ is linear speed and $u_2$ is  angular speed and $x_1$ and $x_2$ represents positions and $x_3$ is the angle. Here goal of the problem is designing a controller which satisfy the specifications which mentioned in sec. \ref{sec:Problem_statement}. For this purpose, According to sec.\ref{sec:nominal trajectory} at first we combine all of unicycle dynamics to create a centralized model of the centralized system. The centralized system has $10\times3$ dimension for state space and $10\times2$ dimension for input space. For collision avoidance and obstacle avoidance we use $\delta_{col}=1.5$ and $\delta_{obs}=2$ and we use euclidean distance as a metric for distance in 2D space. In this step, we solved mentioned problem with ALTRO with sample time 0.05 and 200 points for trajectory. Computation takes 138 seconds. Result of ALTRO is illustrated in fig \ref{fig:MA}. 
-In next step we synthesize close loop controller using ABCD with $\varepsilon=[0.16,0.16,0.16]$. As we mentioned in Prob. \ref{alg:abcd-with-time-for-tracking} we are going to to design a controller that is able to track the trajectory with $\varepsilon$ distance in every time step which is also robust to the disturbance .\MZ{Here we can split the centralized system to 10 separate system and design a close loop controller for each one of them separately.} In order to do this step, we select $\varepsilon$ in a way that it satisfies $\delta_{col} > 2\sqrt{\varepsilon_x^2+\varepsilon_y^2}$ (since tubes should not intersect with each other). Then we are able to design a controller guaranteeing the specifications for each agent independently using Alg. \ref{alg:abcd-with-time-for-tracking} and SCOTS. We select parameters in this way:\\
-$\widetilde{X}=[-1:11]*[-1:11]*[-\pi,\pi]*[0,1]$\\
-$U=[-3,3]*[-3,3]$\\
-$\eta_{\widetilde{X}}=[0.04,0.04,0.04,0.05]$\\
-$\eta_{U}=[0.6,0.6]$\\
-number of states = about $7*10^7$\\
-reduced number of states = about $7*10^7$\\
-number of inputs =121\\
+%In the above equation, $u_1(t)$ and $u_2(t)$ denote linear and angular speeds at time $t$, respectively. Further, $x_1(t)$, $x_2(t)$ specify position in $x-y$ plane and $x_3$ denotes the angle at time $t$. 
 
-Abstraction in total for 10 systems takes about 12 minutes(average 100 seconds for each system) and synthesizing controller takes about 2 minutes(near 15 seconds for each system). Controller designed in this way is able to overcome bounded additive disturbance $|w|\leq[0.03,0.03,0.03]$ (for all of unicycles). Nominal controller which is produced by ALTRO with presence of this disturbance will be pushed outside of $\epsilon$ tube and also as it shown in the Fig.\ref{fig:MA}, trajectory 1 and 2 will have collision with this value of disturbance. 
+A set of initial states ($Init$) and target sets ($Goal$) for each robot is specified and depicted in Figure~\ref{fig:MA} with red circles and green triangles, respectively. A physical obstacle is added to the problem over the $x-y$ plane, depicted in Figure~\ref{fig:MA} with a yellow circle. The thresholds for defining the static obstacle are chosen as $\delta_{col}=1.5$ and $\delta_{obs}=2$. The control objective is to synthesize a controller for each robot so that in presence of additive bounded disturbance, beginning from the set $Init^i$, a corresponding target set $Goal^i$ is reached within a finite horizon, while avoiding the static obstacle $Obs$ at every time point. 
+
+According to our proposed scheme, we first use ALTRO to design a centralized nominal control for the product state and input space that satisfies specification in Equation~\eqref{eq:spec} in the absence of disturbance ($W=\{0\}$). We choose the horizon length $K=200$ and sampling time $\tau=0.05$. ALTRO computes a valid open-loop controller in $138$ seconds for the product space with $30$ state and $20$ input variables. The open-loop trajectories generated by ALTRO ($(x_{0_\nom}^i,\ldots,x_{K_\nom}^i)$) are depicted in solid in Figure~\ref{fig:MA}. Note that the guarantee that open-loop controller gives is only valid in the absence of disturbance. In Figure~\ref{fig:MA}, dotted trajectories correspond to the first and the second robot when constant additive disturbance $w=\{\begin{bmatrix}0.03,0.03,0.03\end{bmatrix}\}$ is being applied throughout the whole horizon. It can be noticed that they collide with each other before reaching their corresponding target sets. Next, we show how to synthesize local controllers that guarantee satisfying of specifications in the presence of disturbance. \MS{1) Use dashed/dotted for trajectories with added disturbance. 2) use $x_1$ and $x_2$ instead of $x$ and $y$ for different axes 3) don't draw the outer circle.}
+
+In the next step, we augment each open-loop trajectory with time and construct a tube around it with the width vector $\varepsilon=\begin{bmatrix}0.16&0.16&0.16&0\end{bmatrix}$. Note that $\delta_{col} > 2\sqrt{\varepsilon_x^2+\varepsilon_y^2}$. Provided that we have computed the set for each of the robots, we are ready to use SCOTS in order to synthesize (local) closed-loop controllers that guarantee reachability and obstacle avoidance in the presence of bounded disturbance. We consider state and input spaces to be $Domain=[-1:11]\times[-1:11]\times[-\pi,\pi]\times[0,1]$ and
+$U=[-3,3]\times[-3,3]$, respectively. Choosing state and input partition sizes $\eta_{\widetilde{X}}=[0.04,0.04,0.04,0.05]$ and
+$\eta_{U}=[0.6,0.6]$ results in $\hat X$ and $\hat U$ with $7\times 10^7$ and $121$ points. The bound over additive disturbance is set to be $0.03$ in every dimension. Given the above settings, SCOTS was able to synthesize controllers in about $12$ minutes ($100$ seconds per robot in average). 
+
 \begin{figure}[t]\label{fig:MA}
 	\centering
-	\includegraphics[width=0.85\textwidth]{figures/MA.png}
-	\caption{Nominal trajectories of unicycles produced by ALTRO .}
+	\includegraphics[width=0.45\textwidth]{figures/MA.png}
+	\caption{Nominal trajectories of unicycles produced by ALTRO}
 \end{figure}
+
+
+%In this example, we are focusing on number of robots. This example consist of 10 identical unicycle model. Each unicycle should start from its own initial point and reach target set which is shown in Fig. \ref{fig:MA} with green points and red points. while it avoids obstacles and collision with other agents. Unicycle model is described in below.
+%\begin{equation}\label{eq:unicycle_ss}
+%	f^{u}(x(t),u(t))=
+%	\begin{bmatrix}
+%	\dot{x_1}\\
+%	\dot{x_2}\\
+%	\dot{x_3}
+%	\end{bmatrix}=
+%	\begin{bmatrix}
+%	u_1cos(x_3)\\
+%	u_1sin(x_3)\\
+%	u_2
+%	\end{bmatrix}.
+%\end{equation}
+%In Eq. \ref{eq:unicycle_ss} $u_1$ is linear speed and $u_2$ is  angular speed and $x_1$ and $x_2$ represents positions and $x_3$ is the angle. Here goal of the problem is designing a controller which satisfy the specifications which mentioned in sec. \ref{sec:Problem_statement}. For this purpose, According to sec.\ref{sec:nominal trajectory} at first we combine all of unicycle dynamics to create a centralized model of the centralized system. The centralized system has $10\times3$ dimension for state space and $10\times2$ dimension for input space. For collision avoidance and obstacle avoidance we use $\delta_{col}=1.5$ and $\delta_{obs}=2$ and we use euclidean distance as a metric for distance in 2D space. In this step, we solved mentioned problem with ALTRO with sample time 0.05 and 200 points for trajectory. Computation takes 138 seconds. Result of ALTRO is illustrated in fig \ref{fig:MA}. 
+%In next step we synthesize close loop controller using ABCD with $\varepsilon=[0.16,0.16,0.16]$.  As we mentioned in Prob. \ref{alg:abcd-with-time-for-tracking} we are going to to design a controller that is able to track the trajectory with $\varepsilon$ distance in every time step which is also robust to the disturbance .\MZ{Here we can split the centralized system to 10 separate system and design a close loop controller for each one of them separately.} In order to do this step, we select $\varepsilon$ in a way that it satisfies $\delta_{col} > 2\sqrt{\varepsilon_x^2+\varepsilon_y^2}$ (since tubes should not intersect with each other). Then we are able to design a controller guaranteeing the specifications for each agent independently using Alg. \ref{alg:abcd-with-time-for-tracking} and SCOTS. We select parameters in this way:\\
+%$\widetilde{X}=[-1:11]*[-1:11]*[-\pi,\pi]*[0,1]$\\
+%$U=[-3,3]*[-3,3]$\\
+%$\eta_{\widetilde{X}}=[0.04,0.04,0.04,0.05]$\\
+%$\eta_{U}=[0.6,0.6]$\\
+%number of states = about $7*10^7$\\
+%reduced number of states = about $7*10^7$\\
+%number of inputs =121\\
+%
+%Abstraction in total for 10 systems takes about 12 minutes(average 100 seconds for each system) and synthesizing controller takes about 2 minutes(near 15 seconds for each system). Controller designed in this way is able to overcome bounded additive disturbance $|w|\leq[0.03,0.03,0.03]$ (for all of unicycles). Nominal controller which is produced by ALTRO with presence of this disturbance will be pushed outside of $\epsilon$ tube and also as it shown in the Fig.\ref{fig:MA}, trajectory 1 and 2 will have collision with this value of disturbance. 
 
 
 
