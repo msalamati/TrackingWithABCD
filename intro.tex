@@ -1,3 +1,27 @@
 %! TEX ROOT = ./main.tex
 
 \section{Introduction}
+
+Synthesizing formally verified controllers for safety-critical dynamical systems has emerged as an important problem.
+The goal is to algorithmically synthesize controllers so that the systems under control only do what they are meant to do, even in the presence of external disturbances.
+One such algorithmic technique is the so-called Abstraction-Based Controller Design (ABCD).
+In ABCD, we start with a model of a continuous nonlinear dynamical system and a control task.
+The sought controller is synthesized in three stages:
+First, we approximate the continuous system model using a finite state abstraction.
+Second, we compute an abstract controller for the abstraction by using reactive synthesis techniques.
+Third, we refine the abstract controller to the sought final controller for the continuous system.
+The desired correctness guarantee of the obtained controller follows from a careful abstraction construction process.
+
+The strengths of ABCD are its versatility: 
+It can handle arbitrary continuous nonlinear system models, external disturbances, modeling uncertainties, measurement errors, $\omega$-regular control specifications, and so on.
+The weakness of ABCD is its poor scalability: 
+Usually ABCD uses a state-space discretization for computing the abstraction, which causes an exponential blow-up in the time and space complexity.
+
+In this paper, we extend ABCD---more in a practical sense---to synthesis of decentralized controllers for a group of robots, operating in a shared workspace.
+In general, the group can consist of a heterogeneous mix of robotic systems.
+We do not require the robots to be able to communicate during runtime.
+We assume that each robot has been assigned a reach-avoid task, where the robot needs to reach a set of target states while avoiding a set of static obstacles.
+Moreover, each robot is required to avoid collision with other moving robots by maintaining a minimum safe distance.
+The synthesis problem is then to algorithmically come up with controllers for each robot such that all these requirements are fulfilled for all the robots.
+
+Since 
