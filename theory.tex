@@ -78,6 +78,33 @@ For a given sampling time $\tau>0$ and positive constants $\delta_{\col}$ and $\
 In this section, we restrict our attention to an individual system $\Sigma^i$ for $i\in [1;N]$, and synthesize a feedback tracking controller---using ABCD---which can track the respective nominal trajectory $(x_{0_\nom}^i,\ldots,x_{K_\nom}^i)$ up to some given error $\varepsilon$ (Prob.~\ref{prob:tracking_with_time}).
 For the rest of the section, we drop the index $i$ for simplicity of notation.
 
+We introduce some notation.
+Given a state $x$ and given the parameter $\varepsilon\in \mathbb{R}_{>0}^{|X|}$, we use the notation $\ball_\varepsilon( x)$ to denote the ball in the state space $\sem{X}$, centered around $x$ and having radius $\varepsilon$.
+Formally, \[\ball_\varepsilon(x)\coloneqq \set{x'
+	\in \sem{X} \mid  d_X(x'[X],x[X])\leq \varepsilon }.\] 
+
+We express the tracking problem (Prob.~\ref{prob:tracking_with_time}) using the following LTL specification:
+\begin{align}
+	\Psi_{\track}\coloneqq \ball_\varepsilon(x_{0_\nom}) \wedge \bigwedge_{k\in [1;K]} \bigcirc^k \ball_\varepsilon(x_{k_\nom}),
+\end{align}
+where $\bigcirc^k$ represents the juxtaposition of $k$ consecutive ``next'' operators.
+
+In the following, we first revisit the theory of ABCD, and then present an optimization for faster solution of Prob.~\ref{prob:tracking_with_time}.
+ 
+ \begin{comment}
+The specification $\Psi_\track$ in general requires controller with memory, as we show in the following example.
+
+\begin{example}
+	Consider the one-dimensional control system $(\mathbb{R},\set{0,+1}, \emptyset, f)$ with the following dynamics:
+	\begin{align*}
+		\dot{\xi} = f(\xi,u) = u.
+	\end{align*}
+	Let the sampling time be $1$, the nominal trajectory be $(0,1,0,-1)$, and 
+\end{example}
+\end{comment}
+
+% Using augmented transition systems
+\begin{comment}
 We will use the notation $\mathbf{1}$ to denote the function $\mathbb{R}_{\geq 0}\to \set{1}$.
 
 \subsection{Translation of Prob.~\ref{prob:tracking_with_time} to an LTL Formula}
@@ -97,6 +124,7 @@ First, define the set $P = \Set{(x,k)\in \sem{\widetilde{X}} | d_{{X}}(x, x_{k_\
 We define $\varphi\coloneqq \square P$:
 It can be shown that if a feedback controller $C$ of $\Sigma_\tau$ ensures that all the closed loop behaviors of $C\parallel \Sigma_\tau$ satisfies the specification $\varphi$, then $C$ is a tracking controller for the given nominal trajectory.
 \KM{TODO: perhaps it's good idea to prove this formally?}
+\end{comment}
 
 \subsection{Preliminaries of Abstraction-based Controller Design}
 
@@ -159,10 +187,16 @@ The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedbac
 %In order to be able to break Problem~\ref{prob:reach-avoid} into synthesizing controller $C^{\nom}$ and solving for Problem~\ref{prob:tracking_with_time}, we need to augment the state vector of $\Sigma$ with aditional state variable time.
 %Adding time as a state variable, the corresponding augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $.
 %%Adding the time variable, the augmented control system is represented as $\widetilde{\Sigma}= (\widetilde{X},U,W,\widetilde{f})$ with $\widetilde X= X\times \reals_{\geq 0}$ and $\widetilde f=\begin{bmatrix} f^T& 1\end{bmatrix}^T $. 
+\begin{comment}
 We introduce some notation.
 Given a state $\widetilde x=(x,k)$ of a control system $\widetilde \Sigma$, and given the parameter $\varepsilon\in \mathbb{R}_{>0}^{|X|}$, we use the notation $\ball_\varepsilon(\widetilde x)$ to denote the ball centered around $x$ and having radius $\varepsilon$ in the state variables and having radius zero for the time variable $s$.
 Formally, \[\ball_\varepsilon(\widetilde{x})\coloneqq \set{(x',k')
 	\in \sem{\widetilde{X}} \mid  d_X(x'[X],x[X])\leq \varepsilon \land (x'[\set{s}]\equiv x[\set{s}])}.\] 
+\end{comment}
+
+It is not difficult to see that we only need to compute transitions in the $\varepsilon$-neighborhood of the given nominal trajectory.
+\todo{Text explaining the algorithm.}
+
 We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:tracking_with_time} using finite abstraction.
 % It means we embedding extra state variable, which represents time. Here we use notation $\Psi_\epsilon(\widetilde{x})$ which is very similar to $\ball_\varepsilon(x)$.
 %$\Psi_\epsilon$ denotes the ball radius $\varepsilon$ centered around $X$ and radius zero for time $t$.
@@ -181,13 +215,13 @@ We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:t
 	\caption{ABCD-for-tracking}
 	\label{alg:abcd-with-time-for-tracking}
 	\begin{algorithmic}[1]
-		\Require $\widetilde{\Sigma}=(\widetilde{X},U,W,\widetilde{f})$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $((x_{0_\nom},0),\ldots,(x_{K_\nom},K))$, $\varepsilon \in \mathbb{R}_{>0}^{n}$
-		\Ensure Feedback controller $C:X\rightarrow U$ (partial function)
+		\Require $\Sigma=(X,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $(x_{0_\nom},\ldots,x_{K_\nom})$, $\varepsilon \in \mathbb{R}_{>0}^{n}$
+		\Ensure Feedback controller $C\colon X\times [0;K]\to U$ (partial function)
 		\State $P \gets \emptyset$
 		\For{$k$ from $0$ to $K$}
-		\State $P \gets \ball_{\varepsilon}((x_k^\nom,k))$
+		\State $P \gets \ball_{\varepsilon}(x_k^\nom)$
 		\EndFor
-		\State $(\widehat{\Sigma},Q) \gets \findAbs(\widetilde{\Sigma}, P, \tau, \eta_{x} , \eta_u)$
+		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, P, \tau, \eta_{x} , \eta_u)$
 		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the specification $\square P$ %$(\ball_{\varepsilon}(x_K^\nom,k), \emptyset, (x_0^\nom,0))$
 		\State \Return $\widehat{C}\circ Q$
 	\end{algorithmic}
