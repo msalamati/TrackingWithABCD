@@ -7,38 +7,42 @@
 We use the notation $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the set of real numbers and the set of positive real numbers respectively.
 We use superscript $n>0$ with $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the cartesian product of $n$ copies of $\mathbb{R}$ and $\mathbb{R}_{>0}$ respectively.
 Given two points $x=(x_1,\ldots, x_n)$ and $y=(y_1,\ldots, y_n)$ in $ \mathbb{R}^n$ (or $\mathbb{R}^n_{>0}$) and a relational symbol $\triangleright\in \set{\leq, <, = , >, \geq}$, we write $x\triangleright y$ if for every $i=1,\ldots,n$, $x_i\triangleright y_i$.
-The symbol $|\cdot |$ is used to denote both the absolute value of a number and cardinality of a set, and the symbol $\| \cdot \|$ is used to denote the infinity norm.  
+The operator $|\cdot |$ is used to denote both the absolute value of a number and cardinality of a set, depending on the type of the operand, and the operator $\| \cdot \|$ is used to denote the infinity norm.  
 
 Let $f\colon A\to B$ and $g\colon C\to D$ be two functions.
 We define the product function $f\oplus g\colon A\times C\to B\times D $, $f\oplus g \colon (a,c)\mapsto (f(a),g(c))$.
 The product function can be defined for arbitrarily many functions by extending the definition in the obvious way.
 
-Let $V$ be a finite set of real-valued variables.
-We use the notation $\sem{V}$ (same symbol but in boldface blue) to denote the set of every possible valuations of the variables in $V$, i.e.\ an element in $\sem{V}$ assigns an unique real number to every variable in $V$.
-It is easy to see that $\sem{V} = \mathbb{R}^{|V|}$.
-Let $U\subset V$ be a set.
-For any $v\in \sem{V}$, we use the notation $v[U]$ to denote the valuation in $\sem{U}$ that assigns the same values to the variables in $U$ as assigned by $v$; $v[U]$ is called the projection of $v$ on to $U$.
+Throughout, we measure distance between two points, within a space $\mathbb{R}^n$, using the \emph{element-wise distance metric} $d^n\colon \mathbb{R}^n\times \mathbb{R}^n\to \mathbb{R}^n$, $d^n\colon \left((u_1,\ldots, u_n),(v_1,\ldots,v_n)\right)\mapsto \left(|u_1-v_1|,\ldots,|u_n-v_n|\right)$. 
+We extend the definition of $d^n$ to measure distance between a point and a set: for any given $u\in \mathbb{R}^n$ and $V\in \mathbb{R}^n$, $d^n(u,V) \coloneqq \left( \inf_{v\in V}|u_1,v_1|,\ldots, \inf_{v\in V}|u_n-v_n| \right)$.
 
-Let $V$ be a finite set of real-valued variables, as above.
-Given any two points $u,v\in \sem{V}$ with $u=(u_1,\ldots,u_{|V|})$ and $v=(v_1,\ldots,v_{|V|})$, we introduce the \emph{element-wise distance function} $d_V\colon \sem{V}\times \sem{V}\to \mathbb{R}^{|V|}_{>0} $, $d_V\colon (x,y) \mapsto (|x_1-y_1|,\ldots, |x_{|V|}-y_{|V|}|)$.
-We sometime exploit the notation and use the same $d_V$ to measure the distance between a set $W\subseteq \sem{V}$ and a point $v\in \sem{V}$, which is defined as follows:
-$d_V(v,W)= (\inf_{w\in W} |v_1-w_1|, \ldots, \inf_{w\in W} |v_{|V|}-w_{|V|}|)$.
+%Let $V$ be a finite set of real-valued variables.
+%We use the notation $\sem{V}$ (same symbol but in boldface blue) to denote the set of every possible valuations of the variables in $V$, i.e.\ an element in $\sem{V}$ assigns an unique real number to every variable in $V$.
+%It is easy to see that $\sem{V} = \mathbb{R}^{|V|}$.
+%Let $U\subset V$ be a set.
+%For any $v\in \sem{V}$, we use the notation $v[U]$ to denote the valuation in $\sem{U}$ that assigns the same values to the variables in $U$ as assigned by $v$; $v[U]$ is called the projection of $v$ on to $U$.
+
+%Let $V$ be a finite set of real-valued variables, as above.
+%Given any two points $u,v\in \sem{V}$ with $u=(u_1,\ldots,u_{|V|})$ and $v=(v_1,\ldots,v_{|V|})$, we introduce the \emph{element-wise distance function} $d_V\colon \sem{V}\times \sem{V}\to \mathbb{R}^{|V|}_{>0} $, $d_V\colon (x,y) \mapsto (|x_1-y_1|,\ldots, |x_{|V|}-y_{|V|}|)$.
+%We sometime exploit the notation and use the same $d_V$ to measure the distance between a set $W\subseteq \sem{V}$ and a point $v\in \sem{V}$, which is defined as follows:
+%$d_V(v,W)= (\inf_{w\in W} |v_1-w_1|, \ldots, \inf_{w\in W} |v_{|V|}-w_{|V|}|)$.
  
 \smallskip
 \noindent\textbf{Control System.}\
-A \emph{control system} $\Sigma = (X, U, W, f)$
-consists of a finite set of real-valued \emph{state variables} $X$,
-% state space $X= \mathbb{R}^n$, 
+A \emph{control system} $\Sigma = (X, U, W, f, Y, h)$
+consists of a \emph{state space} $X\subseteq \mathbb{R}^n$,
  an \emph{input space} $U\subseteq\mathbb{R}^m$, 
-a compact \emph{disturbance set} $W\subset \mathbb{R}^n$, and 
-a \emph{nominal dynamics} $f:\sem{X}\times U\rightarrow \sem{X}$ such that $f(\cdot,u)$ is locally Lipschitz for all $u\in U$. 
+a compact \emph{disturbance set} $W\subset \mathbb{R}^n$, 
+a \emph{nominal dynamics} $f:X\times U\rightarrow X$ such that $f(\cdot,u)$ is locally Lipschitz for all $u\in U$,
+an \emph{output space} $Y\subseteq \mathbb{R}^p$, and
+an \emph{output function} $h\colon X\mapsto Y$. 
 %
-We call each element of the set $\sem{X}$ a \emph{state}, and the set $\sem{X} = \mathbb{R}^{|X|}$ the \emph{state space} of $\Sigma$.
+%We call each element of the set $\sem{X}$ a \emph{state}, and the set $\sem{X} = \mathbb{R}^{|X|}$ the \emph{state space} of $\Sigma$.
 %Throughout, we will assume that there is a metric $d\colon \sem{X}\times \sem{X}\to \mathbb{R}$ on the set $\sem{X}$ such that $(\sem{X},d)$ is a metric space. 
 
-Given an initial state $x_0\in \sem{X}$, a sampling time $\tau>0$, and a constant input $u\in U$, 
-a \emph{trajectory} of $\Sigma$ 
-on $[0,\tau]$ is an absolutely continuous function $\xi:[0,\tau]\rightarrow \sem{X}$  such that $\xi(0) = x_0$ and
+Given an initial state $x_0\in X$, a sampling time $\tau>0$, and a constant input $u\in U$, 
+a \emph{state trajectory} of $\Sigma$ 
+on $[0,\tau]$ is an absolutely continuous function $\xi:[0,\tau]\rightarrow X$  such that $\xi(0) = x_0$ and
 $\xi(\cdot)$ fulfills the following differential inclusion for almost every $t\in[0,\tau]$:
 \begin{equation}\label{equ:def_f}
  \dot{\xi}\in f(\xi(t),u) + W. 
@@ -47,35 +51,36 @@ We collect all such solutions in the set $\Sol_\Sigma(x_0,u,\tau)$.
 
 \smallskip
 \noindent\textbf{Transition System.}\
-A \emph{transition system} $S=(Y,U,\delta)$ consists of a state space $Y$, an input space $U$, and a transition function $\delta:Y\times U \rightarrow 2^Y$. 
-A system $S$ is \emph{finite} if $Y$ and $U$ are finite. 
-A \emph{trajectory} of $S$ is a maximal sequence of states $\rho\in Y^\infty$ compatible with $\delta$:
+A \emph{state-transition system} $S=(Z,U,\delta)$ consists of a state space $Z$, an input space $U$, and a transition function $\delta:Z\times U \rightarrow 2^Z$. 
+A system $S$ is \emph{finite} if $Z$ and $U$ are finite. 
+A \emph{trajectory} of $S$ is a maximal sequence of states $\rho\in Z^\infty$ compatible with $\delta$:
 for all $1\leq k < |\rho|$ there exists $u\in U$ such that $\rho(k)\in \delta(\rho(k-1),u)$ and 
 if $|\rho| < \infty$ then $\delta(\rho(|\rho|),u)= \emptyset$ for all $u\in U$.
 %For $D\subseteq X$, a $D$-trajectory is a trajectory $\xi$ with $\xi(0)\in D$.
 
 \smallskip
 \noindent\textbf{Sampled-time Abstraction of Control System.}\
-Let $\Sigma = (X, U, W, f)$ be a control system and $\tau>0$ be the sampling time.
-A \emph{sampled-time abstraction} of $\Sigma$ is the transition system $(\sem{X},U,f_\tau)$, such that $x'$ is in $f_\tau(x,u)$ if and only if there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
+Let $\Sigma = (X, U, W, f, \cdot, \cdot)$ be a control system and $\tau>0$ be the sampling time.
+(The ``$\cdot$''-s in place of the output space and the output function represent their insignificance in the respective sampled-time abstraction; similar convention will be used elsewhere in the paper.)
+A \emph{sampled-time abstraction} of $\Sigma$ is the state-transition system $(X,U,f_\tau)$, such that $x'$ is in $f_\tau(x,u)$ if and only if there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
 
 \smallskip
 \noindent\textbf{Open-loop Controller and Controlled Trajectory.}\
-Let $\Sigma_\tau=(\sem{X},U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,U,W,f)$.
-An \emph{open-loop controller} of $\Sigma_\tau$ is a function $C:[0;K]\rightarrow U$ for some given time horizon $K>0$.
-The \emph{open-loop} is obtained when we connect $C$ with $\Sigma_\tau$ serially, and is formalized using the transition system $C \triangleright \Sigma_\tau = (\sem{X}\times [0;K],U,f_\tau^C)$ such that $(x',k+1)$ is in $f_\tau^C((x,k),u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(k)=u$.
+Let $\Sigma_\tau=(X,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,U,W,f,\cdot,\cdot)$.
+An \emph{open-loop controller} of $\Sigma_\tau$ is a function $C\colon [0;K]\to U$ for some given time horizon $K>0$.
+The \emph{open-loop} is obtained when we connect $C$ with $\Sigma_\tau$ serially, and is formalized using the transition system $C \triangleright \Sigma_\tau = (X\times [0;K],U,f_\tau^C)$ such that $(x',k+1)$ is in $f_\tau^C((x,k),u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(k)=u$.
 
-Suppose $x_0\in \sem{X}$ be a given initial state of $\Sigma_\tau$.
+Suppose $x_0\in X$ be a given initial state of $\Sigma_\tau$.
 The \emph{open-loop behavior} $\Beh^\ol(x_0)$ of $C \triangleright\Sigma_\tau$ is the set of all infinite state sequences $(x_0,x_1,\ldots)$ such that for all $k\geq 0$, there exists an input $u$ with $(x_{k+1},k+1)\in f_\tau^C((x_k,k),u)$.
 
 \smallskip
 \noindent\textbf{Feedback Controller and Closed-loop.}
-Let $\Sigma_\tau=(\sem{X},U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,U,W,f)$.
-A \emph{feedback controller} of $\Sigma_\tau$ is a function $C:\sem{X}\rightarrow U$.
+Let $\Sigma_\tau=(X,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,U,W,f,\cdot,\cdot)$.
+A \emph{feedback controller} of $\Sigma_\tau$ is a function $C\colon \sem{X}\to U$.
 The \emph{closed-loop} is obtained when we connect $C$ with $\Sigma_\tau$ in feedback, and is formalized using the transition system $C\parallel\Sigma_\tau = (\sem{X},U,f_\tau^C)$ such that $x'$ is in $f_\tau^C(x,u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(x)=u$.
-The feedback controller $C$ when connected to the sampled-time control system of $\Sigma_\tau$ can be interpreted as a zero-order-hold controller for the control system $\Sigma$.
+The feedback controller $C$ when connected to the sampled-time control system $\Sigma_\tau$ can be interpreted as a zero-order-hold controller for the control system $\Sigma$.
 
-Suppose $x_0\in \sem{X}$ be a given initial state of $\Sigma_\tau$.
+Suppose $x_0\in X$ be a given initial state of $\Sigma_\tau$.
 The \emph{closed-loop behavior} $\Beh^\cl(x_0)$ of $C\parallel\Sigma_\tau$ is the set of all infinite state sequences $(x_0,x_1,\ldots)$ such that for all $k\geq 0$, there exists an input $u$ with $x_{k+1}\in f_\tau^C(x_k,u)$.
 
 
