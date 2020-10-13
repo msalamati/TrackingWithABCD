@@ -34,7 +34,7 @@ We say that a central open-loop controller $C$ of the system $\Sigma_\tau$ reali
 
 We use ALTRO to find an open-loop controller for $\Sigma_\tau$ so that the unique open-loop behavior---\emph{unique}, because of the absence of disturbances---of $C \triangleright\Sigma_\tau$ satisfies the LTL formula in \eqref{eq:spec}.
 Let the unique behavior of the  open-loop controlled system $C \triangleright\Sigma_\tau$ be $(x_0,\ldots,x_K)$ for some $K\in \mathbb{N}$.
-We call the projections of the trajectory $(x_0,\ldots,x_K)$ on the state space of the individual robots, given as the set $\set{(\proj^i(x_0),\ldots,\proj^i(x_K))}_{i\in [1;N]}$, the set of nominal trajectories of the systems $\set{\Sigma^i_\tau}_{i\in [1;N]}$.
+We call the projections of the trajectory $(x_0,\ldots,x_K)$ on the state space of the individual robots, given as the set $\set{(x_{0_\nom}^i,\ldots,x_{K_\nom}^i)}_{i\in [1;N]}=\set{(\proj^i(x_0),\ldots,\proj^i(x_K))}_{i\in [1;N]}$, the set of nominal trajectories of the systems $\set{\Sigma^i_\tau}_{i\in [1;N]}$.
 
 It is worthwhile to mention that, ALTRO requires to provide a fixed target state, whereas we work with a set of target states.
 Our heuristic choice of the single target state for ALTRO within the set $\goal$ was driven by the constant $\varepsilon$ introduced in Prob.~\ref{prob:tracking_with_time}:
@@ -87,6 +87,7 @@ Formally, \[\ball_\varepsilon(x)\coloneqq \set{x'
 
 We express the tracking problem (Prob.~\ref{prob:tracking_with_time}) using the following LTL specification:
 \begin{align}
+	\label{eq:ltl_spec}
 	\Psi_{\track}\coloneqq \ball_\varepsilon(x_{0_\nom}) \wedge \bigwedge_{k\in [1;K]} \bigcirc^k \ball_\varepsilon(x_{k_\nom}),
 \end{align}
 where $\bigcirc^k$ represents the juxtaposition of $k$ consecutive ``next'' operators.
@@ -224,7 +225,7 @@ We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:t
 		\State $P \gets \ball_{\varepsilon}(x_k^\nom)$
 		\EndFor
 		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, P, \tau, \eta_{x} , \eta_u)$
-		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the specification $\square P$ %$(\ball_{\varepsilon}(x_K^\nom,k), \emptyset, (x_0^\nom,0))$
+		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the specification given in Eq. \eqref{eq:ltl_spec} %$(\ball_{\varepsilon}(x_K^\nom,k), \emptyset, (x_0^\nom,0))$
 		\State \Return $\widehat{C}\circ Q$
 	\end{algorithmic}
 \end{algorithm}

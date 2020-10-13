@@ -25,7 +25,7 @@ We start with the following six ingredients that are required to be provided as 
 	\item[Initial states:] Every robot has a designated initial state $\init^i\in X^i$ for $i\in [1;N]$.
 	\item[Target states:] Every robot has a designated set of goal states $\goal^i\subseteq X^i$  for $i\in [1;N]$.
 	\item[Static obstacles:] Every robot has a, possibly empty, set of static obstacles $\obs^i\subseteq X^i$  for $i\in [1;N]$.
-	\item[Safety margins:] There are two safety margins: (i) A \emph{collision avoidance margin} $\delta_{\col}\in \mathbb{R}^{p}_{>0}$, which denotes the required minimum distance between every two robots---measured in the output space, and (ii) a set of \emph{obstacle avoidance margins} $\set{\delta_{\obs,i}}_{i\in [1;N]}$, with $\delta_{\obs,i}\in \mathbb{R}^{X^i}_{>0}$ for all $i$, which denote the required minimum distance between every robot and the static obstacles in its state space.
+	\item[Safety margins:] There are two safety margins: (i) A \emph{collision avoidance margin} $\delta_{\col}\in \mathbb{R}^{p}_{>0}$, which denotes the required minimum distance between every two robots---measured in the output space, and (ii) a set of \emph{obstacle avoidance margins} $\set{\delta_{\obs,i}}_{i\in [1;N]}$, with $\delta_{\obs,i}\in \mathbb{R}^{n_i}_{>0}$ for all $i$, which denote the required minimum distance between every robot and the static obstacles in its state space.
 \end{description}
 
 A set of feedback controllers $\set{C^i}_{i\in [1;N]}$ for the systems $\set{\Sigma_\tau^i}_{i\in [1;N]}$ \emph{realizes} the given specification $(\set{\init^i}_{i\in [1;N]}, \set{\goal^i}_{i\in [1;N]}, \set{\obs^i}_{i\in [1;N]}, \delta_\col, \set{\delta_{\obs,i}}_{i\in [1;N]})$, as defined above, if the following conditions are satisfied:
@@ -109,7 +109,7 @@ This ensures that the original reachability specification can be satisfied just 
 
 It is worthwhile to mention that the controllers synthesized in the first phase, using $\mathit{fast}$ methods, are not directly used by the second phase; rather only the nominal trajectories are used.
 Then one could argue that, instead of using a fast \emph{controller synthesis} method to generate nominal trajectories, one could simply employ fast \emph{planners} \cite{rrt etc.} to generate geometric plans.
-However, since geometric planners do not take into consideration the dynamics and control constraints, so, in our experience, the generated plans (i.e.\ the nominal trajectories) are often doomed to be untrackable for certain class of systems.
+However, since geometric planners do not take into consideration the dynamics and control constraints, so, in our experience, the generated plans (i.e.\ the nominal trajectories) are often doomed to be untrackable for general systems (i.e. non-flat systems ).%certain class of systems.
 
 \KM{Can we give the example of the two dimensional pendulum, that we once had to show this phenomenon?}
 
