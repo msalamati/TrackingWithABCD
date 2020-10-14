@@ -8,7 +8,7 @@ We further assume that the robots are incapable of synchronizing their actions t
 We want to synthesize individual feedback controllers for every robot so that the following conditions are fulfilled:
 \begin{description}
 	\item[Reachability:] Every robot, when positioned at a designated initial state, should eventually reach a designated target state.
-	\item[Obstacle avoidance:] No robot should collide with the given set of static obstacles.
+	\item[Obstacle avoidance:] No robot should collide with the given obstacles.
 	\item[Collision avoidance:] No two robots should ever collide against each other.
 \end{description}
 For the sake of simplicity, at the controller synthesis stage, we ignore the geometry of the robots and model them as point objects.
@@ -20,23 +20,24 @@ We start with the following six ingredients that are required to be provided as 
 \begin{description}
 	\item[System model:] We assume that there are $N$ robots, indexed by the natural numbers $[1;N]$.
 	Every robot $i\in [1;N]$ is modeled as a control system $\Sigma^i = (X^i, U^i, W^i, f^i, Y, h^i)$ with $X^i\subseteq \mathbb{R}^{n_i}$, $U^i\subseteq \mathbb{R}^{m_i}$, $W^i\subset \mathbb{R}^{n_i}$, and $Y\subseteq \mathbb{R}^p$.
-	We highlight that all the robots are assumed to have the same output space
+	We highlight that all the robots are assumed to have the same output space.
 	\item[Sampling time:] A sampling time $\tau\in \mathbb{R}_{>0}$.
 	\item[Initial states:] Every robot has a designated initial state $\init^i\in X^i$ for $i\in [1;N]$.
 	\item[Target states:] Every robot has a designated set of goal states $\goal^i\subseteq X^i$  for $i\in [1;N]$.
-	\item[Static obstacles:] Every robot has a, possibly empty, set of static obstacles $\obs^i\subseteq X^i$  for $i\in [1;N]$.
-	\item[Safety margins:] There are two safety margins: (i) A \emph{collision avoidance margin} $\delta_{\col}\in \mathbb{R}^{p}_{>0}$, which denotes the required minimum distance between every two robots---measured in the output space, and (ii) a set of \emph{obstacle avoidance margins} $\set{\delta_{\obs,i}}_{i\in [1;N]}$, with $\delta_{\obs,i}\in \mathbb{R}^{n_i}_{>0}$ for all $i$, which denote the required minimum distance between every robot and the static obstacles in its state space.
+	\item[Static obstacles:] There is a static obstacles, common for all the robots: $\obs\subseteq Y$.
+	\item[Safety margin:] There is a safety margin $\delta\in \mathbb{R}^p_{\geq 0}$ which denotes the required minimum safe distance from every other robot and the static obstacle.
+	%\item[Safety margins:] There are two safety margins: (i) A \emph{collision avoidance margin} $\delta_{\col}\in \mathbb{R}^{p}_{>0}$, which denotes the required minimum distance between every two robots---measured in the output space, and (ii) a set of \emph{obstacle avoidance margins} $\set{\delta_{\obs,i}}_{i\in [1;N]}$, with $\delta_{\obs,i}\in \mathbb{R}^{n_i}_{>0}$ for all $i$, which denote the required minimum distance between every robot and the static obstacles in its state space.
 \end{description}
 
 A set of feedback controllers $\set{C^i}_{i\in [1;N]}$ for the systems $\set{\Sigma_\tau^i}_{i\in [1;N]}$ \emph{realizes} the given specification $(\set{\init^i}_{i\in [1;N]}, \set{\goal^i}_{i\in [1;N]}, \set{\obs^i}_{i\in [1;N]}, \delta_\col, \set{\delta_{\obs,i}}_{i\in [1;N]})$, as defined above, if the following conditions are satisfied:
 For \emph{every} $i\in [1;N]$ and for \emph{every} infinite behavior $(x_0^i,x_1^i,\ldots)\in \Beh^\cl(x_0^i)$ of the closed loop $C^i\parallel \Sigma_\tau^i$ starting at $x_0^i=\init^i$, there \emph{exists} a $K$ such that
 \begin{description}
 	\item[Reachability:] $x_K^i\in \goal^i$.
-	\item[Obstacle avoidance:] For every $k\leq K$, we have $d^{n_i}(x_k^i,\obs^i) > \delta_{\obs,i}$.
+	\item[Obstacle avoidance:] For every $k\leq K$, we have $d^{p}(h^i(x_k^i),\obs) > \delta$.
 	\item[Collision avoidance:] 
 		Suppose $j\in [1;N]$ with $j\neq i$ be some other robot.
 		Consider any arbitrary infinite behavior $(x_o^j, x_1^j,\ldots)\in \Beh^\cl(x_0^j)$ of $C^j\parallel \Sigma_\tau^j$ starting at $x_0^j=\init^j$. 
-		Then for every $k\leq K$ we require the following to be satisfied: $d^{p}(h^i(x^i_k),h^j(x^j_k))>\delta_{\col}$.
+		Then for every $k\leq K$ we require the following to be satisfied: $d^{p}(h^i(x^i_k),h^j(x^j_k))>\delta$.
 \end{description}
 
 \begin{comment} % Mahmoud's version
@@ -83,8 +84,8 @@ Our approach is a two-stage procedure:
 	\item First, we deploy an off-the-shelf $\mathit{fast}$ method to quickly solve the controller synthesis problem, and obtain a set of  \emph{valid} (controlled) \emph{nominal trajectories} $\set{(x_{0_\nom}^i,\ldots,x_{K_\nom}^i)}_{i\in [1;N]}$, for the systems $\set{\Sigma_\tau^i}_{i\in [1;N]}$, such that the following conditions are met:
 	\begin{itemize}
 		\item For every $i\in [1;N]$, there exists $k\in [0;K]$, such that $x_{k_\nom}^i\in \goal^i$,
-		\item for every $i\in [1;N]$ and for every $k\in [0;K]$, $d^{n_i}(x_{k_\nom}^i,\obs^i) > \delta_{\obs,i}$, and
-		\item for every $(i,j)\in [1;N]\times [1;N]$ and for every $k\in [0;K]$, $d^{p}(h^i(x_{k_\nom}^i), h^j(x_{k_\nom}^j)) > \delta_\col$. 
+		\item for every $i\in [1;N]$ and for every $k\in [0;K]$, $d^{p}(h^i(x_{k_\nom}^i),\obs) > \delta$, and
+		\item for every $(i,j)\in [1;N]\times [1;N]$ and for every $k\in [0;K]$, $d^{p}(h^i(x_{k_\nom}^i), h^j(x_{k_\nom}^j)) > \delta$. 
 	\end{itemize}
 	(Essentially, a set of valid nominal trajectories is a witness trajectory for the satisfaction of the specification.)
 	While, in principle, any $\mathit{fast}$ method could be used for this first phase, in this work we solve the given problem \emph{centrally} using the tool called ALTRO \cite{howell2019altro}.

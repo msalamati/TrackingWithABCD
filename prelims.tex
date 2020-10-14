@@ -76,8 +76,8 @@ The \emph{open-loop behavior} $\Beh^\ol(x_0)$ of $C \triangleright\Sigma_\tau$ i
 \smallskip
 \noindent\textbf{Feedback Controller and Closed-loop.}
 Let $\Sigma_\tau=(X,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,U,W,f,\cdot,\cdot)$.
-A \emph{feedback controller} of $\Sigma_\tau$ is a function $C\colon \sem{X}\to U$.
-The \emph{closed-loop} is obtained when we connect $C$ with $\Sigma_\tau$ in feedback, and is formalized using the transition system $C\parallel\Sigma_\tau = (\sem{X},U,f_\tau^C)$ such that $x'$ is in $f_\tau^C(x,u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(x)=u$.
+A \emph{feedback controller} of $\Sigma_\tau$ is a function $C\colon X\to U$.
+The \emph{closed-loop} is obtained when we connect $C$ with $\Sigma_\tau$ in feedback, and is formalized using the transition system $C\parallel\Sigma_\tau = (X,U,f_\tau^C)$ such that $x'$ is in $f_\tau^C(x,u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(x)=u$.
 The feedback controller $C$ when connected to the sampled-time control system $\Sigma_\tau$ can be interpreted as a zero-order-hold controller for the control system $\Sigma$.
 
 Suppose $x_0\in X$ be a given initial state of $\Sigma_\tau$.
