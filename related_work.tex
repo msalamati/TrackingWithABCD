@@ -1,0 +1,12 @@
+\subsection{Related Work}
+
+Here are the papers that we know of:
+\begin{enumerate}
+	\item FastTrack: Guaranteed tracking of nonlinear trajectories for nonlinear systems under disturbances \cite{herbert2017fastrack}.
+	\item Safe control for multi-vehicle system under presence of disturbances \cite{bansal2017safe}. In contrast to our method, they assume a fixed priority order of the vehicles: The higher priority vehicles make independent plans, which are treated as (time-varying) obstacles for the lower priority vehicles. One way our method is probably more powerful is if we consider controller synthesis for mechanically coupled systems with joint goal, or even formation control problem for mechanically decoupled systems. For these class of problems, I don't think their method will directly apply, whereas ours should work fine.
+	\item Using the tracking error in the planning phase to make sure that the controller will be safe \cite{fan2020fast}. Relies on an expert user to already provide the low-level tracking controller, whereas we synthesize the tracking controller. So they address the inverse problem in some sense.
+	\item Another paper of the same flavor as the previous one \cite{fan2018controller}. Here they restrict themselves to discrete time perturbed linear systems.
+	\item Sum-of-squares based tracking methods \cite{tedrake2010lqr, singh2018robust}. Do not consider external disturbances.
+	\item Other hierarchical methods using planning+tracking like approach for formal methods-based synthesis for single systems \cite{wongpiromsarn2012receding, DBLP:journals/tac/MeyerD19, DBLP:journals/corr/abs-1911-09773}.
+	\item Hierarchical control for interconnected discrete event systems \cite{wong1996hierarchical,schmidt2008nonblocking}.
+\end{enumerate}
