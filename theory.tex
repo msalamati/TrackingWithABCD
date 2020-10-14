@@ -198,7 +198,8 @@ Formally, \[\ball_\varepsilon(\widetilde{x})\coloneqq \set{(x',k')
 \end{comment}
 
 It is not difficult to see that we only need to compute transitions in the $\varepsilon$-neighborhood of the given nominal trajectory.
-\todo{Text explaining the algorithm.}
+\todo{Text explaining the algorithm.} \todo{Text explaining the algorithm.}
+Algorithm~\ref{alg:abcd-with-time-for-tracking} summarizes our solution for synthesizing robustified feedback controllers for every single agent. Given an agent's model as a control system ($\Sigma$), together with a reference open-loop trajectory satisfying Eq.~\eqref{eq:spec} and a tube size $\varepsilon\in \reals_{>0}^n$, we iteratively construct a tube $P$ as union of $\varepsilon-$balls around the reference trajectory's points. Next, we compute finite state abstraction for $\Sigma$ setting $Domain=P$ and for the chosen parameters $\eta_x$, $\eta_u$ and $\tau$. Finally, Given the computed finite state abstraction $\hat \Sigma$ and the LTL specification in Eq.~\eqref{eq:ltl_spec}, we synthesize controller using SCOTS. \MS{perhaps we can add a discussion here about our actual implementation.}
 
 We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:tracking_with_time} using finite abstraction.
 % It means we embedding extra state variable, which represents time. Here we use notation $\Psi_\epsilon(\widetilde{x})$ which is very similar to $\ball_\varepsilon(x)$.
