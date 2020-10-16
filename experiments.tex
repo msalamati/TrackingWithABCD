@@ -10,8 +10,19 @@ The formal controller synthesis has been performed
 on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of
 RAM. %\MS{TODO: adding a table with complete information regarding sizes and times for all of the examples}
 
+We consider two types of problems, and demonstrate how they can be solved using our approach.
+
+\subsection{Individual reach-avoid problem}
+
+We first consider situations when the robots have got their individual reachability objective, and they need to ensure a minimum safe distance from each other and the obstacles.
+We show how this case can be captured using the problem description outlined in Sec.~\ref{}.
+Suppose $\set{\Sigma^i}$ be a set of control systems, $\tau>$ be the given sampling time, $\goal^i\subseteq X^i$ be the individual goal states, $\avoid\subseteq $
+\todo{To finish...}
+
+In this category, we consider the following three examples.
+
 %\textcolor{red}{
-\subsection{Multi-drone path planning}\label{sec:Multirobot}
+\subsubsection{Multi-drone path planning}\label{sec:Multirobot}
 In this example, we consider a planning scenario for ten identical drones. A set of initial states ($Init$) and target states ($Goal$) for each drone is specified and depicted in Figure~\ref{fig:MA}. The drones must avoid hitting a physical obstacle that is depicted with green circle in Figure~\ref{fig:MA}. %A physical obstacle is added to the problem over the $2D$ plane, depicted in Figure~\ref{fig:MA} with a yellow circle. 
 The threshold for minimum distance from the static obstacle and other drones ($Obs$) is chosen to be $\delta=\begin{bmatrix}0.3&0.3\end{bmatrix}^T$. %and $\delta_{obs}=\begin{bmatrix}2&2\end{bmatrix}^T$.
 The control objective is to synthesize a controller for each drone so that in the presence of additive bounded disturbance, beginning from the set $Init^i$, a corresponding target state $Goal^i$ is reached within a finite horizon, while avoiding the obstacle $Obs$ at every time point. 
@@ -97,7 +108,7 @@ Given the above settings, SCOTS computes abstraction in $??$ minutes for all the
 %	\caption{}
 %\end{figure}
 %\textcolor{red}{
-\subsection{Crane and Forklift}
+\subsubsection{Crane and Forklift}
 The goal of this example is to study performance of our method for controlling a number of robots with different dynamics. Consider a production line wherein a crane (modeled as a cart-pole system) puts some items at certain points and a forklift is in charge of picking these items up. It is assumed that at its lowest height the crane's hook is positioned such that the forklift cannot pass. In particular, Figure~\ref{fig:cr_and_lft} shows a scenario wherein the crane (initially positioned toward left of the boom) needs to unload at the other end of the boom. At the same time, the forklift (initially positioned near the right end of the boom) needs to pick some item left near the left end of the boom. The goal is to control both the crane and the forklift so that the forklift reaches the object without colliding with the crane. 
 
 We model the crane and forklift by tuples $\Sigma^1=(X^1,U^1,W^1,f^c,Y^1,h^c)$ and $\Sigma^2=(X^2,U^2,W^2,f^l,Y^2,h^l)$, respectively. The crane is modeled as cart-pole system with the dynamical model taken from \cite{Barto1983}:
@@ -205,7 +216,7 @@ Next, we choose state and input partition sizes $\eta_{{X}^{(1)}}=\begin{bmatrix
 %} 
 
 
-\subsection{Lane Merging}
+\subsubsection{Lane Merging}
 Finally, we study a lane merging problem wherein multiple controlled vehicles are driving over two merging lanes (Fig.~\ref{fig:merge}). A dangerous situation may occur at the merging point of the two lanes if vehicles are not controlled properly. Different variants of this problem has been studied in the literature (see, e.g., \cite{xiao2019merging,xiao2020merging}). Without seeking to optimize fuel consumption or travel time, we set the goal to control the vehicles to pass the merging zone safely. In particular, consider a situation where initially three cars are driving on each of the two lanes (Fig~\ref{fig:merge}, top). The control objective for each vehicle is to pass the red dashed line within a finite horizon without hitting the road's sides or colliding with other vehicles. 
 
 Every vehicle is modeled as tuple $\Sigma=(X,U,W,f^m,Y,h^m)$. 
@@ -245,7 +256,9 @@ For collision and obstacle avoidance, we choose \MS{$\delta=\begin{bmatrix}??&??
 \end{figure}
 
 
+\subsection{Formation control problem}
 
+\todo{Add the example when it's ready.}
 
 %\section{Present Challenges}
 %

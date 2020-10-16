@@ -15,6 +15,12 @@ The product function can be defined for arbitrarily many functions by extending 
 
 Throughout, we measure distance between two points, within a space $\mathbb{R}^n$, using the \emph{element-wise distance metric} $d^n\colon \mathbb{R}^n\times \mathbb{R}^n\to \mathbb{R}^n$, $d^n\colon \left((u_1,\ldots, u_n),(v_1,\ldots,v_n)\right)\mapsto \left(|u_1-v_1|,\ldots,|u_n-v_n|\right)$. 
 We extend the definition of $d^n$ to measure distance between a point and a set: for any given $u\in \mathbb{R}^n$ and $V\in \mathbb{R}^n$, $d^n(u,V) \coloneqq \left( \inf_{v\in V}|u_1,v_1|,\ldots, \inf_{v\in V}|u_n-v_n| \right)$.
+Given a point $c\in \mathbb{R}^n$ and given the parameter $\epsilon\in \mathbb{R}_{>0}^{n}$, we use the notation $\ball_\epsilon( x)$ to denote the ball in $\mathbb{R}^n$, centered around $c$ and having radius $\epsilon$.
+Formally, \[\ball_\varepsilon(c)\coloneqq \set{x
+	\in \mathbb{R}^n \mid  d^n(x,c)\leq \varepsilon }.\] 
+
+Let $A$ be a set.
+We use the notation $A^\infty$ to denote the set of all finite and infinite sequences formed using the members of $A$.
 
 %Let $V$ be a finite set of real-valued variables.
 %We use the notation $\sem{V}$ (same symbol but in boldface blue) to denote the set of every possible valuations of the variables in $V$, i.e.\ an element in $\sem{V}$ assigns an unique real number to every variable in $V$.
@@ -26,11 +32,14 @@ We extend the definition of $d^n$ to measure distance between a point and a set:
 %Given any two points $u,v\in \sem{V}$ with $u=(u_1,\ldots,u_{|V|})$ and $v=(v_1,\ldots,v_{|V|})$, we introduce the \emph{element-wise distance function} $d_V\colon \sem{V}\times \sem{V}\to \mathbb{R}^{|V|}_{>0} $, $d_V\colon (x,y) \mapsto (|x_1-y_1|,\ldots, |x_{|V|}-y_{|V|}|)$.
 %We sometime exploit the notation and use the same $d_V$ to measure the distance between a set $W\subseteq \sem{V}$ and a point $v\in \sem{V}$, which is defined as follows:
 %$d_V(v,W)= (\inf_{w\in W} |v_1-w_1|, \ldots, \inf_{w\in W} |v_{|V|}-w_{|V|}|)$.
+
+\subsection{System Formalisms}
  
 \smallskip
 \noindent\textbf{Control System.}\
-A \emph{control system} $\Sigma = (X, U, W, f, Y, h)$
+A \emph{control system} $\Sigma = (X, x_{\init}, U, W, f, Y, h)$
 consists of a \emph{state space} $X\subseteq \mathbb{R}^n$,
+an \emph{initial state} $x_\init\in X$,
  an \emph{input space} $U\subseteq\mathbb{R}^m$, 
 a compact \emph{disturbance set} $W\subset \mathbb{R}^n$, 
 a \emph{nominal dynamics} $f:X\times U\rightarrow X$ such that $f(\cdot,u)$ is locally Lipschitz for all $u\in U$,
@@ -40,10 +49,10 @@ an \emph{output function} $h\colon X\mapsto Y$.
 %We call each element of the set $\sem{X}$ a \emph{state}, and the set $\sem{X} = \mathbb{R}^{|X|}$ the \emph{state space} of $\Sigma$.
 %Throughout, we will assume that there is a metric $d\colon \sem{X}\times \sem{X}\to \mathbb{R}$ on the set $\sem{X}$ such that $(\sem{X},d)$ is a metric space. 
 
-Given an initial state $x_0\in X$, a sampling time $\tau>0$, and a constant input $u\in U$, 
-a \emph{state trajectory} of $\Sigma$ 
-on $[0,\tau]$ is an absolutely continuous function $\xi:[0,\tau]\rightarrow X$  such that $\xi(0) = x_0$ and
-$\xi(\cdot)$ fulfills the following differential inclusion for almost every $t\in[0,\tau]$:
+Given a time horizon $T>0$, and a constant input $u\in U$, 
+a (state) \emph{trajectory} of $\Sigma$ 
+on $[0,T]$ is an absolutely continuous function $\xi:[0,T]\rightarrow X$  such that $\xi(0) = x_\init$ and
+$\xi(\cdot)$ fulfills the following differential inclusion for almost every $t\in[0,T]$:
 \begin{equation}\label{equ:def_f}
  \dot{\xi}\in f(\xi(t),u) + W. 
 \end{equation} 
@@ -51,39 +60,132 @@ We collect all such solutions in the set $\Sol_\Sigma(x_0,u,\tau)$.
 
 \smallskip
 \noindent\textbf{Transition System.}\
-A \emph{state-transition system} $S=(Z,U,\delta)$ consists of a state space $Z$, an input space $U$, and a transition function $\delta:Z\times U \rightarrow 2^Z$. 
+A \emph{state-transition system} $S=(Z,z_\init,U,\delta)$ consists of a \emph{state space} $Z$, an \emph{initial state} $z_\init\in Z$, an \emph{input space} $U$, and a \emph{transition function} $\delta:Z\times U \rightarrow 2^Z$. 
 A system $S$ is \emph{finite} if $Z$ and $U$ are finite. 
-A \emph{trajectory} of $S$ is a maximal sequence of states $\rho\in Z^\infty$ compatible with $\delta$:
-for all $1\leq k < |\rho|$ there exists $u\in U$ such that $\rho(k)\in \delta(\rho(k-1),u)$ and 
-if $|\rho| < \infty$ then $\delta(\rho(|\rho|),u)= \emptyset$ for all $u\in U$.
+A \emph{trajectory} of $S$ is a maximal sequence of states $\rho = (z_0,z_1,\ldots) \in Z^\infty$ starting at $z_0=z_\init$ and compatible with $\delta$:
+for all $1\leq k < |\rho|$ there exists $u\in U$ such that $z_k\in \delta(z_{k-1},u)$ and 
+if $|\rho| < \infty$ then $\delta(z_{|\rho|},u)= \emptyset$ for all $u\in U$.
 %For $D\subseteq X$, a $D$-trajectory is a trajectory $\xi$ with $\xi(0)\in D$.
+
+\subsection{System Composition}
+
+\smallskip
+\noindent\textbf{Product Control System.}\
+Let $\set{\Sigma^i}_{i\in [1;N]}$, $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i,Y,h^i)$, be a set of $N$ control systems with the same output space.
+The \emph{product control system of } $\set{\Sigma^i}_{i\in [1;N]}$ is the control system $\Sigma^\times = (X^\times, x_\init^\times, U^\times, \set{0^n}, f^\times, Y^\times, h^\times)$ wherein $X^\times\coloneqq X^1\times \ldots \times X^N$ and we assume that $\sum_{i\in [1;N]} n_i=n$, $x_\init^\times\coloneqq (x_\init^1,\ldots,x_\init^N)$, $U^\times\coloneqq U^1\times\dots\times U^N\subset \reals^m$, $f^\times\coloneqq f^{1}\oplus \ldots\oplus f^{N}$, $Y^\times \coloneqq Y^N$, and $h^\times\coloneqq h^1\oplus \ldots \oplus h^N$. 
+We use the state projection operator $\proj^{i}\colon X^\times\to X^i$, $\proj^{i}\colon (x^1,\ldots,x^N)\mapsto x^i$.
+From here on, we will omit the domain of $i$ and will use ``$\set{\Sigma^i}$'' instead of ``$\set{\Sigma^i}_{i\in [1;N]}$'' for simpler notation.
+
+\smallskip
+\noindent\textbf{Product Transition System.}\
+Let $\set{S^i}_{i\in [1;N]}$, $S^i=(Z^i,z_\init^i,U^i,\delta^i)$, be a set of $N$ transition systems.
+The \emph{product transition system of } $\set{S^i}_{i\in [1;N]}$ is the transition system $S^\times \coloneqq (Z^\times, z^\times, U^\times, \delta^\times)$ such that $Z^\times \coloneqq Z^1\times \ldots \times Z^N$, $z^\times_\init\coloneqq (z_\init^1,\ldots,z_\init^N)$, $U^\times \coloneqq U^1\times \ldots\times U^N$, and $\delta^\times \coloneqq \delta^1\oplus\ldots \oplus \delta^N$.
+From here on, we will omit the domain of $i$ and will use ``$\set{S^i}$'' instead of ``$\set{S^i}_{i\in [1;N]}$'' for simpler notation.
+
+\subsection{Controllers}
 
 \smallskip
 \noindent\textbf{Sampled-time Abstraction of Control System.}\
-Let $\Sigma = (X, U, W, f, \cdot, \cdot)$ be a control system and $\tau>0$ be the sampling time.
+Let $\Sigma = (X, x_\init, U, W, f, \cdot, \cdot)$ be a control system and $\tau>0$ be the sampling time.
 (The ``$\cdot$''-s in place of the output space and the output function represent their insignificance in the respective sampled-time abstraction; similar convention will be used elsewhere in the paper.)
-A \emph{sampled-time abstraction} of $\Sigma$ is the state-transition system $(X,U,f_\tau)$, such that $x'$ is in $f_\tau(x,u)$ if and only if there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
+A \emph{sampled-time abstraction} of $\Sigma$ is the state-transition system $(X,x_\init,U,f_\tau)$, such that $x'$ is in $f_\tau(x,u)$ if and only if there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
+
+The \emph{product sampled-time abstraction} of a set of control systems $\set{\Sigma^i} $ is the product transition system of the set of sampled-time abstractions $\set{\Sigma^i_\tau} $.
 
 \smallskip
-\noindent\textbf{Open-loop Controller and Controlled Trajectory.}\
-Let $\Sigma_\tau=(X,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,U,W,f,\cdot,\cdot)$.
-An \emph{open-loop controller} of $\Sigma_\tau$ is a function $C\colon [0;K]\to U$ for some given time horizon $K>0$.
-The \emph{open-loop} is obtained when we connect $C$ with $\Sigma_\tau$ serially, and is formalized using the transition system $C \triangleright \Sigma_\tau = (X\times [0;K],U,f_\tau^C)$ such that $(x',k+1)$ is in $f_\tau^C((x,k),u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(k)=u$.
-
-Suppose $x_0\in X$ be a given initial state of $\Sigma_\tau$.
-The \emph{open-loop behavior} $\Beh^\ol(x_0)$ of $C \triangleright\Sigma_\tau$ is the set of all infinite state sequences $(x_0,x_1,\ldots)$ such that for all $k\geq 0$, there exists an input $u$ with $(x_{k+1},k+1)\in f_\tau^C((x_k,k),u)$.
+\noindent\textbf{Open-loop Controller.}\
+Let $\Sigma_\tau=(X,x_\init,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,x_\init,U,W,f,\cdot,\cdot)$.
+An \emph{open-loop controller of} $\Sigma_\tau$ is a function $C\colon [0;K]\to U$ for some given time horizon $K>0$.
+The \emph{open-loop} is obtained when we connect $C$ with $\Sigma_\tau$ serially, and is formalized using the transition system $C \triangleright \Sigma_\tau = (X\times [0;K],x_\init,U,f_\tau^C)$ such that $(x',k+1)$ is in $f_\tau^C((x,k),u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(k)=u$.
+The \emph{open-loop behavior} $\Beh^\ol(x_\init)$ of $\Sigma_\tau$ under $C$ is the set of all trajectories of the transition system $C \triangleright \Sigma_\tau$.
 
 \smallskip
-\noindent\textbf{Feedback Controller and Closed-loop.}
-Let $\Sigma_\tau=(X,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,U,W,f,\cdot,\cdot)$.
-A \emph{feedback controller} of $\Sigma_\tau$ is a function $C\colon X\to U$.
-The \emph{closed-loop} is obtained when we connect $C$ with $\Sigma_\tau$ in feedback, and is formalized using the transition system $C\parallel\Sigma_\tau = (X,U,f_\tau^C)$ such that $x'$ is in $f_\tau^C(x,u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(x)=u$.
+\noindent\textbf{Feedback Controller.}\
+Let $\Sigma_\tau=(X,x_\init,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,x_\init,U,W,f,\cdot,\cdot)$.
+A \emph{feedback controller of} $\Sigma_\tau$ is a function $C\colon X\to U$.
+The \emph{closed-loop} is obtained when we connect $C$ with $\Sigma_\tau$ in feedback, and is formalized using the transition system $C\parallel\Sigma_\tau = (X,x_\init,U,f_\tau^C)$ such that $x'$ is in $f_\tau^C(x,u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(x)=u$.
 The feedback controller $C$ when connected to the sampled-time control system $\Sigma_\tau$ can be interpreted as a zero-order-hold controller for the control system $\Sigma$.
+The \emph{closed-loop behavior} $\Beh^\cl(x_\init)$ of $\Sigma_\tau$ under $C$ is the set of all trajectories of the transition system $C\parallel\Sigma_\tau$.
 
-Suppose $x_0\in X$ be a given initial state of $\Sigma_\tau$.
-The \emph{closed-loop behavior} $\Beh^\cl(x_0)$ of $C\parallel\Sigma_\tau$ is the set of all infinite state sequences $(x_0,x_1,\ldots)$ such that for all $k\geq 0$, there exists an input $u$ with $x_{k+1}\in f_\tau^C(x_k,u)$.
+\smallskip
+\noindent\textbf{Local and Global Controller.}\
+Let $\set{\Sigma^i} $ be a set of control systems, $\tau >0$ be a given sampling time, $\set{\Sigma^i} $ be the respective sampled-time abstractions, $\Sigma^\times$ be the product control system of $\set{\Sigma^i} $, and $\Sigma^\times_\tau$ be the product sampled time abstraction of $\set{\Sigma^i} $.
+A \emph{global} open-loop (feedback) controller of $\set{\Sigma^i} $ is an open-loop (a feedback) controller of $\Sigma_\tau^\times$.
+On the other hand, a set of \emph{local} open-loop (feedback) controllers of $\set{\Sigma^i_\tau} $ is a set $\set{C^i} $ where, for every $i\in [1;N]$, $C^i$ is an open-loop (a feedback) controller of $\Sigma^i_\tau$.
 
+\smallskip
+\noindent\textbf{Decentralized Control.}\
+Given $\set{\Sigma_\tau^i} $ and a set of open-loop (feedback) controllers $\set{C^i} $, we define the \emph{decentralized open-loop} (\emph{decentralized closed-loop})---denoted by $\set{C^i} \triangleright \set{\Sigma_\tau^i} $ ($\set{C^i} \parallel \set{\Sigma_\tau^i} $)---as the product transition system of $\set{C^i\triangleright \Sigma^i_\tau} $ ($\set{C^i\parallel \Sigma^i_\tau} $).
 
+\subsection{Linear Temporal Logic for Control Specification}
+
+We will use Linear Temporal Logic (LTL) for specifying control tasks; we refer to usual references \cite{baier2008principles} for detailed syntax and semantics of LTL.
+Given a pair of predicates $p$ and $q$, as usual, we will use the notation 
+$\lnot p$ for \emph{negation} of $p$, 
+$p\vee q$ for $p$ \emph{or} $q$,
+$p\wedge q$ for $p$ \emph{and} $q$,
+$\bigcirc p$ for \emph{next} $p$,
+$p\; \mathcal{U}\; q$ for $p$ \emph{until} $q$,
+$\square p$ for \emph{always} $p$,
+$\lozenge p$ for \emph{eventually} $p$.
+
+Given a control system $\Sigma$, an open-loop (a feedback) controller $C$ of the sampled-time abstraction $\Sigma_\tau$ of $\Sigma$, and an LTL specification $\Phi$ defined over a set of predicates over the state space of $\Sigma$, we will say that $C\triangleright \Sigma_\tau$ ($C\parallel \Sigma_\tau$) realizes $\Phi$ if every trajectory in the set $\Beh^\ol(x_\init)$ ($\Beh^\cl(x_\init)$) satisfies $\Phi$.
+
+Likewise, given $\set{\Sigma_\tau^i} $, a set of open-loop (feedback) controllers $\set{C^i} $, and an LTL specification $\Phi$ defined using a set of predicates over the state space of $\Sigma^\times$, we will say that decentralized open-loop (decentralized closed-loop) realizes $\Phi$ if every trajectory of $\set{C^i}\triangleright \set{\Sigma_\tau^i}$ ($\set{C^i}\parallel \set{\Sigma_\tau^i}$) satisfies $\Phi$.
+
+\subsection{Abstraction-Based Controller Synthesis}
+
+\smallskip
+\noindent\textbf{An Additional Safety Restriction.}\
+When the state space of the control system is open or unbounded and the trajectories in \eqref{equ:def_f} are allowed to grow in an unbounded fashion, a finite-state abstraction, in a sense that is going to be formalized soon, will be technically infeasible.
+So we impose an additional restriction that the system should always remain inside a compact subset of states $\bound$, which is determined according to some known bounds on the state variables.
+This is a standard practice in the literature \cite{reissig2016feedback}, and we will implicitly assume that if there is a tracking controller for Prob.~\ref{prob:tracking_with_time}, then there is a tracking controller for Prob.~\ref{prob:tracking_with_time} with the additional safety requirement $\square \bound$.
+%
+% a given reach-avoid specification \eqref{eq:spec}, then $C$ also realizes the following modified specification:
+%\begin{equation}\label{eq:modified spec}
+%	x_0 \wedge ([\bigwedge_{1\leq i\leq N}D(x^i,\obs)>\delta_{obs}\; \bigwedge_{1\leq i,j\leq N\;i\neq j}  d(x^i,x^j)>\delta_{\col}]\; \mathcal{U}\;\reach) \wedge \square \bound.
+%\end{equation}
+
+\smallskip
+\noindent\textbf{Finite-state Abstraction of Control System.}\
+Let $\Sigma = (X, U, W, f, \cdot, \cdot)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $X$ which imposes a safety specification, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$.
+%Note that, since $X$ is unbounded, hence some partition element of $\Xh$ will inevitably be unbounded set.
+A \emph{finite-state abstraction} of $\Sigma$ is a finite state-transition system $(\Xh,\Uh,\fh)$, where $\xh'$ is in $\fh(\xh,u)$ if there is a pair of states $x\in \xh$ and $x'\in \xh'$ such that there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
+
+In this work, we will use uniformly sized rectangular partition elements to construct the set $\Xh$ from the set $\bound$.
+Without going into the detail of the construction, we assume that the size of the partition elements is provided as a vector $\eta_x\in \mathbb{R}^n_{>0}$ which is an input to the abstraction procedure.
+Note that, the larger $\eta_x$ is (where comparison is made dimension-wise), the smaller is the state space $\Xh$ resulting in an efficient computation.
+On the other hand, the smaller $\eta_x$ is, the better is the precision of the abstraction $\widehat{\Sigma}$ increasing the chance of a successful controller synthesis.
+
+Similar to the state-space partition size $\eta_x$, we also assume that the set $\Uh$ is chosen based on an input-space discretization parameter $\eta_u\in \mathbb{R}^m_{>0}$ that governs the distance between the points in $\Uh$.
+
+\smallskip
+\noindent\textbf{Feedback Refinement Relation.}\
+Let $\Sigma$ be a control system, $\Sigma_\tau$ be its sampled-time abstraction, and $\widehat{\Sigma}$ be its finite-state abstraction.
+A \emph{feedback refinement relation} (FRR) from $\Sigma_\tau$ to $\widehat{\Sigma}$ 
+is a relation $Q\subseteq \bound\times \Xh$ s.t.\ 
+for all $x\in \bound$ there is some $\xh\in \Xh$ such that $Q(x,\xh)$ and
+for all $(x,\xh)\in Q$, we have
+\begin{inparaenum}[(i)]
+ \item $\Uh_{\widehat{\Sigma}}(\xh)\subseteq U_{\Sigma_\tau}(x)$, and 
+ \item $u\in U_{\widehat{\Sigma}}(\xh) \Rightarrow Q(f_\tau(x,u))\subseteq \fh(\xh,u)$,
+\end{inparaenum}
+where $U_{\Sigma_\tau}(x):=\set{u\in U \mid f_\tau(x,u)\neq \emptyset}$ and $\Uh_{\widehat{\Sigma}}(\xh):=\set{u\in \Uh \mid \fh(\xh,u)\neq \emptyset}$.
+We write $\Sigma_\tau \frr{Q} \widehat{\Sigma}$ if $Q$ is an FRR from $\Sigma_\tau$ to $\widehat{\Sigma}$.
+
+\smallskip
+\noindent\textbf{Abstraction-based Controller Design.}\
+The abstraction-based controller design (ABCD) \cite{reissig2016feedback} is a $3$-step method to find a robust controller for the sampled-time abstraction $\Sigma_\tau$ of the system $\Sigma$:
+First, we compute a finite state abstraction $\widehat{\Sigma}$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
+Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow \Uh$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
+Finally, we obtain the desired controller $C$ as $C:=\widehat{C}\circ Q$.
+It is known that this three step process produces a controller $C$ that realizes the given specification on $\Sigma_\tau$ \cite{reissig2016feedback}.
+
+\smallskip
+\noindent\textbf{Computation of the Finite-State Abstraction.}\
+We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,U,W,f,\cdot,\cdot)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta_x$ and $\eta_u$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
+The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
+ 
 %\smallskip
 %\noindent\textbf{Controller and Closed Loop.}
 %Let $\Sigma = (X, U, W, f)$ be a control system and $\tau>0$ be the sampling time.
