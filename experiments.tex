@@ -2,22 +2,22 @@
 
 \section{Experimental Evaluation}\label{sec:experiments}
 %\MS{List the specifications of the cluster machine/laptop with which we have run our experiments.}
-We evaluate a prototype implementation of ALg.~\ref{alg:abcd-for-tracking}
+We evaluate a prototype implementation of ALg.~\ref{alg:abcd-with-time-for-tracking}
 on two examples. 
 The design of nominal controller has been performed on a laptop with core i7-4510u CPU at 3.10GHz, with 8GB of
 RAM.
 The formal controller synthesis has been performed
 on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of
-RAM. \MS{TODO: adding a table with complete information regarding sizes and times for all of the examples}
+RAM. %\MS{TODO: adding a table with complete information regarding sizes and times for all of the examples}
 
 %\textcolor{red}{
-\subsection{Multi-car path planning}\label{sec:MultiAgent}
+\subsection{Multi-robot path planning}\label{sec:Multirobot}
+In this example, we consider a planning scenario for ten identical robots. A set of initial states ($Init$) and target states ($Goal$) for each robot is specified and depicted in Figure~\ref{fig:MA}. The robots must avoid hitting a physical obstacle that is depicted with green circle in Figure~\ref{fig:MA}. %A physical obstacle is added to the problem over the $2D$ plane, depicted in Figure~\ref{fig:MA} with a yellow circle. 
+The threshold for minimum distance from the static obstacle and other robots ($Obs$) is chosen to be $\delta=\begin{bmatrix}1.5&1.5\end{bmatrix}^T$. %and $\delta_{obs}=\begin{bmatrix}2&2\end{bmatrix}^T$.
+The control objective is to synthesize a controller for each robot so that in the presence of additive bounded disturbance, beginning from the set $Init^i$, a corresponding target state $Goal^i$ is reached within a finite horizon, while avoiding the obstacle $Obs$ at every time point. 
 
-In this example, we consider a planning scenario for ten identical cars. A set of initial states ($Init$) and target states ($Goal$) for each robot is specified and depicted in Figure~\ref{fig:MA}. The cars must avoid hitting a physical obstacle that is depicted with green circle in Figure~\ref{fig:MA}. %A physical obstacle is added to the problem over the $2D$ plane, depicted in Figure~\ref{fig:MA} with a yellow circle. 
-The thresholds for defining the obstacle ($Obs$) are chosen so that $\delta_{col}=\begin{bmatrix}1.5&1.5\end{bmatrix}^T$ and $\delta_{obs}=\begin{bmatrix}2&2\end{bmatrix}^T$. The control objective is to synthesize a controller for each robot so that in presence of additive bounded disturbance, beginning from the set $Init^i$, a corresponding target state $Goal^i$ is reached within a finite horizon, while avoiding the obstacle $Obs$ at every time point. 
-
-Every car is modeled as tuple $\Sigma=(X,U,W,f^u,Y,h^u)$. %The set of state variables $X$ consists of $x_1$, $x_2$ and $x_3$ which denote position in $2D$ plane and movement angle, respectively. The set of input variables includes $u_1$ and $u_2$ which represent linear and angular speeds of each robot. 
-Dynamics for each car takes the form
+Every robot is modeled as tuple $\Sigma=(X,U,W,f^u,Y,h^u)$. %The set of state variables $X$ consists of $x_1$, $x_2$ and $x_3$ which denote position in $2D$ plane and movement angle, respectively. The set of input variables includes $u_1$ and $u_2$ which represent linear and angular speeds of each robot. 
+Dynamics for each robot takes the form
 \begin{equation*}\label{eq:unicycle_ss}
 	f^{u}(x(t),u(t))=
 	\begin{bmatrix}
@@ -31,19 +31,20 @@ Dynamics for each car takes the form
 		u_2
 	\end{bmatrix},
 \end{equation*}
-where $x_1$, $x_2$ denote the position in $2D$ plane, $x_3$ denotes the rotational angle, $u_1$ and $u_2$ represent linear and angular speeds of each car, respectively. Further, the output mapping is defined as
+where $x_1$, $x_2$ denote the position in $2D$ plane, $x_3$ denotes the rotational angle, $u_1$ and $u_2$ represent linear and angular speeds of each robot, respectively. Further, the output mapping is defined as
 \[
 h^u(x(t))=\begin{bmatrix}
-	x_1\\x_2.
-\end{bmatrix}
+	x_1\\x_2
+\end{bmatrix}.
 \]
 %In the above equation, $u_1(t)$ and $u_2(t)$ denote linear and angular speeds at time $t$, respectively. Further, $x_1(t)$, $x_2(t)$ specify position in $x-y$ plane and $x_3$ denotes the angle at time $t$. 
 
 
-According to our proposed scheme, we first use ALTRO to design a centralized nominal controller for the product state and input space that satisfies specification in Equation~\eqref{eq:spec} in the absence of disturbance ($W=\{0\}$). We choose the horizon length $K=200$ and sampling time $\tau=0.05$. ALTRO computes a valid open-loop trajectory $x_{nom}$ in $138$ seconds for the product space with $30$ state and $20$ input variables. Figure \MS{??.a} illustrates the variation of minimum distance ($D_{min}=min_{i,j}d^{p}\left(h^i(\proj^i(x_{nom})),h^j(\proj^j(x_{nom}))\right)$) for the open-loop trajectories generated by ALTRO. By allowing the disturbance to take non-zero values, there is no guarantee that the open-loop trajectory is followed. Figure \MS{??.b} illustrates variations of distance between two cars when constant additive disturbance $w=\{\begin{bmatrix}0.03,0.03,0.03\end{bmatrix}^T\}$ is being applied throughout the whole horizon. It can be noticed that they collide with each other before reaching their corresponding targets. Next, we show how to synthesize local feedback controllers that guarantee satisfaction of specifications in the presence of disturbance. %hereeeThe open-loop trajectories generated by ALTRO ($\set{(x_{0_\nom}^i,\ldots,x_{K_\nom}^i)}_{i\in [1;N]}$) are depicted in solid in Figure~\ref{fig:MA}. Note that the guarantee that open-loop controller gives is only valid in the absence of disturbance. In Figure~\ref{fig:MA}, dotted trajectories correspond to the first and the second robot's paths in $2D$ plane when constant additive disturbance $w=\{\begin{bmatrix}0.03,0.03,0.03\end{bmatrix}\}$ is being applied throughout the whole horizon. It can be noticed that they collide with each other before reaching their corresponding target sets. Next, we show how to synthesize local controllers that guarantee satisfaction of specifications in the presence of disturbance. \MS{1) Use dashed/dotted for trajectories with added disturbance. 2) use $x_1$ and $x_2$ instead of $x$ and $y$ for different axes 3) don't draw the outer circle.}
+According to our proposed scheme, we first use ALTRO to design a centralized nominal controller for the product state and input space that satisfies the specification in Equation~\eqref{eq:spec} in the absence of disturbance ($W=\{0\}$). We choose the horizon length $K=200$ and sampling time $\tau=0.05$. ALTRO computes a valid open-loop trajectory $x_{nom}$ in $138$ seconds for the product space with $30$ state and $20$ input variables. Figure \MS{??} (\textbf{top}) illustrates the variation of minimum distance ($D_{min}=min_{i,j}d^{p}\left(h^i(\proj^i(x_{nom})),h^j(\proj^j(x_{nom}))\right)$) for the open-loop trajectories generated by ALTRO. By allowing the disturbance to take non-zero values, there is no guarantee that the open-loop trajectory is followed. Figure \MS{??} (\textbf{bottom}) illustrates variations of distance between two robots when constant additive disturbance $w=\{\begin{bmatrix}0.03,0.03,0.03\end{bmatrix}^T\}$ is being applied throughout the whole horizon. It can be noticed that they collide with each other before reaching their corresponding targets. Next, we show how to synthesize local feedback controllers that guarantee satisfaction of specifications in the presence of disturbance. %hereeeThe open-loop trajectories generated by ALTRO ($\set{(x_{0_\nom}^i,\ldots,x_{K_\nom}^i)}_{i\in [1;N]}$) are depicted in solid in Figure~\ref{fig:MA}. Note that the guarantee that open-loop controller gives is only valid in the absence of disturbance. In Figure~\ref{fig:MA}, dotted trajectories correspond to the first and the second robot's paths in $2D$ plane when constant additive disturbance $w=\{\begin{bmatrix}0.03,0.03,0.03\end{bmatrix}\}$ is being applied throughout the whole horizon. It can be noticed that they collide with each other before reaching their corresponding target sets. Next, we show how to synthesize local controllers that guarantee satisfaction of specifications in the presence of disturbance. \MS{1) Use dashed/dotted for trajectories with added disturbance. 2) use $x_1$ and $x_2$ instead of $x$ and $y$ for different axes 3) don't draw the outer circle.}
 
 %We augment each open-loop trajectory with time 
-We construct a tube around the (nominal) trajectory produced by ALTRO with the width vector $\varepsilon=\begin{bmatrix}0.16&0.16&0.16\end{bmatrix}^T$. %Note that $\delta_{col} > \varepsilon$.
+We construct a tube around the (nominal) trajectory produced by ALTRO with the width vector $\varepsilon=\begin{bmatrix}0.16&0.16&0.16\end{bmatrix}^T$.
+%Note that $\delta_{col} > \varepsilon$.
  We use SCOTS in order to synthesize (local) feedback controllers that guarantee reachability and obstacle/collision avoidance in the presence of bounded disturbance such that $|W|\leq \begin{bmatrix}0.03&0.03&0.03&0\end{bmatrix}^T$. We consider state and input spaces to be $X=[-1:11]\times[-1:11]\times[-\pi,\pi]$ and
 $U=[-3,3]\times[-3,3]$, respectively. Choosing state and input partition sizes $\eta_{X}=[0.04,0.04,0.04]^T$ and
 $\eta_{U}=[0.6,0.6]^T$ results in $\hat X$ and $\hat U$ with $3.5\times 10^5$ and $121$ points. \MS{What are the numbers after restricting the abstraction into tube's inner space?} %The bound over additive disturbance is set to be $\begin{bmatrix}0.03&0.03&0.03&0\end{bmatrix}^T$. 
@@ -97,24 +98,22 @@ Given the above settings, SCOTS was able to synthesize controllers in about $12$
 %\end{figure}
 %\textcolor{red}{
 \subsection{Crane and Forklift}
-The goal of this example is to study performance of our method for controlling a number of robots with different dynamics. Consider a production line wherein a crane (modeled as a cart-pole system) puts some items at certain points and a forklift is in charge of picking these items up. It is assumed that at its lowest height the crane's hook is positioned such that the forklift cannot pass and reach to the object's place. In particular, Figure~\ref{fig:cr_and_lft} shows a scenario wherein the crane has left an object near the left end of the boom and the forklift is initially positioned near the right end of the boom. The goal is to control both the crane and the forklift so that the forklift takes the object without colliding with the crane. 
+The goal of this example is to study performance of our method for controlling a number of robots with different dynamics. Consider a production line wherein a crane (modeled as a cart-pole system) puts some items at certain points and a forklift is in charge of picking these items up. It is assumed that at its lowest height the crane's hook is positioned such that the forklift cannot pass. In particular, Figure~\ref{fig:cr_and_lft} shows a scenario wherein the crane has left an object near the left end of the boom and the forklift is initially positioned near the right end of the boom. The goal is to control both the crane and the forklift so that the forklift reaches the object without colliding with the crane. 
 
 We model the crane and forklift by tuples $\Sigma^1=(X^1,U^1,W^1,f^c,Y^1,h^c)$ and $\Sigma^2=(X^2,U^2,W^2,f^l,Y^2,h^l)$, respectively. The crane is modeled as cart-pole system with the dynamical model taken from \cite{Barto1983}:
 \begin{align*}
-	\ddot{\theta} &= \frac{gsin(\theta) - cos(\theta)\frac{F + M_pl \dot{\theta}^2 sin(\theta)}{M_t}}{l(4.0/3.0 - M_p cos^2(\theta) / M_t)}=f^c_1(\theta,\dot{\theta},F)\\
-	\ddot{x}&= \frac{F + M_pl \dot{\theta}^2 sin(\theta)}{M_t} - \frac{M_pl \ddot{\theta} cos(\theta)}{M_t}=f^c_2(\theta,\dot{\theta},F),
+	\ddot{\theta} &= \frac{M_tg\sin(\theta) - \cos(\theta)(F + M_pl \dot{\theta}^2 \sin(\theta))}{l(4/3 M_t- M_p \cos^2(\theta))}=f^c_1(\theta,\dot{\theta},F)\\
+	\ddot{z}&= \frac{F + M_pl \dot{\theta}^2 \sin(\theta)-M_pl \ddot{\theta} \cos(\theta)}{M_t}=f^c_2(\theta,\dot{\theta},F),
 \end{align*}
 where
 \begin{itemize}
 	\item[] $g=-9.8$ $m/s^2$ is the acceleration of gravity,
 	\item[] $M_c=1$ kg is the cart mass,
-	\item[] $M=0.1$ kg is the pole mass,
+	\item[] $M_p=0.1$ kg is the pole mass,
 	\item[] $M_t=m_c+m_p$ denotes the total mass,
-	\item[] $l=0.5$ m is the half-pole length,
-	\item[] $\mu_c=0.0005$ is the coefficient of friction of cart on track
-	\item[] $\mu_p=0.000002$ is the coefficient of friction of pole on cart.
+	\item[] $l=0.5$ m is the half-pole length.
 \end{itemize}
-Further, cart's position, pole's angle and input force to the cart are denoted by $x_1^{(1)}=x$, $x_3^{(1)}=\theta$ and $u^{(1)}=F$, respectively.
+Further, cart's position, pole's angle and input force to the cart are denoted by $x_1^{(1)}=z$, $x_3^{(1)}=\theta$ and $u^{(1)}=F$, respectively. State space model of the crane is of the following form:
  %for which the set of state variables $X^1$ consists of $x_1^{(1)}$, $x_2^{(1)}$, $x_3^{(1)}$ and $x_4^{(1)}$ denoting (linear) position and speed of the cart and (angular) position and speed of the pole, respectively. The set of input variables includes $u_1^{(1)}$ which represents linear acceleration of the cart. Finally, crane's dynamics takes the form for an inverted pendulum (see, e.g., \cite{barto1983neuronlike}) and can be written as
 \[f^{c}(x^{(1)}(t),u^{(1)}(t))=\begin{bmatrix}
 	\dot{x}_1^{(1)}\\
@@ -122,8 +121,8 @@ Further, cart's position, pole's angle and input force to the cart are denoted b
 	\dot{x}_3^{(1)}\\
 	\dot{x}_4^{(1)}
 \end{bmatrix}=\begin{bmatrix}
-\dot{x}\\
-\ddot{x}\\
+\dot{z}\\
+\ddot{z}\\
 \dot{\theta}\\
 \ddot{\theta}
 \end{bmatrix}=
@@ -140,32 +139,32 @@ Further, cart's position, pole's angle and input force to the cart are denoted b
 %\MS{what are $f^c_1$ and $f^c_2$?}
 The output mapping for the crane is defined as
 \[
-h^c=\begin{bmatrix}
-	x_1^{(1)}+l \sin(x_3^{(1)})\\
-	h_1-l \cos(x_3^{(1)})
+h^c(x^{(1)}(t))=\begin{bmatrix}
+	x_1^{(1)}+l \cos(x_3^{(1)})\\
+	y_1-l \sin(x_3^{(1)})
 \end{bmatrix},
 \]
-where, $h_1>0$ is a constant that denotes the cart's height from ground.
+where, $y_1>0$ is a constant that denotes the cart's height from the ground.
 The forklift's dynamics takes the form
 \[f^{l}(x^{(2)}(t),u^{(2)}(t))=\begin{bmatrix}
 \dot{x}_1^{(2)}\\ \dot{x}^{(2)}_2 \end{bmatrix}=\begin{bmatrix} x^{(2)}_2\\ u^{(2)} \end{bmatrix},
 \]
-where $x_1^{(2)}$ and $x_2^{(2)}$ denote the forklift's position and speed and $u^{(2)}$ represents forklift's control input (acceleration). The output mapping for the crane is defined as
+where $x_1^{(2)}$ and $x_2^{(2)}$ denote the forklift's position and speed and $u^{(2)}$ represents the forklift's control input (acceleration). The output mapping for the crane is defined as
 \[
 h^l=\begin{bmatrix}
 	x_1^{(2)}\\
-	h_2
+	y_2
 \end{bmatrix},
 \]
-where, $h_2>0$ is a constant that denotes the height of the forklift's head with respect to ground.
+where, $y_2>0$ is a constant that denotes the height of the forklift's head with respect to the ground.
 
-As promised, we use ALTRO in the first step to generate a valid trajectory for the case that $W=\{0\}$. There is no static obstacle defined for this example and for minimum distance between the crane and the forklift we choose $\delta_{col}=\begin{bmatrix}0.4&0.4\end{bmatrix}$. The sampling time and the horizon length are fixed to $\tau=0.1$ and $N=40$, respectively. Given these settings, ALTRO was capable of generating a valid open-loop trajectory in $10.7$ seconds. Figure \ref{fig:cr_and_lft} demonstrates snapshots of the produced trajectory. Surprisingly enough, applying (constant) additive disturbance $W=\begin{bmatrix}0&0.02&0&0\end{bmatrix}^T$ causes collision between the crane and forklift in the middle of the mission.
+As promised, we use ALTRO in the first step to generate a valid trajectory for the case that $W=\{0\}$. There is no static obstacle defined for this example and for minimum distance between the crane and the forklift we choose $\delta=\begin{bmatrix}0.4&0.4\end{bmatrix}$. The sampling time and the horizon length are fixed to $\tau=0.1$ and $K=40$, respectively. Given these settings, ALTRO was capable of generating a valid nominal trajectory in $10.7$ seconds. Figure \ref{fig:cr_and_lft} demonstrates snapshots of the produced trajectory. Surprisingly enough, applying (constant) additive disturbance $W=\begin{bmatrix}0&0.02&0&0\end{bmatrix}^T$ causes collision between the crane and forklift in the middle of the mission.
 
 In the next step, we use SCOTS in order to compute a feedback controller tolerating additive disturbance $|W|\leq\begin{bmatrix}0&0.02&0&0\end{bmatrix}^T$. %We note that the selection of tube sizes need to satisfy the following inequality:
 %\[ \delta_{col}> \varepsilon_{1}^{(1)} + l\times\varepsilon_{3}^{(1)} + \varepsilon_{1}^{(2)},\]
 %where $\varepsilon_{1}^{(1)}$, $\varepsilon_{3}^{(1)}$ denote tube sizes over $x_1^{(1)}$ and $x_3^{(1)}$, $l$ denotes the length of the rope between the cart and the hook and $\varepsilon_{1}^{(2)}$ denotes the tube size over $x_1^{(2)}$. 
-We choose state and input spaces for the crane to be \MS{$X^{(1)}=??$} and \MS{$U^{(1)}=??$}, respectively. For the forklift, we choose , \MS{$X^{(2)}=??$}, \MS{$U^{(2)}=??$}. %Next, we augment both dynamics with time and 
-Next, we choose state and input partition sizes \MS{$\eta_{{X}^{(1)}}=??$, $\eta_{U^{(1)}}=??$,  $\eta_{\widetilde{X}^{(2)}}=??$ and $\eta_{U^{(2)}}=??$}. These selections yields discretized models with \MS{$|\hat X^{(1)}|=??$, $|\hat U^{(1)}|=??$, $|\hat X^{(2)}|=??$ and $|\hat U^{(2)}|=??$} points for the the crane and forklift, respectively. Next, we limit both of the state spaces into tubes constructed around the open-loop trajectories with sizes specified as \MS{$\varepsilon^{(1)}=??$ and $\varepsilon^{(2)}=??$}. This reduces size of state spaces into \MS{$|\hat X^{(1)}|=??$ and $|\hat X^{(2)|}=??$}. Given the above settings, SCOTS was able to synthesize controller for the crane and forklift in about $35$ and $1$ seconds, respectively.
+We choose state and input spaces for the crane to be \MS{$X^{(1)}=??$} and \MS{$U^{(1)}=??$}, respectively. For the forklift, we set \MS{$X^{(2)}=??$} and \MS{$U^{(2)}=??$}. %Next, we augment both dynamics with time and 
+Next, we choose state and input partition sizes \MS{$\eta_{{X}^{(1)}}=??$, $\eta_{U^{(1)}}=??$,  $\eta_{\widetilde{X}^{(2)}}=??$ and $\eta_{U^{(2)}}=??$}. These selections yield discretized models with \MS{$|\hat X^{(1)}|=??$, $|\hat U^{(1)}|=??$, $|\hat X^{(2)}|=??$ and $|\hat U^{(2)}|=??$} points for the the crane and forklift, respectively. Next, we limit both of the state spaces into tubes constructed around the open-loop trajectories with sizes specified as \MS{$\varepsilon^{(1)}=??$ and $\varepsilon^{(2)}=??$}. This reduces size of state spaces into \MS{$|\hat X^{(1)}|=??$ and $|\hat X^{(2)}|=??$}. Given the above settings, SCOTS was able to synthesize controller for the crane and forklift in about $35$ and $1$ seconds, respectively.
 			
 \begin{figure}[t]
 	\centering
@@ -207,7 +206,7 @@ Next, we choose state and input partition sizes \MS{$\eta_{{X}^{(1)}}=??$, $\eta
 
 
 \subsection{Lane Merging}
-In this section, we consider lane merging problem wherein multiple controlled vehicles are driving over two merging lanes (Fig.~\ref{fig:merge}). A dangerous situation may occur at the merging point of the two lanes if vehicles are not controlled properly. Different variants of this problem has been studied in the literature (see, e.g., \cite{?,?}). Consider the situation wherein initially three cars are driving on each of the two lanes (Fig~\ref{fig:merge}, top). The control objective for each vehicle is to pass the red dashed line within a finite horizon without hitting the road's sides or colliding with other vehicles. 
+Finally, we study a lane merging problem wherein multiple controlled vehicles are driving over two merging lanes (Fig.~\ref{fig:merge}). A dangerous situation may occur at the merging point of the two lanes if vehicles are not controlled properly. Different variants of this problem has been studied in the literature (see, e.g., \cite{xiao2019merging,xiao2020merging}). Without seeking to optimize fuel consumption or travel time, we set the goal to control the vehicles to pass the merging zone safely. In particular, consider a situation where initially three cars are driving on each of the two lanes (Fig~\ref{fig:merge}, top). The control objective for each vehicle is to pass the red dashed line within a finite horizon without hitting the road's sides or colliding with other vehicles. 
 
 Every vehicle is modeled as tuple $\Sigma=(X,U,W,f^m,Y,h^m)$. 
 Dynamics for each vehicle takes the form
@@ -222,11 +221,11 @@ Dynamics for each vehicle takes the form
 		u_2
 	\end{bmatrix},
 \end{equation*}
-where $x_1$, $x_2$ denote the vehicle's position in $2D$ plane, $u_1$ and $u_2$ represent vehicle's speed input coordinates, respectively. The output mapping is defined as
+where $x_1$, $x_2$ denote the vehicle's position in $2D$ plane, $u_1$ and $u_2$ represent the vehicle's speed coordinates, respectively. The output mapping is defined as
 \[
 h^m(x(t))=x(t).
 \]
-For collision and obstacle avoidance, we choose \MS{$\delta_{col}=\begin{bmatrix}??&??\end{bmatrix}$ and $\delta_{obs}=\begin{bmatrix}??&??\end{bmatrix}$}, respectively. The sampling time and the horizon length are fixed to \MS{$\tau=??$ and $N=??$}, respectively. Given these settings, ALTRO was capable of generating a valid open-loop trajectory in \MS{$??$} seconds. Figure \ref{fig:merge} demonstrates snapshots of the produced trajectory. Next, we use SCOTS in order to compute a feedback controller tolerating additive disturbance \MS{$|W|\leq\begin{bmatrix}??&??\end{bmatrix}^T$.} We choose state and input spaces for each vehicle's model to be \MS{$X=??$} and \MS{$U=??$}, respectively. Next, we choose state and input partition sizes \MS{$\eta_{X}=??$, $\eta_{U}=??$}. These selections yields discretized models with \MS{$|\hat X|=??$, $|\hat U|=??$} points. Next, we limit the state spaces into tubes constructed around the open-loop trajectories with sizes specified as \MS{$\varepsilon^{(1)}=??$}. This reduces size of state spaces into \MS{$|\hat X^{(1)}|=??$}. Given the above settings, SCOTS was able to synthesize controller for the crane and forklift in about \MS{$??$} seconds (\MS{$??$} seconds in average).
+For collision and obstacle avoidance, we choose \MS{$\delta=\begin{bmatrix}??&??\end{bmatrix}$}. The sampling time and the horizon length are fixed to \MS{$\tau=??$ and $K=??$}, respectively. Given these settings, ALTRO generates a valid nominal trajectory in \MS{$??$} seconds. Figure \ref{fig:merge} demonstrates snapshots of the produced trajectory. Next, we use SCOTS in order to compute a feedback controller tolerating additive disturbance \MS{$|W|\leq\begin{bmatrix}??&??\end{bmatrix}^T$.} We choose state and input spaces for each vehicle's model to be \MS{$X=??$} and \MS{$U=??$}, respectively. Next, we choose state and input partition sizes \MS{$\eta_{X}=\begin{bmatrix}??&??\end{bmatrix}^T$, $\eta_{U}=\begin{bmatrix}??&??\end{bmatrix}^T$}. These selections yield discretized models with \MS{$|\hat X|=??$, $|\hat U|=??$} points. Next, we limit the state spaces into tubes constructed around the open-loop trajectories with sizes specified as \MS{$\varepsilon=\begin{bmatrix}??&??\end{bmatrix}^T$}. This reduces size of state space into \MS{$|\hat P|=??$}. Given the above settings, SCOTS was able to synthesize controller for all of the vehicles in about \MS{$??$} seconds (\MS{$??$} seconds in average).
 
 
 
@@ -241,7 +240,7 @@ For collision and obstacle avoidance, we choose \MS{$\delta_{col}=\begin{bmatrix
 	\caption{Illustration of the reference trajectories produced by ALTRO for the lane merging example}
 	\label{fig:merge}
 	\centering
-	\includegraphics[width=0.45\textwidth]{figures/merge2.png}
+	\includegraphics[width=0.45\textwidth,height=0.5\textheight]{figures/merge2.png}
 
 \end{figure}
 
@@ -259,36 +258,36 @@ For collision and obstacle avoidance, we choose \MS{$\delta_{col}=\begin{bmatrix
 
 
 
-\begin{table*}
-	\centering
-	\caption{Results
-	%\textmd{}
-	}
-	\label{tab:ipd}
-	\renewcommand{\arraystretch}{1.2}
-	\setlength{\tabcolsep}{0.7em} % for the horizontal padding
-	\resizebox{1\columnwidth}{!}{
-		\begin{tabular}{l|rrrrr}
-			\toprule
-			case-studies&\multicolumn{1}{l}{$|X|+|U|$}&
-			\multicolumn{1}{c}{$T_{AL}$} &
-			%\multicolumn{1}{c}{max} &
-			%\multicolumn{1}{c}{$err(u_{i})$} &
-			\multicolumn{1}{c}{$T_{SC}$}&
-			\multicolumn{1}{c}{$|\hat X|$}&
-			\multicolumn{1}{c}{$|\hat X^r|$}\\
-			
-			\midrule
-			
-			\multirow{1}{*}{\rotatebox{0}{multi-car}} & $50$ & $138$  & $720$ & $3.5\times10^5$& $??$ \\
-			
-			\midrule
-			
-			\multirow{1}{*}{\rotatebox{0}{crane and forklift}} & $6$ & ??  & ?? & ?? & ?? \\
-			
-			\midrule
-			
-			\multirow{1}{*}{\rotatebox{0}{lane merging}} & $24$ & ??  & ?? & ?? & ?? \\
-			\bottomrule
-	\end{tabular}}
-\end{table*}
+%\begin{table*}
+%	\centering
+%	\caption{Results
+%	%\textmd{}
+%	}
+%	\label{tab:ipd}
+%	\renewcommand{\arraystretch}{1.2}
+%	\setlength{\tabcolsep}{0.7em} % for the horizontal padding
+%	\resizebox{1\columnwidth}{!}{
+%		\begin{tabular}{l|rrrrr}
+%			\toprule
+%			case-studies&\multicolumn{1}{l}{$|X|+|U|$}&
+%			\multicolumn{1}{c}{$T_{AL}$} &
+%			%\multicolumn{1}{c}{max} &
+%			%\multicolumn{1}{c}{$err(u_{i})$} &
+%			\multicolumn{1}{c}{$T_{SC}$}&
+%			\multicolumn{1}{c}{$|\hat X|$}&
+%			\multicolumn{1}{c}{$|\hat X^r|$}\\
+%			
+%			\midrule
+%			
+%			\multirow{1}{*}{\rotatebox{0}{multi-car}} & $50$ & $138$  & $720$ & $3.5\times10^5$& $??$ \\
+%			
+%			\midrule
+%			
+%			\multirow{1}{*}{\rotatebox{0}{crane and forklift}} & $6$ & ??  & ?? & ?? & ?? \\
+%			
+%			\midrule
+%			
+%			\multirow{1}{*}{\rotatebox{0}{lane merging}} & $24$ & ??  & ?? & ?? & ?? \\
+%			\bottomrule
+%	\end{tabular}}
+%\end{table*}
