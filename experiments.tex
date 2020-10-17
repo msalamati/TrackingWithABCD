@@ -285,7 +285,7 @@ A \emph{formation constraint} is a set $\Set{\lambda^{i,j}\in \mathbb{R}^p}_{i,j
 (We use euclidean distance to define formation, as opposed to element-wise distance in the rest of the paper, to allow rotation of the formation while moving.)
 
 Now suppose $\goal^i\subseteq X^i$ is the individual goal states, $\avoid\subseteq Y$ is a common obstacle in the output space, $\delta \in \mathbb{R}^p_{>0}$ is a safety margin, and $\mu\in \mathbb{R}^p_{>0}$ is a tolerance margin for the formation constraint.
-The formation control problem then asks to generate controllers $\set{C_i}$ such that every robot $\Sigma^i$ eventually reaches $\goal^i$ while avoiding $\avoid$ and inter-robot collision by the margin $\delta$, as well as while making sure that the \emph{euclidean} distance between robot $\Sigma^i$ and $\Sigma^j$ is in the range $\lambda^{i,j} \pm \mu$.
+The formation control problem then asks to generate controllers $\set{C_i}$ such that every robot $\Sigma^i$ eventually reaches $\goal^i$ while avoiding $\avoid$ by the margin $\delta$, as well as while making sure that the \emph{euclidean} distance between robot $\Sigma^i$ and $\Sigma^j$ is in the range $\lambda^{i,j} \pm \mu$.
 Essentially the tolerance margin $\mu$ is to account for the possible slight deviations due to disturbances experienced by the robots; in other words, $\mu$ will dictate the choice of $\varepsilon$ in Step~\ref{step:abcd} of Alg.~\ref{alg:main}.
 Notice that since the robots have their own goals, and at the same time they need to ``stay close'' to their neighboring robots in the formation for the entire period, hence they might first need to accompany the other robots to their goals, before being accompanied by them to reach its own goal.
 
@@ -300,8 +300,6 @@ We can express the formation control problem in the product state space as follo
 				&\Set{ x\in X | 
 					\begin{array}{c}
 						\exists i\in [1;N]\;.\; d^{p}(h^i(\proj^i(x)),\obs) \leq \delta\\
-						\wedge\\
-						 \exists (i,j)\in [1;N]\times [1;N]\;.\; d^{p}\left(h^i(\proj^i(x)),h^j(\proj^j(x))\right)\leq\delta\\
 						 \wedge\\
 						  {\color{blue}\exists (i,j)\in [1;N]\times [1;N]\;.\; d^{p}_e\left(h^i(\proj^i(x)),h^j(\proj^j(x))\right)\notin\lambda^{i,j}\pm \mu}
 					\end{array}},
