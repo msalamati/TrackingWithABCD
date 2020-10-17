@@ -195,11 +195,7 @@ In the next step, we use SCOTS in order to compute a feedback controller tolerat
 We choose state and input spaces for the crane to be $X^{(1)}=[0,5.06]\times[-0.59,2.18]\times[1.66,4.14]\times[-4.7,4.45]$ and $U^{(1)}=[-7,7]$, respectively. For the forklift, we set \MS{$X^{(2)}=??$} and $U^{(2)}=[-7,7]$. %Next, we augment both dynamics with time and 
 Next, we choose state and input partition sizes $\eta_{{X}^{(1)}}=\begin{bmatrix}0.015&0.035&0.016&0.064\end{bmatrix}$, $\eta_{U^{(1)}}=0.2$,  $\eta_{\widetilde{X}^{(2)}}=\begin{bmatrix}0.015&0.03\end{bmatrix}$ and $\eta_{U^{(2)}}=0.1$. These selections yield discretized models with $|\hat X^{(1)}|=2.5\times 10^9$, $|\hat U^{(1)}|=71$, $|\hat X^{(2)}|=6.7\times 10^4$ and $|\hat U^{(2)}|=141$ points for the the crane and forklift, respectively. Next, we limit both of the state spaces into tubes constructed around the open-loop trajectories with sizes specified as $\varepsilon^{(1)}=\begin{bmatrix}0.135&0.385&0.176 &0.768\end{bmatrix}^T$ and \MS{$\varepsilon^{(2)}=\begin{bmatrix}9&2\end{bmatrix}$}. This reduces size of state spaces into $|\hat P^{(1)}|=1.2\times 10^7$ and $|\hat P^{(2)}|=3.1\times 10^4$. Given the above settings, SCOTS was able to synthesize controller for the crane and forklift in about $35$ and $1$ seconds, respectively.
 			
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.45\textwidth]{figures/crane_and_lifter.png}
-	\caption{Illustration of the reference trajectories produced by ALTRO for the crane and forklift example}
-\end{figure}\label{fig:cr_and_lft}
+
 
 
 %In this example, we show the method can handle multiple heterogeneous dynamical systems. This example is Modelling a special situation in a factory(shown in fig \ref{fig:cr_and_lft}) . Assume there is a crane and and a forklift. Each one of them should reach their destination without having any accident(satisfying specs). The Crane position will change from 0 to 5 and the forklift from 9 to 4.  Here we model the forklift using $\begin{bmatrix} \dot{x_1}\\ \dot{x_2} \end{bmatrix}=\begin{bmatrix} x_2\\ u \end{bmatrix}$ ($x_1$ and $x_2$ are representing position and velocity) and for the crane we use inverted pendulum model with exactly same configuration in \cite{barto1983neuronlike}: \\ 

@@ -20,16 +20,17 @@ Usually ABCD uses a state-space discretization for computing the abstraction, wh
 In this paper, we extend ABCD---more in a practical sense---to synthesize decentralized controllers for a group of robots, operating in a shared workspace.
 In general, the group can consist of a heterogeneous mix of robotic systems.
 Also, we do not require the robots to be able to communicate during runtime.
-We assume that each robot has been assigned a reach-avoid task, where the robot needs to reach a set of target states while avoiding a set of static obstacles.
-Additionally, each robot is required to avoid collision with other (possibly moving) robots by maintaining a minimum safe distance.
+We assume that the robots have been assigned a joint reach-avoid task, where the robots need to collectively reach a set of target states while collectively avoiding a set of static obstacles.
+%Additionally, each robot is required to avoid collision with other (possibly moving) robots by maintaining a minimum safe distance.
 We use ABCD to algorithmically come up with verified controllers for each individual robot such that all these requirements are fulfilled.
 
-The collision avoidance requirement, in the absence of inter-robot communication, makes the controller synthesis problem especially challenging.
+The collision avoidance requirement, in the absence of inter-robot communication, makes the decentralized controller synthesis problem especially challenging.
 One option will be to treat the other robots as dynamic obstacles.
 There are two problems.
 Firstly, it is not known how to deal with dynamic obstacles in the ABCD framework.
 Secondly, even if we knew how to deal with that, this dynamic obstacle assumption could lead to pessimistic, and often empty, solution.
 
+\begin{comment}
 On the other hand, the issue with dynamic obstacles goes away if we use a centralized approach, by treating the group of robots as one single system.
 In the centralized approach, we need to build a product of the models of each individual robot; the product captures the simultaneous evolution of the global state of the system.
 The states of collision, which are dynamic in nature, now conveniently become a set of static obstacles in the global state space.
@@ -39,11 +40,59 @@ We can then, at least in theory, use ABCD to synthesize a joint controller for t
 Unfortunately, ABCD does not scale to the usual large size of the global state space in the centralized approach.
 To circumvent this issue, in this paper, we propose a two-layered hierarchical controller synthesis approach involving ABCD.
 In the top layer, we use some off-the-shelf fast controller synthesis method to make a joint global plan using the aforementioned centralized approach.
-In this paper, we use ALTRO \cite{altro} in the top layer, which is an optimal-control-based controller synthesis tool that scales quite well to large dimensional system.
+In this paper, we use ALTRO \cite{howell2019altro} in the top layer, which is an optimal-control-based controller synthesis tool that scales quite well to large dimensional system.
 Unfortunately, the fast and scalable tools, including ALTRO, usually do not provide formal guarantees against external disturbances or modeling uncertainties.
 So in the bottom layer, we use ABCD to synthesize formally verified \emph{tracking} controller for each robot for following the projection of the joint plan on the robot's state space.
+\end{comment}
 
-Our primary contribution is the extension of ABCD to tracking objectives.
-This enables the use of ABCD in the hierarchical design principle, which found success in many other design contexts \cite{murray,schmidt hierarchical DES, sayan mitra}.
+To circumvent these issues, in this paper, we propose a semi-centralized hierarchical controller synthesis approach involving ABCD.
+In the top layer, we use some off-the-shelf fast controller synthesis method to make a joint global plan using the aforementioned centralized approach.
+In this paper, we use ALTRO \cite{howell2019altro} in the top layer, which is an optimal-control-based controller synthesis tool that scales quite well to large dimensional system.
+Unfortunately, the fast and scalable tools, including ALTRO, usually do not provide formal guarantees against external disturbances or modeling uncertainties.
+So in the bottom layer, we use ABCD to synthesize formally verified \emph{tracking} controller for each robot for following the projection of the joint plan on the robot's state space.
+We demonstrate the usefulness of our approach using several multi-robot controller synthesis examples.
 
 \subsection{Motivating Example}
+
+Consider a multi-robot reach-avoid problem in a factory setting:
+We have an overhead crane hanging from a trolley which runs along an overhead horizontal rail; the crane is modeled as a pendulum and the trolley as an one-dimensional cart.
+We also have a factory vehicle that drives underneath the crane, in the same horizontal axis as the overhead rail.
+Suppose, when the crane is in the vertically downward position, it obstructs the vehicle's movement.
+The scenario is illustrated in Fig.~\ref{fig:cr_and_lft}; the four different subfigures from top to bottom will be referred to as Frame~1-4 respectively.
+
+Initially the crane is resting in its vertically downward position at the leftmost point along the rail, and the vehicle is positioned at the rightmost point (Frame~1).
+Suppose in the end, they need to reach the configuration shown in Frame~4, i.e., they need to cross each other while maintaining a minimum safe distance.
+To make this possible, the trolley needs to accelerate enough to swing the crane up (Frame~2-3) and create sufficient room for the vehicle to pass.
+When the crane swings up high enough, the vehicle must make a timely and swift passage before the crane comes down due to gravity.
+We want to design a pair of controllers, one for the trolley and one for the vehicle, which will execute this joint maneuver.
+
+Suppose, both the vehicle and the crane are subjected to disturbances, representing (a) external factors like wind for the crane and slippery floor for the vehicle, and (b) modeling imperfections.
+We want the controllers to be robust against the worst-case disturbances to the system.
+In reality, worst-case disturbances might well be rare events, but safeguarding against them will certify absolute correctness.
+
+Since we do not assume any run-time communication between the controllers, a completely decentralized synthesis would be difficult.
+One option would be to assume the worst-case behavior of the other system, and attempt to achieve the goal.
+This might be too restrictive:
+For instance, with this assumption, the vehicle will not be able to achieve it's goal, because the crane can choose to stay down all the time.
+
+To alleviate this issue, we employ a semi-centralized hierarchical synthesis approach.
+At the \textbf{top level} of the hierarchical approach, we ignore the disturbances, and treat the crane and the vehicle as one joint system, called the \emph{product system}.
+Next, we use the tool ALTRO to obtain a \emph{global} open-loop controller for the product system.
+(An open-loop controller is one that bases its control decision on the current time instant.)
+ALTRO is a scalable and fast controller synthesis tool that is suitable for the possibly high dimension of the product system.
+
+Since the obtained controller is open-loop, hence we can easily decompose the central controller into individual open-loop controllers---called \emph{local} open-loop controllers---for the crane and the vehicle.
+However, there will be no guarantee that the local open-loop controllers will fulfill the specification when the disturbances come into effect.
+Actually, Fig.~\ref{fig:cr_and_lft} shows various moments in the simulation of the local open-loop controllers in the presence of the disturbances, and Frame~3 shows that the crane and vehicle violate the constraint of the minimum safe distance.
+
+To deal with this robustness issue, at the \textbf{bottom level} of our hierarchical approach, we employ ABCD to ``robustify'' the local open-loop controllers against disturbances.
+More concretely, we consider the open-loop controlled trajectory of \emph{each system in isolation}, and use ABCD to synthesize a \emph{tracking controller}.
+The goal of the tracking controller is to track the open-loop trajectories within some small neighborhood, even in the presence of worst-case disturbances.
+ABCD gives us the sought \emph{local feedback controller} for each individual system.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/crane_and_lifter.png}
+	\caption{Illustration of the reference trajectories produced by ALTRO for the crane and the factory vehicle example}
+	\label{fig:cr_and_lft}
+\end{figure}

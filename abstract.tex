@@ -1,2 +1,9 @@
 %! TEX ROOT = ./main.tex
 
+We consider the decentralized controller synthesis problem for a group of robots, modeled as perturbed nonlinear dynamical systems, and assigned with a set of joint reach-avoid tasks.
+We propose a semi-centralized hierarchical solution approach:
+At the top level, we obtain a rough joint plan for the group of robots; we employ a fast tool called ALTRO for this purpose.
+At the bottom level, we use abstraction-based controller design method to synthesize a set of decentralized controllers, which will track the high level plan against worst-case disturbances.
+We demonstrate the effectiveness of our approach on several multi-robot examples using two particular types of control specifications.
+In the first type, we assume that the robots need to fulfill their own reach-avoid tasks while avoiding collision with the other robots.
+In the second type, we require the robots to fulfill reach-avoid tasks while maintaining certain formation.
