@@ -1,6 +1,7 @@
 %! TEX ROOT = ./main.tex
 
 \section{The Problem Statement}
+\label{sec:problem}
 %\textcolor{blue}{
 In this paper, we consider the feedback controller synthesis problem for a heterogeneous swarm of $N$ different robots, given as $N$ different control systems with the same output space.
 The robots are modeled as nonlinear control systems subjected to disturbances.
@@ -13,7 +14,7 @@ Concretely, we want to develop an algorithm with the following input and output:
 \end{description}
 
 Our choice of the specification $\Phi$ on the product state space $X^\times$ subsumes many interesting class of control tasks.
-For example, we can express situations when the robots have their own private reach-avoid specifications, and they need to avoid collision among each other; we consider such specification in some of our examples in Sec.~\ref{}.
+For example, we can express situations when the robots have their own local reach-avoid specifications, and they need to avoid collision among each other; we consider such specification in some of our examples in Sec.~\ref{}.
 In addition, we can now also specify more general type of tasks which cannot be easily decomposed into individual subtasks for the robots.
 One example is the formation control problem, which we consider in the example in Sec.~\ref{}, where a set of robots need to reach some location while maintaining a given geometric formation:
-Since this task is defined on the relative positions of the robots, hence we cannot decompose it into separate reach-avoid subtasks.
+Since the formation is defined using the relative positions of the robots, hence we cannot decompose this task into separate reach-avoid subtasks.

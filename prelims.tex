@@ -129,6 +129,15 @@ $p\; \mathcal{U}\; q$ for $p$ \emph{until} $q$,
 $\square p$ for \emph{always} $p$,
 $\lozenge p$ for \emph{eventually} $p$.
 
+We also define a robust version of LTL formulae.
+Suppose $\Psi$ be an LTL formula defined using a set of predicates on $\mathbb{R}^n$ for some $n>0$.
+Let $\epsilon\in \mathbb{R}^n_{>0}$ be a given \emph{robustness margin}.
+Let $\rho=(x_0,x_1,\ldots)$ be an infinite sequence of elements from $\mathbb{R}^n$.
+Define the $\epsilon$-neighborhood of $\rho$ as the set of infinite sequences $\rho_\epsilon\coloneqq \set{(x_0',x_1',\ldots) \mid \forall i\in \mathbb{N}\;.\; x_i'\in \Omega_\epsilon(x_i)}$.
+Then we define $\Psi_\epsilon$ as an LTL formula such that for every sequence $\rho=(x_0,x_1,\ldots)$, if $\rho$ satisfies $\Psi_\epsilon$, then every sequence $(x_0',x_1',\ldots)$ in $\rho_\epsilon$ satisfies $\Psi$.
+In practice, we obtain $\Psi_\epsilon$ from $\Psi$ by strengthening the predicates which were used to define $\Psi$: 
+For example, if $\Psi = \square S$ for a set $S\subseteq \mathbb{R}^n$, then $\Psi_\epsilon = \square S'$ with $S' = S \ominus \Omega_\epsilon(0)$ being the strengthening of $S$, where ``$\ominus$'' denotes the Minkowski difference of two sets.
+
 Given a control system $\Sigma$, an open-loop (a feedback) controller $C$ of the sampled-time abstraction $\Sigma_\tau$ of $\Sigma$, and an LTL specification $\Phi$ defined over a set of predicates over the state space of $\Sigma$, we will say that $C\triangleright \Sigma_\tau$ ($C\parallel \Sigma_\tau$) realizes $\Phi$ if every trajectory in the set $\Beh^\ol(x_\init)$ ($\Beh^\cl(x_\init)$) satisfies $\Phi$.
 
 Likewise, given $\set{\Sigma_\tau^i} $, a set of open-loop (feedback) controllers $\set{C^i} $, and an LTL specification $\Phi$ defined using a set of predicates over the state space of $\Sigma^\times$, we will say that decentralized open-loop (decentralized closed-loop) realizes $\Phi$ if every trajectory of $\set{C^i}\triangleright \set{\Sigma_\tau^i}$ ($\set{C^i}\parallel \set{\Sigma_\tau^i}$) satisfies $\Phi$.
