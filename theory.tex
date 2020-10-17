@@ -57,19 +57,23 @@ For this work, we did not implement this step in an algorithmic manner, and reli
 		It is worthwhile to point out that the nominal controller obtained in Step~\ref{step:altro} of Alg.~\ref{alg:main} is not directly used by Step~\ref{step:abcd}; rather only the nominal trajectories are used.
 		Then one could argue that, instead of using ALTRO to generate nominal trajectories, one could simply employ a fast \emph{planner} \cite{rrt etc.} to generate geometric plans.
 		However, since the fast geometric planners do not usually take into consideration the dynamics and control constraints, so, in our experience, the generated plans (i.e.\ the nominal trajectories) are often doomed to be untrackable for general class of systems (i.e.\ non-flat systems), especially if the system has restricted control capabilities or is under-actuated.
-		
+		We demonstrate this phenomenon on a single system $\Sigma$, a simple $2$-dimensional pendulum with the following nominal system dynamics (i.e., without considering disturbances):
 		\begin{align*}
 			\dot{x}_1 &= x_2\\
-   			\dot{x}_2 &= -sin(x_1) + u/5
+   			\dot{x}_2 &= -sin(x_1) + u/5,
 		\end{align*}
-	
-		
+		where $x_1$ represents the angle (in radian) of the pendulum rod measured counter-clockwise from the vertical upright position, and $x_2$ represents the rate of change of $x_1$ or the angular velocity.
+		Suppose the initial state of the pendulum is $(\pi,0)$, i.e., when the pendulum is in the vertical downward position and is stationary.
+		Suppose we want to find a controller for the goal $\goal = \set{(0,0)}$, i.e., when the pendulum is in the vertical upward position and is stationary.
+		(The set of unsafe states $\avoid$ is empty.)
+		When we use ALTRO to compute an open-loop controller $C$, unsurprisingly, the controlled trajectory of $C\triangleright \Sigma$ looks like a spiral, as shown in Fig.~\ref{fig:traj 2d pendulum}.
+		The synthesis of tracking controller using ABCD was indeed successful when we fed this nominal trajectory to our ABCD solver.
+		However, if we would use a geometric planner for this example, the nominal trajectory would be a straight line path from $(\pi,0)$ to $(0,0)$, which would pose an infeasible tracking problem for ABCD, due to the restrictions in the dynamics of the pendulum.
 		\begin{figure}
 			\includegraphics[scale=0.2]{figures/2d_pendulum_spiral}
+			\caption{The nominal open-loop trajectory of the $2$-dimensional pendulum.}
+			\label{fig:traj 2d pendulum}
 		\end{figure}
-		
-		\KM{Can we give the example of the two dimensional pendulum, that we once had to show this phenomenon?}
-
 \end{remark}
 
 Now we present some optimization for Step~\ref{step:abcd} of Alg.~\ref{alg:main} that significantly improved the computation time.
