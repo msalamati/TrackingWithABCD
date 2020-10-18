@@ -17,20 +17,42 @@ It can handle arbitrary continuous nonlinear system models, external disturbance
 The weakness of ABCD is its poor scalability: 
 Usually ABCD uses a state-space discretization for computing the abstraction, which causes an exponential blow-up in the time and space complexity.
 
-In this paper, we extend ABCD---more in a practical sense---to synthesize decentralized controllers for a group of robots, operating in a shared workspace.
-In general, the group can consist of a heterogeneous mix of robotic systems.
-Also, we do not require the robots to be able to communicate during runtime.
-We assume that the robots have been assigned a joint reach-avoid task, where the robots need to collectively reach a set of target states while collectively avoiding a set of static obstacles.
-%Additionally, each robot is required to avoid collision with other (possibly moving) robots by maintaining a minimum safe distance.
-We use ABCD to algorithmically come up with verified controllers for each individual robot such that all these requirements are fulfilled.
+In this paper, we extend ABCD---more in a practical sense---to synthesize controllers for a group of robots, operating in a shared workspace.
+Suppose, we have a group of robots which have been assigned a joint \emph{reach-avoid} task, where the robots need to collectively reach a set of target states while collectively avoiding a set of static obstacles.
+The joint task might need the robots to coordinate their actions among each other.
+For example, if two robots need to jointly carry a heavy object from one place to another without letting the object fall, they need to move in perfect harmony.
 
+Perhaps the most straightforward solution approach will be to use a centralized approach, by treating the group of robots as one single system.
+In the centralized approach, we need to build a product of the models of the robots; the product captures the simultaneous evolution of the global state of the system.
+Then, in theory, we can apply ABCD on the product to synthesize a global controller for the robots.
+Unfortunately, the centralized approach will not be practical, because ABCD would not scale to the potentially large size of the product state space.
+
+On the other hand, a purely decentralized synthesis, where we compute controller for each robot in isolation, is also challenging.
+Usually, decentralized synthesis requires each robot to treat the other robots as adversaries, to account for the worst-case scenarios.
+This is a very strong assumption, and often we will not get any controller.
+For instance, recall the example of two robots jointly carrying an object.
+There each of the robots will need to assume that the other robot will do everything to run away and make the object fall, which is an unrealistically strong assumption.
+
+To circumvent these issues, in this paper, we propose a \emph{semi-centralized} and \emph{hierarchical} synthesis approach, which will give us decentralized controllers for the joint task.
+In the top level, we use the centralized method with a fast synthesis tool to make a joint global plan.
+In this paper, we use ALTRO \cite{howell2019altro}, which is an optimal control-based controller synthesis tool that scales quite well to large dimensional systems.
+ALTRO does not provide formal guarantees against external disturbances or modeling uncertainties.
+So in the bottom level, first we decompose the global plan into local plans for each robot, and then use ABCD to locally synthesize formally verified controllers to track the local plans.
+(The decomposition is straightforward, because ALTRO gives us a central open-loop controller.)
+Our approach is modular:
+We could replace ALTRO with any other fast and scalable method, and we could replace ABCD with any other suitable method that provides guarantees, and we would still get the formally verified decentralized controllers for the robots.
+
+We demonstrate the usefulness of our approach using several multi-robot controller synthesis examples.
+
+
+
+\begin{comment}
 The collision avoidance requirement, in the absence of inter-robot communication, makes the decentralized controller synthesis problem especially challenging.
 One option will be to treat the other robots as dynamic obstacles.
 There are two problems.
 Firstly, it is not known how to deal with dynamic obstacles in the ABCD framework.
 Secondly, even if we knew how to deal with that, this dynamic obstacle assumption could lead to pessimistic, and often empty, solution.
 
-\begin{comment}
 On the other hand, the issue with dynamic obstacles goes away if we use a centralized approach, by treating the group of robots as one single system.
 In the centralized approach, we need to build a product of the models of each individual robot; the product captures the simultaneous evolution of the global state of the system.
 The states of collision, which are dynamic in nature, now conveniently become a set of static obstacles in the global state space.
@@ -45,12 +67,7 @@ Unfortunately, the fast and scalable tools, including ALTRO, usually do not prov
 So in the bottom layer, we use ABCD to synthesize formally verified \emph{tracking} controller for each robot for following the projection of the joint plan on the robot's state space.
 \end{comment}
 
-To circumvent these issues, in this paper, we propose a semi-centralized hierarchical controller synthesis approach involving ABCD.
-In the top layer, we use some off-the-shelf fast controller synthesis method to make a joint global plan using the aforementioned centralized approach.
-In this paper, we use ALTRO \cite{howell2019altro} in the top layer, which is an optimal-control-based controller synthesis tool that scales quite well to large dimensional system.
-Unfortunately, the fast and scalable tools, including ALTRO, usually do not provide formal guarantees against external disturbances or modeling uncertainties.
-So in the bottom layer, we use ABCD to synthesize formally verified \emph{tracking} controller for each robot for following the projection of the joint plan on the robot's state space.
-We demonstrate the usefulness of our approach using several multi-robot controller synthesis examples.
+
 
 \subsection{Motivating Example}
 
