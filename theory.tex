@@ -78,12 +78,12 @@ For this work, we did not implement this step in an algorithmic manner, and reli
 
 Now we present some optimization for Step~\ref{step:abcd} of Alg.~\ref{alg:main} that significantly improved the computation time.
 
-\subsection{Optmization: Local ABCD around the nominal trajectory}
+\subsection{Optmization: Local ABCD around the nominal trajectory}\label{sec:local_abcd}
 Usually, in ABCD the abstraction process requires computation of abstract transitions all over the state space, which is computationally expensive.
 Luckily, for Step~\ref{step:abcd} of Alg.~\ref{alg:main}, we only need to compute transitions in the $\varepsilon$-neighborhood of the given nominal trajectory.
 We summarize our optimized approach for Step~\ref{step:abcd} in Algorithm~\ref{alg:abcd-with-time-for-tracking}.
 For simpler notation, we omit the robot index $i$.
-Given a robot's model as a control system $\Sigma$, together with a reference open-loop trajectory satisfying Eq.~\eqref{eq:spec} and a tube size $\varepsilon\in \reals_{>0}^n$, we iteratively construct a tube $P$ as union of $\varepsilon$-balls around the reference trajectory's points. 
+Given a robot's model as a control system $\Sigma$, together with a reference open-loop trajectory satisfying $\Phi_\varepsilon$ and a tube size $\varepsilon\in \reals_{>0}^n$, we iteratively construct a tube $P$ as union of $\varepsilon$-balls around the reference trajectory's points. 
 Next, we compute finite state abstraction for $\Sigma$ setting $Domain=P$ and for the chosen parameters $\eta_x$, $\eta_u$ and $\tau$. 
 Finally, Given the computed finite state abstraction $\widehat \Sigma$ and the LTL specification in Eq.~\eqref{eq:ltl_spec}, we synthesize controller using usual ABCD, implemented using SCOTS. %\MS{perhaps we can add a discussion here about our actual implementation.}
 
