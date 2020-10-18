@@ -1258,8 +1258,7 @@
   \global\@ACM@journal@bibstripfalse
 }
 \if@ACM@journal\else
-\acmConference[Conference'17]{ACM Conference}{July 2017}{Washington,
-  DC, USA}%
+\acmConference[Conference'21]{ACM/IEEE 12th International Conference on Cyber-Physical Systems (ICCPS)}{May 2021}{Nashville, TN, USA}%
 \fi
 \def\acmBooktitle#1{\gdef\@acmBooktitle{#1}}
 \acmBooktitle{Proceedings of \acmConference@name
