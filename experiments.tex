@@ -344,9 +344,9 @@ We can express the formation control problem in the product state space as follo
 			&\obs \coloneqq\\ 
 			&\Set{ x\in X | 
 				\begin{array}{c}
-					\exists i\in [1;N]\;.\; d^{p}_e(h^i(\proj^i(x)),\obs) \leq \delta\\
+					\exists i\in [1;N]\;.\; d^{p}(h^i(\proj^i(x)),\obs) \leq \delta\\
 					\wedge\\
-					\exists (i,j)\in [1;N]\times [1;N]\;.\;\\ d^{p}\left(h^i(\proj^i(x)),h^j(\proj^j(x))\right)\notin\lambda^{i,j}\pm \mu
+					\exists (i,j)\in [1;N]\times [1;N]\;.\;\\ d^{p}_e\left(h^i(\proj^i(x)),h^j(\proj^j(x))\right)\notin\lambda^{i,j}\pm \mu
 			\end{array}},					
 		\end{align}
 \end{itemize}
