@@ -38,13 +38,13 @@ We summarize our approach for algorithmic solution of the posed problem in Alg.~
 
 It can be observed that if every  $C^i\parallel \Sigma_\tau^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma_\tau^i}_{i\in [1;N]}$ will realize $\Phi$.
 
-We did not yet mention the role of the robustness margin $\varepsilon$.
-Essentially, $\varepsilon$ accounts for the possible tracking error of the ABCD-generated controller in Step~\ref{step:abcd} while tracking the nominal trajectory.
-Because ALTRO ignores the disturbances, hence a positive tracking error is inevitable.
-For this reason, if we choose $\varepsilon$ too small, then it will be more difficult for ABCD to find a controller against the worst case disturbances, and we might not be able to obtain a controller in Step~\ref{step:abcd} in the end.
-On the other hand, if we choose $\varepsilon$ too large, then it will be more difficult for ALTRO to find a nominal open-loop controller in the first place.
-So ideally, in Step~\ref{step:altro}, we should maximize $\varepsilon$ so that an open-loop controller can be obtained by ALTRO for $\Phi_\varepsilon$.
-For this work, we did not implement this step in an algorithmic manner, and relied on the judgment of the system designer for choosing a suitable $\varepsilon$.
+%We did not yet mention the role of the robustness margin $\varepsilon$.
+%Essentially, $\varepsilon$ accounts for the possible tracking error of the ABCD-generated controller in Step~\ref{step:abcd} while tracking the nominal trajectory.
+%Because ALTRO ignores the disturbances, hence a positive tracking error is inevitable.
+%For this reason, if we choose $\varepsilon$ too small, then it will be more difficult for ABCD to find a controller against the worst case disturbances, and we might not be able to obtain a controller in Step~\ref{step:abcd} in the end.
+%On the other hand, if we choose $\varepsilon$ too large, then it will be more difficult for ALTRO to find a nominal open-loop controller in the first place.
+%So ideally, in Step~\ref{step:altro}, we should maximize $\varepsilon$ so that an open-loop controller can be obtained by ALTRO for $\Phi_\varepsilon$.
+%For this work, we did not implement this step in an algorithmic manner, and relied on the judgment of the system designer for choosing a suitable $\varepsilon$.
 
 \begin{remark}
 	Unfortunately, ALTRO only supports bounded horizon control problem.

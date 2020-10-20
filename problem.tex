@@ -9,8 +9,8 @@ We assume that the robots are incapable of synchronizing their actions through c
 We want to synthesize \emph{local} feedback controllers for each robot so that a global reach-avoid specification, defined on the state space of the product control system, is fulfilled.
 Concretely, we want to develop an algorithm with the following input and output:
 \begin{description}
-	\item[Inputs:] A set of control systems $\set{\Sigma^i}_{i\in [1;N]}$, $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i,Y,h^i)$, a sampling time $\tau >0$, and a reach avoid specification $\Phi=\lnot\avoid\;\mathcal{U}\;\goal$ for some $\avoid\subseteq X^\times$ and $\goal\subseteq X^\times$, where $X^\times$ is the state space of the product control system of $\set{\Sigma^i}_{i\in [1;N]}$.
-	\item[Output:] A set of local feedback controllers $\set{C^i}_{i\in [1;N]}$ of $\set{\Sigma^i_\tau}_{i\in [1;N]}$ so that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma_\tau^i}_{i\in [1;N]}$ realizes $\Phi$. 
+	\item[Inputs:] A set of control systems $\set{\Sigma^i}_{i\in [1;N]}$, $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i,Y,h^i)$, a sampling time $\tau >0$, a robustness margin $\varepsilon$ and an $\varepsilon$-robust version of a reach avoid specification $\Phi=\lnot\avoid\;\mathcal{U}\;\goal$ (denoted by $\Phi_\varepsilon$) for some $\avoid\subseteq X^\times$ and $\goal\subseteq X^\times$, where $X^\times$ is the state space of the product control system of $\set{\Sigma^i}_{i\in [1;N]}$.
+	\item[Output:] A set of local feedback controllers $\set{C^i}_{i\in [1;N]}$ of $\set{\Sigma^i_\tau}_{i\in [1;N]}$ so that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma_\tau^i}_{i\in [1;N]}$ realizes $\Phi_\varepsilon$. 
 \end{description}
 
 Our choice of the specification $\Phi$ on the product state space $X^\times$ subsumes many interesting class of control tasks.
@@ -18,3 +18,10 @@ For example, we can express situations when the robots have their own local reac
 In addition, we can now also specify more general type of tasks which cannot be easily decomposed into individual subtasks for the robots.
 One example is the formation control problem, which we consider in the example in Sec.~\ref{sec:global formation control}, where a set of robots need to reach some location while maintaining a given geometric formation:
 Since the formation is defined using the relative positions of the robots, hence we cannot decompose this task into separate reach-avoid subtasks.
+
+The robustness margin $\varepsilon$ accounts for the possible tracking error of the ABCD-generated controller in Step~\ref{step:abcd} while tracking the nominal trajectory.
+Because ALTRO ignores the disturbances, hence a positive tracking error is inevitable.
+For this reason, if we choose $\varepsilon$ too small, then it will be more difficult for ABCD to find a controller against the worst case disturbances, and we might not be able to obtain a controller in Step~\ref{step:abcd} in the end.
+On the other hand, if we choose $\varepsilon$ too large, then it will be more difficult for ALTRO to find a nominal open-loop controller in the first place.
+So ideally, in Step~\ref{step:altro}, we should maximize $\varepsilon$ so that an open-loop controller can be obtained by ALTRO for $\Phi_\varepsilon$.
+For this work, we did not implement this step in an algorithmic manner, and relied on the judgment of the system designer for choosing a suitable $\varepsilon$.
