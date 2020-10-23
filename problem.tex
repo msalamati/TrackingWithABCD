@@ -10,7 +10,7 @@ We assume that the systems are incapable of synchronizing their actions through 
 We consider \emph{reach-avoid} specifications denoted as $\Phi=\lnot\avoid\;\mathcal{U}\;\goal$ with some $\avoid\subseteq X^\times$ and $\goal\subseteq X^\times$, where $X^\times$ is the state space of the product control system of $\set{\Sigma^i}_{i\in [1;N]}$. Now, let $\varepsilon\in \mathbb{R}^n_{>0}$ be a \emph{robustness margin}. We define a robust version of a given reach-avoid specification by $\Phi_\varepsilon=\lnot\avoid'\;\mathcal{U}\;\goal'$ with $\avoid'=\avoid'\oplus\ball_\varepsilon(0)$ and $\goal'=\goal\ominus\ball_\varepsilon(0)$, where $\oplus$ and $\ominus$ denote the Minkowski addition and diffrence, respectively. %Given a sampled-time abstraction product control system $\Sigma^\times_\tau$ and reach-avoid specification $\Phi$ defined over $X^\times$, we will say that decentralized open-
 %loop (decentralized closed-loop) realizes $\Phi$ if every trajectory of $C\colon [0;T]\to U$ ($C\parallel\Sigma_\tau$) satisfies $\Phi$.
 
-We say that the product control system controlled with the open $\Sigma^\times$ satisfies a reach-avoid specification $\Phi$ if 
+%We say that the product control system controlled with the open $\Sigma^\times$ satisfies a reach-avoid specification $\Phi$ if 
 
 We want to synthesize \emph{local} feedback controllers for each agent so that a global reach-avoid specification, defined on the state space of the product control system, is fulfilled.
 Concretely, we want to develop an algorithm with the following input and output:
