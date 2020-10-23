@@ -14,7 +14,7 @@ Concretely, we want to develop an algorithm with the following input and output:
 	\item[Output:] A set of local feedback controllers $\set{C^i}_{i\in [1;N]}$ of $\set{\Sigma^i_\tau}_{i\in [1;N]}$ so that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma_\tau^i}_{i\in [1;N]}$ realizes $\Phi$. 
 \end{description}
 
-It is important to notice that our solution must provide a formal guarantee: the reach-avoid specification $\Phi$ must be satisfied under the worst-case disturbance affecting the product system.
+It is important to notice that any solution for this problem must provide a formal guarantee: the reach-avoid specification $\Phi$ must be satisfied under the worst-case disturbance affecting the product system.
 
 Our choice of the specification $\Phi$ on the product state space $X^\times$ subsumes many interesting class of control tasks.
 For example, we can express situations when the robots have their own local reach-avoid specifications, and they need to avoid collision among each other; we consider such specification in some of our examples in Sec.~\ref{sec:local reach-avoid}.

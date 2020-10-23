@@ -209,7 +209,7 @@ We summarize our optimized approach for Step~\ref{step:tracking} in Algorithm~\r
 For simpler notation, we omit the system index $i$.
 Given a control system $\Sigma$, together with a reference open-loop trajectory satisfying $\Phi_\varepsilon$ and a tube size $\varepsilon\in \reals_{>0}^n$, we iteratively construct a tube $P$ as union of $\varepsilon$-balls around the reference trajectory's points. 
 Next, we compute finite state abstraction for $\Sigma$ setting $Domain=P$ and for the chosen parameters $\eta_x$, $\eta_u$ and $\tau$. 
-Finally, Given the computed finite state abstraction $\widehat \Sigma$ and the LTL specification in Eq.~\eqref{eq:ltl_spec}, we synthesize controller using usual ABCD, implemented using SCOTS. %\MS{perhaps we can add a discussion here about our actual implementation.}
+Finally, given the computed finite state abstraction $\widehat \Sigma$ and the LTL specification in Eq.~\eqref{eq:ltl_spec}, we synthesize controller using usual ABCD, implemented using SCOTS. %\MS{perhaps we can add a discussion here about our actual implementation.}
 
 %We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:tracking_with_time} using finite abstraction.
 
@@ -231,7 +231,7 @@ Finally, Given the computed finite state abstraction $\widehat \Sigma$ and the L
 %		\For{$t$ from $0$ to $T$}
 %		\State $P \gets \ball_{\varepsilon}(x_{t,\nom})$
 %		\EndFor
-		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, P, \tau, \eta_{x} , \eta_u)$
+		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, Domain, \tau, \eta_{x} , \eta_u)$
 		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the specification in Eq. \eqref{eq:ltl_spec} %$(\ball_{\varepsilon}(x_K^\nom,k), \emptyset, (x_0^\nom,0))$
 		\State \Return $\widehat{C}\circ Q$
 	\end{algorithmic}

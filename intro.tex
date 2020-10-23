@@ -96,7 +96,7 @@ To alleviate this issue, we employ a semi-centralized hierarchical synthesis app
 At the \textbf{top level} of the hierarchical approach, we ignore the disturbances, and treat the crane and the vehicle as one joint system, called the \emph{product system}.
 Next, we use a \emph{planner} to obtain a \emph{global} open-loop controller for the product system.
 (An open-loop controller is one that bases its control decision on the current time instant.)
-Our choice for planning is a tool called ALTRO. ALTRO is a scalable and fast controller synthesis tool that is suitable for the possibly high dimension of the product system.
+Among the existing off-the-shelf planning tools we selected ALTRO which is a scalable and fast controller synthesis tool that is suitable for the possibly high dimension of the product system.
 
 Since the obtained controller is open-loop, hence we can easily decompose the central controller into individual open-loop controllers---called \emph{local} open-loop controllers---for the crane and the vehicle.
 However, there will be no guarantee that the local open-loop controllers will fulfill the specification when the disturbances come into effect.

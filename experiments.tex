@@ -63,7 +63,7 @@ This specification can be expressed as a reach-avoid specification of the produc
 			&\obs \coloneqq\nonumber\\ 
 				&\Set{ x\in X^\times | 
 					\begin{array}{c}
-						\exists i\in [1;N]\;.\; D(x,\avoid) \leq \delta\\
+						\exists i\in [1;N]\;.\; D(\proj^i(x),\proj^i(\avoid)) \leq \delta\\
 						\vee\\
 						 \exists (i,j)\in [1;N]\times [1;N]\;.\;\\ D\left(\proj^i(x),\proj^j(x)\right)\leq\delta
 					\end{array}}.
@@ -359,7 +359,7 @@ We can express the formation control problem in the product state space as follo
 			&\obs \coloneqq\nonumber\\ 
 			&\Set{ x\in X^\times | 
 				\begin{array}{c}
-					\exists i\in [1;N]\;.\; D(x,\avoid) \leq \delta\\
+					\exists i\in [1;N]\;.\; D(\proj^i(x),\proj^i(\avoid)) \leq \delta\\
 					\vee\\
 					\exists (i,j)\in [1;N]\times [1;N]\;.\;\\ D_e\left(\proj^i(x),\proj^j(x)\right)\notin\lambda^{i,j}\pm \mu
 			\end{array}},					
