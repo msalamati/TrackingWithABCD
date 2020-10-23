@@ -225,7 +225,7 @@ Finally, Given the computed finite state abstraction $\widehat \Sigma$ and the L
 	\begin{algorithmic}[1]
 		\Require $\Sigma=(X,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $(x_{0,\nom},\ldots,x_{T,\nom})$, $\varepsilon \in \mathbb{R}_{>0}^{n}$
 		\Ensure Feedback controller $C\colon X\to U$ (partial function)
-		\State $P \gets \bigcup_{t=0}^T\ball_{\varepsilon}(x_{t,\nom})$
+		\State $Domain \gets \bigcup_{t=0}^T\ball_{\varepsilon}(x_{t,\nom})$
 %		\For{$t$ from $0$ to $T$}
 %		\State $P \gets \ball_{\varepsilon}(x_{t,\nom})$
 %		\EndFor

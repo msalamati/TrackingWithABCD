@@ -16,7 +16,7 @@ We categorize the related work into (1) the ones which propose hierarchical cont
 	Chen et al.\ proposed a method, using control barrier functions, that requires some form of inter-robot communication and does not consider external disturbances \cite{Chen2018cbf}.
 	Sahin et al.\ proposed a method that requires the group of robots to be homogeneous \cite{Shahin2017cltl}.
 	There are methods which do not consider external disturbances and do not provide formal guarantees \cite{jackson2020scalable}.
-	In contrast, our method can synthesize formally verified controllers for heterogeneous group of robots, subjected to external disturbances, and lacking any form of communications.
+	In contrast, our method can synthesize formally verified controllers for heterogeneous group of robots, subjected to external disturbances, and lacking any form of communications. There are other works that use a pre-defined motion primitive library to perform verified planning for multi-robot systems (\cite{saha2016implan,BanusicMPSZ19pgcd}). In contrast, our method deals with dynamical model of robots instead of using motion primitives which encapsulate the low-level control design. Therefore, our guarantees are stronger.
 	The closest related work that match our level of generality is the one by Bansal et al.\ \cite{bansal2017safe}.
 	However, they assume that each robot has got its own reach-avoid specification and they need to avoid collision with the other robots.
 	Whereas, we allow global reach-avoid specifications, which subsumes the specifications that they consider.
