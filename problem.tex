@@ -12,7 +12,7 @@ We consider \emph{reach-avoid} specifications denoted as $\Phi=\lnot\avoid\;\mat
 
 We say that the product control system controlled with the open $\Sigma^\times$ satisfies a reach-avoid specification $\Phi$ if 
 
-We want to synthesize \emph{local} feedback controllers for each robot so that a global reach-avoid specification, defined on the state space of the product control system, is fulfilled.
+We want to synthesize \emph{local} feedback controllers for each agent so that a global reach-avoid specification, defined on the state space of the product control system, is fulfilled.
 Concretely, we want to develop an algorithm with the following input and output:
 \begin{description}
 	\item[Inputs:] A set of control systems $\set{\Sigma^i}_{i\in [1;N]}$, $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i,Y,h^i)$, a sampling time $\tau >0$, a robustness margin $\varepsilon$ and an $\varepsilon$-robust version of a reach-avoid specification $\Phi=\lnot\avoid\;\mathcal{U}\;\goal$ (denoted by $\Phi_\varepsilon$)% for some $\avoid\subseteq X^\times$ and $\goal\subseteq X^\times$, where $X^\times$ is the state space of the product control system of $\set{\Sigma^i}_{i\in [1;N]}$.
