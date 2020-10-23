@@ -106,6 +106,8 @@ It can be observed that if every  $C^i\parallel \Sigma_\tau^i$ can realize $\Phi
 
 \subsection{Open-loop Planning}
 To achieve formally guaranteed planning, a commonly adopted practice is to compute a nominal trajectory over simplified dynamical model and then employ a guaranteed method to account for model mismatches. By simplified, we mean absence of disturbance ($W=\set{0}$). The planner used for generating nominal trajectories should be fast and scalable. In addition, it should be capable of handeling non-linear dynamics and constraints. Our choice for the planner is ALTRO (\cite{howell2019altro}). ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and handles nonlinear state and input constraints. Given a sampled time product system $\Sigma_{\tau,\nom}^\times$, reach-avoid specificaton $\Phi_\varepsilon$ and a horizon $T$, ALTRO computes open-loop controller $C^\times_{\nom}$. Following step~\ref{step:decompose} of Alg.~\ref{alg:main}, we get open-loop nominal trajectories $\rho^i$ for every agent.
+
+
 \begin{remark}
 	Unfortunately, ALTRO only supports bounded horizon control problem.
 	For this reason, we were forced to specify a horizon while solving the synthesis problem in Step~\ref{step:planning} of Alg.~\ref{alg:main}.
@@ -224,7 +226,7 @@ Finally, Given the computed finite state abstraction $\widehat \Sigma$ and the L
 	\label{alg:abcd-with-time-for-tracking}
 	\begin{algorithmic}[1]
 		\Require $\Sigma=(X,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $(x_{0,\nom},\ldots,x_{T,\nom})$, $\varepsilon \in \mathbb{R}_{>0}^{n}$
-		\Ensure Feedback controller $C\colon X\to U$ (partial function)
+		\Ensure Feedback controller $C\colon X\times[0;T]\to U$ (partial function)
 		\State $Domain \gets \bigcup_{t=0}^T\ball_{\varepsilon}(x_{t,\nom})$
 %		\For{$t$ from $0$ to $T$}
 %		\State $P \gets \ball_{\varepsilon}(x_{t,\nom})$
