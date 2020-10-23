@@ -24,7 +24,7 @@ We summarize our approach for algorithmic solution of the posed problem in Alg.~
 	\end{enumerate}
 \end{algorithm}
 
-It can be observed that if every  $C^i\parallel \Sigma_\tau^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma_\tau^i}_{i\in [1;N]}$ will realize $\Phi$. Next, we discuss our implementation for each of steps~\ref{step:planning} and \ref{step:tracking} in Alg.~\ref{alg:main}.
+It can be observed that if every  $C^i\parallel \Sigma_\tau^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma_\tau^i}_{i\in [1;N]}$ will realize $\Phi$ under the worst-case disturbance. Next, we discuss our implementation for each of steps~\ref{step:planning} and \ref{step:tracking} in Alg.~\ref{alg:main}.
 
 %We did not yet mention the role of the robustness margin $\varepsilon$.
 %Essentially, $\varepsilon$ accounts for the possible tracking error of the ABCD-generated controller in Step~\ref{step:abcd} while tracking the nominal trajectory.
