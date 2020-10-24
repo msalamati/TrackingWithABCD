@@ -31,17 +31,17 @@ We consider two distinct types of problems, and demonstrate how they can be solv
 			&$T_{AL}$&$N_l$&$T_{l}^{abs}$&$T_{l}^{syn}$&$N_g$&$T_g^{abs}$&$T_g^{syn}$\\
 			\midrule
 			
-			\multirow{1}{*}{\rotatebox{0}{Multi-drone path planning}} & $125$ & $1.15\times 10^8$ & $134.33$  & $10.66$& $2.73\times 10^{104}$&OMM&OMM \\
+			\multirow{1}{*}{\rotatebox{0}{Multi-drone path planning}} & $125$ & $1.15\times 10^8$ & $134.33$  & $10.66$& $2.73\times 10^{104}$&OOM&OOM \\
 			
 			\midrule
 			
-			\multirow{1}{*}{\rotatebox{0}{Crane and forklift}} & $0.65$ & $7.32\times 10^8$&$511$  & $91$&$2.16\times10^{18}$&OMM&OMM\\
+			\multirow{1}{*}{\rotatebox{0}{Crane and forklift}} & $0.65$ & $7.32\times 10^8$&$511$  & $91$&$2.16\times10^{18}$&OOM&OOM\\
 			
 			\midrule
 			
-			\multirow{1}{*}{\rotatebox{0}{Lane merging}} & $100$ & $1.01\times 10^8$&$45.37$  & $8.63$&$3.84\times 10^{85}$&OMM&OMM\\
+			\multirow{1}{*}{\rotatebox{0}{Lane merging}} & $100$ & $1.01\times 10^8$&$45.37$  & $8.63$&$3.84\times 10^{85}$&OOM&OOM\\
 			\midrule
-			\multirow{1}{*}{\rotatebox{0}{Multi-drone formation control}} & $163$ & $4.02\times 10^8$&$128.41$  & $34.14$&$3.7\times 10^{59}$&OMM&OMM\\
+			\multirow{1}{*}{\rotatebox{0}{Multi-drone formation control}} & $163$ & $4.02\times 10^8$&$128.41$  & $34.14$&$3.7\times 10^{59}$&OOM&OOM\\
 			\bottomrule
 	\end{tabular}}
 \end{table*}
@@ -118,9 +118,9 @@ in $125$ seconds for the product space with $30$ state and $20$ input variables.
 $U=[-2.4,2.4]^2$, respectively. Choosing state and input partition sizes $\eta_{X}=\begin{bmatrix}0.02&0.02&0.02\end{bmatrix}^T$ and
 $\eta_{U}=\begin{bmatrix}0.3&0.3\end{bmatrix}^T$ results in $\hat X$ and $\hat U$ with $9.61\times 10^7$ and $289$ points. We compute the transition system over the inter-tube space characterized by $\varepsilon=\begin{bmatrix}0.16&0.16&0.18\end{bmatrix}^T$, which results in finite-state transition system with $4.0\times 10^5$ points. Given the above settings, SCOTS computes abstraction in $910$ seconds ($91.0$ seconds in average) and synthesis in $92.2$ seconds ($9.22$ seconds in average). %(the ones with red dashed circles around them in Fig~\ref{fig:MA}). 
 %It can be noticed that success in restricting the trajectories generated under the worst-case disturbance within the tubes guarantees a collision-free mission.
-Fig~\ref{fig:blowup} illustrates the fact that increasing number of agents ($N$) causes an exponential blow-up in the number of transitions if we wanted to solve the given reach-avoid problem over the product state and input spaces. However, since we compute tracking controllers locally, our method experiences linear blow-up as $N$ increases.
+%Fig~\ref{fig:blowup} illustrates the fact that increasing number of agents ($N$) causes an exponential blow-up in the number of transitions if we wanted to solve the given reach-avoid problem over the product state and input spaces. However, since we compute tracking controllers locally, our method experiences linear blow-up as $N$ increases.
 
-By allowing disturbance to take non-zero values, there is no guarantee that the open-loop trajectories are followed. Fig.~\ref{fig:multi_drone_distance} illustrates performance of open-loop and feedback controllers on regulating distance between the two of drones with and without disturbance. As expected, in the absence of disturbance open-loop controller suffices and distance between the two drones (shown in solid blue) does not go below the threshold line $\delta=0.28$. Next, we consider the case when constant additive disturbance vectors $\begin{bmatrix}0 &0.025&0.025\end{bmatrix}^T$ and $\begin{bmatrix}0 &-0.025&-0.025\end{bmatrix}^T$ are being applied to the first and second drones throughout the whole horizon. It can be noticed that applying the open-loop controller causes that distance between the two drones (shown in solid green) goes blow the predifined threshold. However, the feedback controller is still capable of maintaining distance (shown in solid red) within the safe region.
+By allowing disturbance to take non-zero values, there is no guarantee that the open-loop trajectories are followed. Fig.~\ref{fig:multi_drone_distance} illustrates performance of open-loop and feedback controllers on regulating distance between the two of drones with and without disturbance. As expected, in the absence of disturbance open-loop controller suffices and distance between the two drones (shown in solid blue) does not go below the defined threshold. Next, we consider the case when constant additive disturbance vectors $\begin{bmatrix}0 &0.025&0.025\end{bmatrix}^T$ and $\begin{bmatrix}0 &-0.025&-0.025\end{bmatrix}^T$ are being applied to the first and second drones throughout the whole horizon. It can be noticed that applying the open-loop controller causes that distance between the two drones (shown in solid green) goes blow the predifined threshold. However, the feedback controller is still capable of maintaining distance (shown in solid red) within the safe region.
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.45\textwidth]{figures/MA1.pdf}
