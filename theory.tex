@@ -116,7 +116,7 @@ To achieve formally guaranteed planning, a commonly adopted practice is to compu
 		& & &  h(x_k,u_k)=0,
 	\end{aligned}
 \end{equation*}
-where $\ell_k(.,.)$ denotes a quadratic objective function assigning cost to each pair of state input, $\ell_N(.)$ represents a quadratic objective function assigning penalty to the final state ($x_T$), $g(.,.)$ and $h(.,.)$ denote inequality and equality constraints at each time point.
+where $\ell_k(\cdot,\cdot)$ denotes a quadratic objective function assigning cost to each pair of state and input before the end of horizon, $\ell_N(\cdot)$ represents a quadratic objective function assigning penalty based on the reached state at the end of the horizon ($x_T$), $g(\cdot,\cdot)$ and $h(\cdot,\cdot)$ denote inequality and equality constraints at each time point.
 In multi-robot scenarios, we use inequality constraints to define collision and obstacle avoidance specifications and use equality constraints to define fixed formation specification. Following step~\ref{step:decompose} of Alg.~\ref{alg:main}, we get open-loop nominal trajectories $\rho^i$ for every agent.
 
 
@@ -165,7 +165,7 @@ It is known that this three step process produces a controller $C$ that realizes
 
 \smallskip
 \noindent\textbf{Finite-state Abstraction of Control System.}\
-Let $\Sigma = (X, U, W, f, \cdot, \cdot)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $X$ which imposes a safety specification, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$.
+Let $\Sigma = (X,x_\init, U, W, f)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $X$ which imposes a safety specification, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$.
 %Note that, since $X$ is unbounded, hence some partition element of $\Xh$ will inevitably be unbounded set.
 A \emph{finite-state abstraction} of $\Sigma$ is a finite state-transition system $(\Xh,\Uh,\fh)$, where $\xh'$ is in $\fh(\xh,u)$ if there is a pair of states $x\in \xh$ and $x'\in \xh'$ such that there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
 
@@ -202,7 +202,7 @@ We write $\Sigma_\tau \frr{Q} \widehat{\Sigma}$ if $Q$ is an FRR from $\Sigma_\t
 
 \smallskip
 \noindent\textbf{Computation of the Finite-State Abstraction.}\
-We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,U,W,f,\cdot,\cdot)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta_x$ and $\eta_u$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
+We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,x_\init,U,W,f)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta_x$ and $\eta_u$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
 The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
 
 
@@ -237,7 +237,7 @@ Finally, given the computed finite state abstraction $\widehat \Sigma$ and the L
 	\caption{ABCD-for-tracking}
 	\label{alg:abcd-with-time-for-tracking}
 	\begin{algorithmic}[1]
-		\Require $\Sigma=(X,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $(x_{0,\nom},\ldots,x_{T,\nom})$, $\varepsilon \in \mathbb{R}_{>0}^{n}$
+		\Require $\Sigma=(X,x_\init,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $(x_{0,\nom},\ldots,x_{T,\nom})$, $\varepsilon \in \mathbb{R}_{>0}^{n}$
 		\Ensure Feedback controller $C\colon X\times[0;T]\to U$ (partial function)
 		\State $Domain \gets \bigcup_{t=0}^T\ball_{\varepsilon}(x_{t,\nom})$
 %		\For{$t$ from $0$ to $T$}

@@ -2,22 +2,22 @@
 \label{sec:controllers}
 \smallskip
 \noindent\textbf{Sampled-time Abstraction of Control System.}\
-Let $\Sigma = (X, x_\init, U, W, f, \cdot, \cdot)$ be a control system and $\tau>0$ be the sampling time.
-(The ``$\cdot$''-s in place of the output space and the output function represent their insignificance in the respective sampled-time abstraction; similar convention will be used elsewhere in the paper.)
+Let $\Sigma = (X, x_\init, U, W, f)$ be a control system and $\tau>0$ be the sampling time.
+%(The ``$\cdot$''-s in place of the output space and the output function represent their insignificance in the respective sampled-time abstraction; similar convention will be used elsewhere in the paper.)
 A \emph{sampled-time abstraction} of $\Sigma$ is the state-transition system $(X,x_\init,U,f_\tau)$, such that $x'$ is in $f_\tau(x,u)$ if and only if there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
 
 The \emph{product sampled-time abstraction} of a set of control systems $\set{\Sigma^i} $ is the product transition system of the set of sampled-time abstractions $\set{\Sigma^i_\tau} $.
 
 \smallskip
 \noindent\textbf{Open-loop Controller.}\
-Let $\Sigma_\tau=(X,x_\init,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,x_\init,U,W,f,\cdot,\cdot)$.
+Let $\Sigma_\tau=(X,x_\init,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,x_\init,U,W,f)$.
 An \emph{open-loop controller of} $\Sigma_\tau$ is a function $C\colon [0;T]\to U$ for some given time horizon $T>0$.
 The \emph{open-loop} is obtained when we connect $C$ with $\Sigma_\tau$ serially, and is formalized using the transition system $C \triangleright \Sigma_\tau = (X\times [0;K],x_\init,U,f_\tau^C)$ such that $(x',k+1)$ is in $f_\tau^C((x,k),u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(k)=u$.
 The \emph{open-loop behavior} $\Beh^\ol(x_\init)$ of $\Sigma_\tau$ under $C$ is the set of all trajectories of the transition system $C \triangleright \Sigma_\tau$.
 
 \smallskip
 \noindent\textbf{Feedback Controller.}\
-Let $\Sigma_\tau=(X,x_\init,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,x_\init,U,W,f,\cdot,\cdot)$.
+Let $\Sigma_\tau=(X,x_\init,U,f_\tau)$ be the sampled-time abstraction of the control system $\Sigma=(X,x_\init,U,W,f)$.
 A \emph{feedback controller of} $\Sigma_\tau$ is a function $C\colon X\times[0;T]\to U$ for a given time horizon $T$.
 The \emph{closed-loop} is obtained when we connect $C$ with $\Sigma_\tau$ in feedback, and is formalized using the transition system $C\parallel\Sigma_\tau = (X,x_\init,U,f_\tau^C)$ such that $x'$ is in $f_\tau^C(x,u)$ if and only if $x'$ is in $f_\tau(x,u)$ and $C(x)=u$.
 The feedback controller $C$ when connected to the sampled-time control system $\Sigma_\tau$ can be interpreted as a zero-order-hold controller for the control system $\Sigma$.
