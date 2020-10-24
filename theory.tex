@@ -8,7 +8,7 @@ We summarize our approach for algorithmic solution of the posed problem in Alg.~
 	\begin{enumerate}
 		\item For every $i$, let $\Sigma_{\tau,\nom}^i = (X^i,x_\init^i,U^i,\set{0},f^i)$ be the respective \emph{nominal} control system that ignores the disturbances.
 		Compute the product control system $\Sigma^\times_{\tau,\nom}$ of $\set{\Sigma^i_{\tau,\nom}}$. 
-		Let $\varepsilon\in \mathbb{R}^n_{>0}$ be a robustness margin. %a discussion on $\varepsilon$ follows subsequently.
+		%Let $\varepsilon\in \mathbb{R}^n_{>0}$ be a robustness margin. %a discussion on $\varepsilon$ follows subsequently.
 		Use a scalable \emph{planner} to compute an open-loop controller $C^\times_{\nom}$ for $\Sigma^\times_{\tau,\nom}$ so that $C^\times_\nom\triangleright\Sigma_{\tau,\nom}^{\times}$ realizes  $\Phi_\varepsilon$.
 		Let $T$ be the time horizon when $\Phi_\varepsilon$ has been fulfilled for the first time. \label{step:planning}
 		\item Decompose $C^\times_\nom$ into \emph{local} open-loop controllers $\set{C^i_\nom}$ for the set of sampled-time abstractions $\set{\Sigma^i_{\tau,\nom}}$.
@@ -105,7 +105,19 @@ It can be observed that if every  $C^i\parallel \Sigma_\tau^i$ can realize $\Phi
 %In the following, we summarize some ALTRO-specific implementation details.
 
 \subsection{Open-loop Planning}
-To achieve formally guaranteed planning, a commonly adopted practice is to compute a nominal trajectory over simplified dynamical model and then employ a guaranteed method to account for model mismatches. By simplified, we mean absence of disturbance ($W=\set{0}$). The planner used for generating nominal trajectories should be fast and scalable. In addition, it should be capable of handeling non-linear dynamics and constraints. Our choice for the planner is ALTRO (\cite{howell2019altro}). ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and handles nonlinear state and input constraints. Given a sampled time product system $\Sigma_{\tau,\nom}^\times$, reach-avoid specificaton $\Phi_\varepsilon$ and a horizon $T$, ALTRO computes open-loop controller $C^\times_{\nom}$. Following step~\ref{step:decompose} of Alg.~\ref{alg:main}, we get open-loop nominal trajectories $\rho^i$ for every agent.
+To achieve formally guaranteed planning, a commonly adopted practice is to compute a nominal trajectory over simplified dynamical model and then employ a guaranteed method to account for model mismatches. By simplified, we mean absence of disturbance ($W=\set{0}$). The planner used for generating nominal trajectories should be fast and scalable. In addition, it should be capable of handeling non-linear dynamics and constraints. Our choice for the planner is ALTRO (\cite{howell2019altro}). ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and handles nonlinear state and input constraints. Given a sampled time product system $\Sigma_{\tau,\nom}^\times$, reach-avoid specificaton $\Phi_\varepsilon$ and a horizon length $T$, ALTRO computes open-loop controller $C^\times_{\nom}$ by solving the following optimization problem,
+\begin{equation*}
+	\begin{aligned}
+		& \underset{u_{0:T-1}}{\text{minimize}}
+		& & \ell_N(x_T)+\sum_{k=0}^{T-1}\ell_k(x_k,u_k) \\
+		& \text{subject to}
+		& & x_{k+1}=\Sol_{\Sigma^\times}(x_k,u_k,\tau),\\
+		& & &  g(x_k,u_k)\leq 0,\\
+		& & &  h(x_k,u_k)=0,
+	\end{aligned}
+\end{equation*}
+where $\ell_k(.,.)$ denotes a quadratic objective function assigning cost to each pair of state input, $\ell_N(.)$ represents a quadratic objective function assigning penalty to the final state ($x_T$), $g(.,.)$ and $h(.,.)$ denote inequality and equality constraints at each time point.
+In multi-robot scenarios, we use inequality constraints to define collision and obstacle avoidance specifications and use equality constraints to define fixed formation specification. Following step~\ref{step:decompose} of Alg.~\ref{alg:main}, we get open-loop nominal trajectories $\rho^i$ for every agent.
 
 
 \begin{remark}
@@ -142,6 +154,13 @@ To achieve formally guaranteed planning, a commonly adopted practice is to compu
 \subsection{Guaranteed Tracking of Open-loop Trajectories}
 Trajectories computed in the planning stage might not be followed in the presence of disturbance and therefore we need to use a formally guaranteed tracker to satisfy the given reach-avoid specification. Our choice for this purpose is the so-called abstraction-based controller design (ABCD). ABCD can handle nonlinear dynamics, (bounded) uncertainties and $\omega$-regular specifications. In particular, we use SCOTS which is a software tool for implementing abstraction-based controller synthesis (\cite{Rungger2016scots}). Next, we shortly introduce basics of ABCD.
 \subsubsection{Preliminaries of Abstraction-Based Controller Design}\hfill
+\smallskip
+\noindent\textbf{Abstraction-based Controller Design.}\
+The abstraction-based controller design (ABCD) \cite{reissig2016feedback} is a $3$-step method to find a robust controller for the sampled-time abstraction $\Sigma_\tau$ of the system $\Sigma$:
+First, we compute a finite state abstraction $\widehat{\Sigma}$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
+Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow \Uh$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
+Finally, we obtain the desired controller $C$ as $C:=\widehat{C}\circ Q$.
+It is known that this three step process produces a controller $C$ that realizes the given specification on $\Sigma_\tau$ \cite{reissig2016feedback}.
 
 
 \smallskip
@@ -180,13 +199,6 @@ for all $(x,\xh)\in Q$, we have
 where $U_{\Sigma_\tau}(x):=\set{u\in U \mid f_\tau(x,u)\neq \emptyset}$ and $\Uh_{\widehat{\Sigma}}(\xh):=\set{u\in \Uh \mid \fh(\xh,u)\neq \emptyset}$.
 We write $\Sigma_\tau \frr{Q} \widehat{\Sigma}$ if $Q$ is an FRR from $\Sigma_\tau$ to $\widehat{\Sigma}$.
 
-\smallskip
-\noindent\textbf{Abstraction-based Controller Design.}\
-The abstraction-based controller design (ABCD) \cite{reissig2016feedback} is a $3$-step method to find a robust controller for the sampled-time abstraction $\Sigma_\tau$ of the system $\Sigma$:
-First, we compute a finite state abstraction $\widehat{\Sigma}$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
-Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow \Uh$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
-Finally, we obtain the desired controller $C$ as $C:=\widehat{C}\circ Q$.
-It is known that this three step process produces a controller $C$ that realizes the given specification on $\Sigma_\tau$ \cite{reissig2016feedback}.
 
 \smallskip
 \noindent\textbf{Computation of the Finite-State Abstraction.}\
