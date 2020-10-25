@@ -12,10 +12,10 @@ We summarize our approach for algorithmic solution of the posed problem in Alg.~
 		%Let $\varepsilon\in \mathbb{R}^n_{>0}$ be a robustness margin. %a discussion on $\varepsilon$ follows subsequently.
 		Use a scalable \emph{planner} to compute an open-loop controller $C^\times_{\nom}$ for $\Sigma^\times_{\nom}$ so that $C^\times_\nom\triangleright\Sigma_{,\nom}^{\times}$ realizes  $\Phi_\varepsilon$.
 		Let $T$ be the time horizon when $\Phi_\varepsilon$ has been fulfilled for the first time. \label{step:planning}
-		\item Decompose $C^\times_\nom$ into \emph{local} open-loop controllers $\set{C^i_\nom}$ for the set of sampled-time abstractions $\set{\Sigma^i_{\nom}}$.
+		\item Decompose $C^\times_\nom$ into \emph{local} open-loop controllers $\set{C^i_\nom}$ for the set of $\set{\Sigma^i_{\nom}}$.
 		The decomposition is straightforward since $C^\times_\nom$ is open-loop. Further, for every $i$, find the unique nominal open-loop trajectory $\rho^i=(x_{0,\nom}^i,\ldots,x_{T,\nom}^i)$ of length $T$ of $C^i_\nom\triangleright \Sigma_{\nom}^i$---unique, because there is no disturbance. \label{step:decompose}
-		\item Let $\varepsilon^i\in \mathbb{R}^{n_i}_{>0}$ be the projection of $\varepsilon$ to the state dimensions of $\Sigma_{\tau}^i$.
-		Use a \emph{guaranteed tracking} method to find a closed loop controller $C^i$ for $\Sigma_{\tau}^i$ so that $C^i\parallel \Sigma_\tau^i$ \emph{tracks} the nominal trajectory $\rho^i$, i.e., $C^i\parallel \Sigma_\tau^i$ satisfies the following specification:
+		\item Let $\varepsilon^i\in \mathbb{R}^{n_i}_{>0}$ be the projection of $\varepsilon$ to the state dimensions of $\Sigma^i$.
+		Use a \emph{guaranteed tracking} method to find a closed loop controller $C^i$ for $\Sigma^i$ so that $C^i\parallel \Sigma^i$ \emph{tracks} the nominal trajectory $\rho^i$, i.e., $C^i\parallel \Sigma^i$ satisfies the following specification:
 		\begin{align}
 			\label{eq:ltl_spec}
 			\Phi_{\track}^i\coloneqq \ball_{\varepsilon^i}(x_{0,\nom}^i) \wedge \bigwedge_{k\in [1;T]} \bigcirc^t \ball_{\varepsilon^i}(x_{k,\nom}^i),
@@ -25,7 +25,7 @@ We summarize our approach for algorithmic solution of the posed problem in Alg.~
 	\end{enumerate}
 \end{algorithm}
 
-It can be observed that if every  $C^i\parallel \Sigma^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma_\tau^i}_{i\in [1;N]}$ will realize $\Phi$ under the worst-case disturbance. Next, we discuss our implementation for each of steps~\ref{step:planning} and \ref{step:tracking} in Alg.~\ref{alg:main}.
+It can be observed that if every  $C^i\parallel \Sigma^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma^i}_{i\in [1;N]}$ will realize $\Phi$ under the worst-case disturbance. Next, we discuss our implementation for each of steps~\ref{step:planning} and \ref{step:tracking} in Alg.~\ref{alg:main}.
 
 %We did not yet mention the role of the robustness margin $\varepsilon$.
 %Essentially, $\varepsilon$ accounts for the possible tracking error of the ABCD-generated controller in Step~\ref{step:abcd} while tracking the nominal trajectory.
@@ -106,13 +106,13 @@ It can be observed that if every  $C^i\parallel \Sigma^i$ can realize $\Phi_\tra
 %In the following, we summarize some ALTRO-specific implementation details.
 
 \subsection{Open-loop Planning}
-To achieve formally guaranteed planning, a commonly adopted practice is to compute a nominal trajectory over simplified dynamical model and then employ a guaranteed method to account for model mismatches. By simplified, we mean absence of disturbance ($W=\set{0}$). The planner used for generating nominal trajectories should be fast and scalable. In addition, it should be capable of handling non-linear dynamics and constraints. Our choice for the planner is ALTRO (\cite{howell2019altro}). ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and handles nonlinear state and input constraints. Given a sampled time product system $\Sigma_{\nom}^\times$, reach-avoid specificaton $\Phi_\varepsilon$ and a horizon length $T$, ALTRO computes open-loop controller $C^\times_{\nom}$ by solving the following optimization problem,
+To achieve formally guaranteed planning, a commonly adopted practice is to compute a nominal trajectory over simplified dynamical model and then employ a guaranteed method to account for model mismatches. By simplified, we mean absence of disturbance ($W=\set{0}$). The planner used for generating nominal trajectories should be fast and scalable. In addition, it should be capable of handling non-linear dynamics and constraints. Our choice for the planner is ALTRO (\cite{howell2019altro}). ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and handles nonlinear state and input constraints. Given a product system $\Sigma_{\nom}^\times$, reach-avoid specificaton $\Phi_\varepsilon$ and a horizon length $T$, ALTRO computes open-loop controller $C^\times_{\nom}$ by solving the following optimization problem,
 \begin{equation*}
 	\begin{aligned}
 		& \underset{u_{0:T-1}}{\text{minimize}}
 		& & \ell_N(x_T)+\sum_{k=0}^{T-1}\ell_k(x_k,u_k) \\
 		& \text{subject to}
-		& & x_{k+1}=\Sol_{\Sigma^\times}(x_k,u_k,\tau),\\
+		& & x_{k+1}=f^\times(x_k,u_k),\\
 		& & &  g(x_k,u_k)\leq 0,\\
 		& & &  h(x_k,u_k)=0,
 	\end{aligned}
@@ -134,20 +134,13 @@ In multi-robot scenarios, we use inequality constraints to define collision and 
 
 Trajectories computed in the planning stage might not be followed in the presence of disturbance and therefore we need to use a formally guaranteed tracker to satisfy the given reach-avoid specification. Our choice for this purpose is the so-called abstraction-based controller design (ABCD). ABCD can handle nonlinear dynamics, (bounded) uncertainties and $\omega$-regular specifications. In particular, we use SCOTS which is a software tool for implementing abstraction-based controller synthesis (\cite{Rungger2016scots}). Next, we shortly introduce basics of ABCD.
 \subsubsection{Preliminaries of Abstraction-Based Controller Design}\hfill
-\smallskip
-\noindent\textbf{Abstraction-based Controller Design.}\
-The abstraction-based controller design (ABCD) \cite{reissig2016feedback} is a $3$-step method to find a robust controller for the sampled-time abstraction $\Sigma_\tau$ of the system $\Sigma$:
-First, we compute a finite state abstraction $\widehat{\Sigma}$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
-Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow \Uh$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
-Finally, we obtain the desired controller $C$ as $C:=\widehat{C}\circ Q$.
-It is known that this three step process produces a controller $C$ that realizes the given specification on $\Sigma_\tau$ \cite{reissig2016feedback}.
 
 
 \smallskip
 \noindent\textbf{Finite-state Abstraction of Control System.}\
-Let $\Sigma = (X,x_\init, U, W, f)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $X$ which imposes a safety specification, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$.
+Let $\Sigma = (X,x_\init, U, W, f)$ be a control system, $\bound$ be a subset of $X$ which imposes a safety specification, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$.
 %Note that, since $X$ is unbounded, hence some partition element of $\Xh$ will inevitably be unbounded set.
-A \emph{finite-state abstraction} of $\Sigma$ is a finite state-transition system $(\Xh,\Uh,\fh)$, where $\xh'$ is in $\fh(\xh,u)$ if there is a pair of states $x\in \xh$ and $x'\in \xh'$ such that there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
+A \emph{finite-state abstraction} of $\Sigma$ is a finite state-transition system $(\Xh,\Uh,\fh)$, where $\xh'$ is in $\fh(\xh,u)$ if there is a pair of states $x\in \xh$ and $x'\in \xh'$ such that $x'\in \Sol_\Sigma(x,u)$.
 
 In this work, we will use uniformly sized rectangular partition elements to construct the set $\Xh$ from the set $\bound$.
 Without going into the detail of the construction, we assume that the size of the partition elements is provided as a vector $\eta_x\in \mathbb{R}^n_{>0}$ which is an input to the abstraction procedure.
@@ -167,22 +160,30 @@ On the other hand, the smaller $\eta_x$ is, the better is the precision of the a
 
 \smallskip
 \noindent\textbf{Feedback Refinement Relation.}\
-Let $\Sigma$ be a control system, $\Sigma_\tau$ be its sampled-time abstraction, and $\widehat{\Sigma}$ be its finite-state abstraction.
-A \emph{feedback refinement relation} (FRR) from $\Sigma_\tau$ to $\widehat{\Sigma}$ 
+Let $\Sigma$ be a control system and $\widehat{\Sigma}$ be its finite-state abstraction.
+A \emph{feedback refinement relation} (FRR) from $\Sigma$ to $\widehat{\Sigma}$ 
 is a relation $Q\subseteq \bound\times \Xh$ s.t.\ 
 for all $x\in \bound$ there is some $\xh\in \Xh$ such that $Q(x,\xh)$ and
 for all $(x,\xh)\in Q$, we have
 \begin{inparaenum}[(i)]
-	\item $\Uh_{\widehat{\Sigma}}(\xh)\subseteq U_{\Sigma_\tau}(x)$, and 
-	\item $u\in U_{\widehat{\Sigma}}(\xh) \Rightarrow Q(f_\tau(x,u))\subseteq \fh(\xh,u)$,
+	\item $\Uh_{\widehat{\Sigma}}(\xh)\subseteq U_{\Sigma}(x)$, and 
+	\item $u\in U_{\widehat{\Sigma}}(\xh) \Rightarrow Q(f(x,u))\subseteq \fh(\xh,u)$,
 \end{inparaenum}
-where $U_{\Sigma_\tau}(x):=\set{u\in U \mid f_\tau(x,u)\neq \emptyset}$ and $\Uh_{\widehat{\Sigma}}(\xh):=\set{u\in \Uh \mid \fh(\xh,u)\neq \emptyset}$.
-We write $\Sigma_\tau \frr{Q} \widehat{\Sigma}$ if $Q$ is an FRR from $\Sigma_\tau$ to $\widehat{\Sigma}$.
+where $U_{\Sigma}(x):=\set{u\in U \mid f(x,u)\neq \emptyset}$ and $\Uh_{\widehat{\Sigma}}(\xh):=\set{u\in \Uh \mid \fh(\xh,u)\neq \emptyset}$.
+We write $\Sigma \frr{Q} \widehat{\Sigma}$ if $Q$ is an FRR from $\Sigma$ to $\widehat{\Sigma}$.
+
+\smallskip
+\noindent\textbf{Abstraction-based Controller Design.}\
+The abstraction-based controller design (ABCD) \cite{reissig2016feedback} is a $3$-step method to find a robust controller for the control system $\Sigma$:
+First, we compute a finite state abstraction $\widehat{\Sigma}$ s.t.\ $\Sigma \frr{Q} \widehat{\Sigma}$.
+Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow \Uh$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
+Finally, we obtain the desired controller $C$ as $C:=\widehat{C}\circ Q$.
+It is known that this three step process produces a controller $C$ that realizes the given specification on $\Sigma$ \cite{reissig2016feedback}.
 
 
 \smallskip
 \noindent\textbf{Computation of the Finite-State Abstraction.}\
-We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,x_\init,U,W,f)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta_x$ and $\eta_u$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma_\tau \frr{Q} \widehat{\Sigma}$.
+We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,x_\init,U,W,f)$, a compact subset $\bound$ of the set $X$ and state space and input space discretization parameters $\eta_x$ and $\eta_u$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma\frr{Q} \widehat{\Sigma}$.
 The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
 
 
@@ -197,10 +198,10 @@ The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedbac
 
 Usually, in ABCD the abstraction process requires computation of abstract transitions all over the state space, which is computationally expensive.
 Luckily, for Step~\ref{step:tracking} of Alg.~\ref{alg:main}, we only need to compute transitions in the $\varepsilon$-neighborhood of the given nominal trajectory.
-We summarize our optimized approach for Step~\ref{step:tracking} in Algorithm~\ref{alg:abcd-with-time-for-tracking}.
+%We summarize our optimized approach for Step~\ref{step:tracking} in Algorithm~\ref{alg:abcd-with-time-for-tracking}.
 For simpler notation, we omit the system index $i$.
-Given a control system $\Sigma$, together with a reference open-loop trajectory satisfying $\Phi_\varepsilon$ and a tube size $\varepsilon\in \reals_{>0}^n$, we iteratively construct a tube $P$ as union of $\varepsilon$-balls around the reference trajectory's points. 
-Next, we compute finite state abstraction for $\Sigma$ setting $Domain=P$ and for the chosen parameters $\eta_x$, $\eta_u$ and $\tau$. 
+Given a control system $\Sigma$, together with a reference open-loop trajectory $\rho=(x_{0,\nom},\ldots,x_{T,\nom})$ satisfying $\Phi_\varepsilon$ and a tube size $\varepsilon\in \reals_{>0}^n$, we iteratively construct a tube as union of $\varepsilon$-balls around the reference trajectory's points. 
+Next, we compute finite state abstraction for $\Sigma$ setting $Domain=\bigcup_{t=0}^T\ball_{\varepsilon}(x_{t,\nom})$ and for the chosen parameters $\eta_x$, $\eta_u$. 
 Finally, given the computed finite state abstraction $\widehat \Sigma$ and the LTL specification in Eq.~\eqref{eq:ltl_spec}, we synthesize controller using usual ABCD, implemented using SCOTS. %\MS{perhaps we can add a discussion here about our actual implementation.}
 
 %We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:tracking_with_time} using finite abstraction.

@@ -52,9 +52,10 @@ a \emph{nominal dynamics} $f:X\times U\rightarrow X$. There exists a locally Lip
 	&\dot \beta = f_c(\beta(t),u) \quad \beta(0) =x\nonumber\\
 	 &f(x,u) =\beta(\tau).
 \end{align}
-Therefore, we can characterize nominal dynamics $f$ using $f_c$ and $\tau$. For a given time horizon $T$, a (state) \emph{trajectory} of $\Sigma$ is a function $\xi\colon[0;T]\rightarrow X$ such that $\xi(0)=x_\init$ and $\xi(\cdot)$ fulfills the following inclusion relation for every $t\in[0;T]$:
+Therefore, we can characterize nominal dynamics $f$ using $f_c$ and $\tau$. %For a given time horizon $T$, a (state) \emph{trajectory} of $\Sigma$ is a function $\xi\colon[0;T]\rightarrow X$ such that $\xi(0)=x_0$ and $\xi(\cdot)$ fulfills the following inclusion relation for every $t\in[0;T]$:
+For an initial state $x_0$ and a control input $u\in U$, we define
 \begin{equation}\label{equ:def_f}
-	\xi(t+1)\in f(\xi(t),u(t)) + W. 
+	\Sol_\Sigma(x_0,u)=\set{x\mid x\in f(x_0,u) + W}. 
 \end{equation} 
 %We collect all such solutions in the set $\Sol_\Sigma(x_0,u,T)$. 
 % such that $f(\cdot,u)$ is locally Lipschitz for all $u\in U$.%, an \emph{output space} $Y\subseteq \mathbb{R}^p$, and
