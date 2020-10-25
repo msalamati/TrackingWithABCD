@@ -48,11 +48,11 @@ an \emph{initial state} $x_\init\in X$,
  an \emph{input space} $U\subseteq\mathbb{R}^m$, 
 a compact \emph{disturbance set} $W\subset \mathbb{R}^n$ and
 a \emph{nominal dynamics} $f:X\times U\rightarrow X$. There exists a locally Lipschitz function $f_c\colon X\times U\rightarrow X$ and an absolutely continuous function $\beta\colon \reals \rightarrow X$ such that for every $x\in X$, constant $u\in U$ and fixed sampling time $\tau>0$, 
-\begin{align*}
-	&\dot \beta = f_c(\beta(t),u) \quad \beta(0) =x\\
+\begin{align}
+	&\dot \beta = f_c(\beta(t),u) \quad \beta(0) =x\nonumber\\
 	 &f(x,u) =\beta(\tau).
-\end{align*}
-For a given time horizon $T$, a (state) \emph{trajectory} of $\Sigma$ is a function $\xi\colon[0;T]\rightarrow X$ such that $\xi(0)=x_\init$ and $\xi(\cdot)$ fulfills the following inclusion relation for every $t\in[0;T]$:
+\end{align}
+Therefore, we can characterize nominal dynamics $f$ using $f_c$ and $\tau$. For a given time horizon $T$, a (state) \emph{trajectory} of $\Sigma$ is a function $\xi\colon[0;T]\rightarrow X$ such that $\xi(0)=x_\init$ and $\xi(\cdot)$ fulfills the following inclusion relation for every $t\in[0;T]$:
 \begin{equation}\label{equ:def_f}
 	\xi(t+1)\in f(\xi(t),u(t)) + W. 
 \end{equation} 

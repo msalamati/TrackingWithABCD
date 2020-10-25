@@ -7,13 +7,13 @@ We summarize our approach for algorithmic solution of the posed problem in Alg.~
 	\caption{Multi-agent Controller Synthesis}
 	\label{alg:main}
 	\begin{enumerate}
-		\item For every $i$, let $\Sigma_{\tau,\nom}^i = (X^i,x_\init^i,U^i,\set{0},f^i)$ be the respective \emph{nominal} control system that ignores the disturbances.
-		Compute the product control system $\Sigma^\times_{\tau,\nom}$ of $\set{\Sigma^i_{\tau,\nom}}$. 
+		\item For every $i$, let $\Sigma_{\nom}^i = (X^i,x_\init^i,U^i,\set{0},f^i)$ be the respective \emph{nominal} control system that ignores the disturbances.
+		Compute the product control system $\Sigma^\times_{\nom}$ of $\set{\Sigma^i_{\nom}}$. 
 		%Let $\varepsilon\in \mathbb{R}^n_{>0}$ be a robustness margin. %a discussion on $\varepsilon$ follows subsequently.
-		Use a scalable \emph{planner} to compute an open-loop controller $C^\times_{\nom}$ for $\Sigma^\times_{\tau,\nom}$ so that $C^\times_\nom\triangleright\Sigma_{\tau,\nom}^{\times}$ realizes  $\Phi_\varepsilon$.
+		Use a scalable \emph{planner} to compute an open-loop controller $C^\times_{\nom}$ for $\Sigma^\times_{\nom}$ so that $C^\times_\nom\triangleright\Sigma_{,\nom}^{\times}$ realizes  $\Phi_\varepsilon$.
 		Let $T$ be the time horizon when $\Phi_\varepsilon$ has been fulfilled for the first time. \label{step:planning}
-		\item Decompose $C^\times_\nom$ into \emph{local} open-loop controllers $\set{C^i_\nom}$ for the set of sampled-time abstractions $\set{\Sigma^i_{\tau,\nom}}$.
-		The decomposition is straightforward since $C^\times_\nom$ is open-loop. Further, for every $i$, find the unique nominal open-loop trajectory $\rho^i=(x_{0,\nom}^i,\ldots,x_{T,\nom}^i)$ of length $T$ of $C^i_\nom\triangleright \Sigma_{\tau,\nom}^i$---unique, because there is no disturbance. \label{step:decompose}
+		\item Decompose $C^\times_\nom$ into \emph{local} open-loop controllers $\set{C^i_\nom}$ for the set of sampled-time abstractions $\set{\Sigma^i_{\nom}}$.
+		The decomposition is straightforward since $C^\times_\nom$ is open-loop. Further, for every $i$, find the unique nominal open-loop trajectory $\rho^i=(x_{0,\nom}^i,\ldots,x_{T,\nom}^i)$ of length $T$ of $C^i_\nom\triangleright \Sigma_{\nom}^i$---unique, because there is no disturbance. \label{step:decompose}
 		\item Let $\varepsilon^i\in \mathbb{R}^{n_i}_{>0}$ be the projection of $\varepsilon$ to the state dimensions of $\Sigma_{\tau}^i$.
 		Use a \emph{guaranteed tracking} method to find a closed loop controller $C^i$ for $\Sigma_{\tau}^i$ so that $C^i\parallel \Sigma_\tau^i$ \emph{tracks} the nominal trajectory $\rho^i$, i.e., $C^i\parallel \Sigma_\tau^i$ satisfies the following specification:
 		\begin{align}
@@ -25,7 +25,7 @@ We summarize our approach for algorithmic solution of the posed problem in Alg.~
 	\end{enumerate}
 \end{algorithm}
 
-It can be observed that if every  $C^i\parallel \Sigma_\tau^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma_\tau^i}_{i\in [1;N]}$ will realize $\Phi$ under the worst-case disturbance. Next, we discuss our implementation for each of steps~\ref{step:planning} and \ref{step:tracking} in Alg.~\ref{alg:main}.
+It can be observed that if every  $C^i\parallel \Sigma^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma_\tau^i}_{i\in [1;N]}$ will realize $\Phi$ under the worst-case disturbance. Next, we discuss our implementation for each of steps~\ref{step:planning} and \ref{step:tracking} in Alg.~\ref{alg:main}.
 
 %We did not yet mention the role of the robustness margin $\varepsilon$.
 %Essentially, $\varepsilon$ accounts for the possible tracking error of the ABCD-generated controller in Step~\ref{step:abcd} while tracking the nominal trajectory.
@@ -106,7 +106,7 @@ It can be observed that if every  $C^i\parallel \Sigma_\tau^i$ can realize $\Phi
 %In the following, we summarize some ALTRO-specific implementation details.
 
 \subsection{Open-loop Planning}
-To achieve formally guaranteed planning, a commonly adopted practice is to compute a nominal trajectory over simplified dynamical model and then employ a guaranteed method to account for model mismatches. By simplified, we mean absence of disturbance ($W=\set{0}$). The planner used for generating nominal trajectories should be fast and scalable. In addition, it should be capable of handling non-linear dynamics and constraints. Our choice for the planner is ALTRO (\cite{howell2019altro}). ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and handles nonlinear state and input constraints. Given a sampled time product system $\Sigma_{\tau,\nom}^\times$, reach-avoid specificaton $\Phi_\varepsilon$ and a horizon length $T$, ALTRO computes open-loop controller $C^\times_{\nom}$ by solving the following optimization problem,
+To achieve formally guaranteed planning, a commonly adopted practice is to compute a nominal trajectory over simplified dynamical model and then employ a guaranteed method to account for model mismatches. By simplified, we mean absence of disturbance ($W=\set{0}$). The planner used for generating nominal trajectories should be fast and scalable. In addition, it should be capable of handling non-linear dynamics and constraints. Our choice for the planner is ALTRO (\cite{howell2019altro}). ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and handles nonlinear state and input constraints. Given a sampled time product system $\Sigma_{\nom}^\times$, reach-avoid specificaton $\Phi_\varepsilon$ and a horizon length $T$, ALTRO computes open-loop controller $C^\times_{\nom}$ by solving the following optimization problem,
 \begin{equation*}
 	\begin{aligned}
 		& \underset{u_{0:T-1}}{\text{minimize}}
