@@ -47,7 +47,7 @@ consists of a \emph{state space} $X\subseteq \mathbb{R}^n$,
 an \emph{initial state} $x_\init\in X$,
  an \emph{input space} $U\subseteq\mathbb{R}^m$, 
 a compact \emph{disturbance set} $W\subset \mathbb{R}^n$ and
-a \emph{nominal dynamics} $f:X\times U\rightarrow X$. There exists a locally Lipschitz function $f_{con}\colon X\times U\rightarrow X$ and an absolutely continuous function $\beta\colon \reals \rightarrow X$ such that for every $x\in X$, constant $u\in U$ and fixed sampling time $\tau>0$, 
+a \emph{nominal dynamics} $f:X\times U\rightarrow X$. There exists a locally Lipschitz function $f_{con}\colon X\times U\rightarrow X$ and an absolutely continuous function $\beta\colon \reals_{\geq 0} \rightarrow X$ such that for every $x\in X$, constant $u\in U$ and fixed sampling time $\tau>0$, 
 \begin{align}
 	&\dot \beta = f_{con}(\beta(t),u) \quad \beta(0) =x\nonumber\\
 	 &f(x,u) =\beta(\tau).\label{eq:cont_to_disc}
