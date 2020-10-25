@@ -1,7 +1,9 @@
 %! TEX ROOT = ./main.tex
 
-\section{The Problem Statement}
+\section{Multi-Agent Reach-Avoid Controller Synthesis}
 \label{sec:problem}
+
+\subsection{Problem Statement}
 %\textcolor{blue}{
 In this paper, we consider the feedback controller synthesis problem for a heterogeneous swarm of $N$ different control systems.
 Each system is modeled as a nonlinear control systems subjected to disturbances. We consider \emph{reach-avoid} specifications denoted as $\Phi=\lnot\avoid\;\mathcal{U}\;\goal$ with some $\avoid\subseteq X^\times$ and $\goal\subseteq X^\times$, where $X^\times$ is the state space of the product control system of $\set{\Sigma^i}_{i\in [1;N]}$. Now, let $\varepsilon\in \mathbb{R}^n_{>0}$ be a \emph{robustness margin}. We define a robust version of a given reach-avoid specification by $\Phi_\varepsilon=\lnot\avoid'\;\mathcal{U}\;\goal'$ with $\avoid'=\avoid'\oplus\ball_\varepsilon(0)$ and $\goal'=\goal\ominus\ball_\varepsilon(0)$, where $\oplus$ and $\ominus$ denote the Minkowski addition and diffrence, respectively. %Given a sampled-time abstraction product control system $\Sigma^\times_\tau$ and reach-avoid specification $\Phi$ defined over $X^\times$, we will say that decentralized open-

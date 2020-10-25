@@ -1,6 +1,6 @@
 %! TEX ROOT = ./main.tex
 
-\section{Preliminaries}
+\section{Systems and Controllers}
 
 \smallskip
 \noindent\textbf{Notation.}\
@@ -11,16 +11,21 @@ The operator $|\cdot |$ is used to denote both the absolute value of a vector an
 
 Let $f\colon A\to B$ and $g\colon C\to D$ be two functions.
 We define the product function $f\otimes g\colon A\times C\to B\times D $, $f\otimes g \colon (a,c)\mapsto (f(a),g(c))$.
-The product function can be defined for arbitrarily many functions by extending the definition in the obvious way.
+The product is associative and extends to more than two functions in the obvious way.
 
 %Throughout, we measure distance between two points, within a space $\mathbb{R}^n$, using the \emph{distance metric} $d\colon \mathbb{R}^p\times \mathbb{R}^p\to \mathbb{R}_{\geq0}$, $d^p\colon \left(u,v\right)\mapsto \|u-v\|$. 
 %We extend the definition of $d^p$ to measure distance between a point and a set: for any given $u\in \mathbb{R}^p$ and $V\in \mathbb{R}^p$, $d^p(u,V) \coloneqq \inf_{v\in V}\|u-v\|$.
-Given a point $c\in \mathbb{R}^n$ and given the parameter $\varepsilon\in \mathbb{R}_{>0}^{n}$, we use the notation $\ball_\epsilon( x)$ to denote the ball in $\mathbb{R}^n$, centered around $c$ and having radius $\epsilon$.
-Formally, \[\ball_\varepsilon(c)\coloneqq \set{x
-	\in \mathbb{R}^n \mid  |x-c|\leq \varepsilon }.\] 
+Given a point $c\in \mathbb{R}^n$ and given the parameter $\varepsilon\in \mathbb{R}_{>0}^{n}$, we write $\ball_\epsilon(c)$ to denote the ball with center $c$ and radius $\epsilon$ in $\mathbb{R}^n$, i.e., 
+$\ball_\varepsilon(c)\coloneqq \set{x \in \mathbb{R}^n \mid  |x-c|\leq \varepsilon }$.
 
 Let $A$ be a set.
-We use the notation $A^\infty$ to denote the set of all finite and infinite sequences formed using the members of $A$. Finally, to define our control tasks, we use a subset of Linear Temporal Logic (LTL). In particular, we will use the until ($\mathcal{U}$) and next  ($\bigcirc$) operators. Let $p$ and $q$ be subsets of $\reals^n$, and $\rho=(x_0,x_1,\dots)$ be an infinite sequence of elements from $\reals^n$. We write $\rho\models\bigcirc p$ if $x_1\in p$ and similarly we write $\rho\models p\mathcal{U}q$ if there exists $i\in\mathbb{N}$ s.t. $x_i\in q$ and for all $0\leq j<i$, $x_j\in p$. For detailed syntax and semantics of LTL, we refer to \cite{baier2008principles} and references therein.
+We use the notation $A^\infty$ to denote the set of all finite and infinite sequences formed using the members of $A$. 
+Finally, to define our control tasks, we use a subset of Linear Temporal Logic (LTL). 
+In particular, we will use the until ($\mathcal{U}$) and next  ($\bigcirc$) operators. 
+Let $p$ and $q$ be subsets of $\reals^n$, and $\rho=(x_0,x_1,\dots)$ be an infinite sequence of elements from $\reals^n$. 
+We write $\rho\models\bigcirc p$ if $x_1\in p$ and similarly we write $\rho\models p\mathcal{U}q$ if there exists 
+$i\in\mathbb{N}$ s.t. $x_i\in q$ and for all $0\leq j<i$, $x_j\in p$. 
+For detailed syntax and semantics of LTL, we refer to \cite{baier2008principles} and references therein.
 
 %Let $V$ be a finite set of real-valued variables.
 %We use the notation $\sem{V}$ (same symbol but in boldface blue) to denote the set of every possible valuations of the variables in $V$, i.e.\ an element in $\sem{V}$ assigns an unique real number to every variable in $V$.

@@ -1,8 +1,9 @@
-\section{Robust Reach-Avoid for Multi-Agent Systems}
-\subsection{The Solution Outline}
+% \section{Robust Reach-Avoid for Multi-Agent Systems}
+
+\subsection{Solution Outline}
 We summarize our approach for algorithmic solution of the posed problem in Alg.~\ref{alg:main}.
 
-\begin{algorithm}
+\begin{algorithm}[t]
 	\caption{Multi-agent Controller Synthesis}
 	\label{alg:main}
 	\begin{enumerate}
@@ -105,7 +106,7 @@ It can be observed that if every  $C^i\parallel \Sigma_\tau^i$ can realize $\Phi
 %In the following, we summarize some ALTRO-specific implementation details.
 
 \subsection{Open-loop Planning}
-To achieve formally guaranteed planning, a commonly adopted practice is to compute a nominal trajectory over simplified dynamical model and then employ a guaranteed method to account for model mismatches. By simplified, we mean absence of disturbance ($W=\set{0}$). The planner used for generating nominal trajectories should be fast and scalable. In addition, it should be capable of handeling non-linear dynamics and constraints. Our choice for the planner is ALTRO (\cite{howell2019altro}). ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and handles nonlinear state and input constraints. Given a sampled time product system $\Sigma_{\tau,\nom}^\times$, reach-avoid specificaton $\Phi_\varepsilon$ and a horizon length $T$, ALTRO computes open-loop controller $C^\times_{\nom}$ by solving the following optimization problem,
+To achieve formally guaranteed planning, a commonly adopted practice is to compute a nominal trajectory over simplified dynamical model and then employ a guaranteed method to account for model mismatches. By simplified, we mean absence of disturbance ($W=\set{0}$). The planner used for generating nominal trajectories should be fast and scalable. In addition, it should be capable of handling non-linear dynamics and constraints. Our choice for the planner is ALTRO (\cite{howell2019altro}). ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and handles nonlinear state and input constraints. Given a sampled time product system $\Sigma_{\tau,\nom}^\times$, reach-avoid specificaton $\Phi_\varepsilon$ and a horizon length $T$, ALTRO computes open-loop controller $C^\times_{\nom}$ by solving the following optimization problem,
 \begin{equation*}
 	\begin{aligned}
 		& \underset{u_{0:T-1}}{\text{minimize}}
@@ -127,31 +128,10 @@ In multi-robot scenarios, we use inequality constraints to define collision and 
 	We stress on the fact that this is an ALTRO-specific implementation detail, and our overall method does not rely on a fixed time horizon.
 \end{remark}
 
-\begin{remark}
-	It is worthwhile to point out that the nominal controller obtained in Step~\ref{step:planning} of Alg.~\ref{alg:main} is not directly used by Step~\ref{step:tracking}; rather only the nominal trajectories are used.
-	Then one could argue that, instead of using ALTRO to generate nominal trajectories, one could simply employ a fast \emph{planner} \cite{Kavraki1996rrt} to generate geometric plans.
-	However, since the fast geometric planners do not usually take into consideration the dynamics and control constraints, so, in our experience, the generated plans (i.e.\ the nominal trajectories) are often doomed to be untrackable for general class of systems (i.e.\ non-flat systems), especially if the system has restricted control capabilities or is under-actuated.
-	We demonstrate this phenomenon on a single system $\Sigma$, a simple $2$-dimensional pendulum with the following nominal system dynamics (i.e., without considering disturbances):
-	\begin{align*}
-		\dot{x}_1 &= x_2\\
-		\dot{x}_2 &= -sin(x_1) + u/5,
-	\end{align*}
-	where $x_1$ represents the angle (in radian) of the pendulum rod measured counter-clockwise from the vertical upright position, and $x_2$ represents the rate of change of $x_1$ or the angular velocity.
-	Suppose the initial state of the pendulum is $(\pi,0)$, i.e., when the pendulum is in the vertical downward position and is stationary.
-	Suppose we want to find a controller for the goal $\goal = \set{(0,0)}$, i.e., when the pendulum is in the vertical upward position and is stationary.
-	(The set of unsafe states $\avoid$ is empty.)
-	When we use ALTRO to compute an open-loop controller $C$, unsurprisingly, the controlled trajectory of $C\triangleright \Sigma$ looks like a spiral, as shown in Fig.~\ref{fig:traj 2d pendulum}.
-	The synthesis of tracking controller using ABCD was indeed successful when we fed this nominal trajectory to our ABCD solver.
-	However, if we would use a geometric planner for this example, the nominal trajectory would be a straight line path from $(\pi,0)$ to $(0,0)$, which would pose an infeasible tracking problem for ABCD, due to the restrictions in the dynamics of the pendulum.
-	\begin{figure}
-		\includegraphics[scale=0.2]{figures/2d_pendulum_spiral}
-		\caption{The nominal open-loop trajectory of the $2$-dimensional pendulum.}
-		\label{fig:traj 2d pendulum}
-	\end{figure}
-\end{remark}
 
 
-\subsection{Guaranteed Tracking of Open-loop Trajectories}
+\subsection{Guaranteed Trajectory Tracking} 
+
 Trajectories computed in the planning stage might not be followed in the presence of disturbance and therefore we need to use a formally guaranteed tracker to satisfy the given reach-avoid specification. Our choice for this purpose is the so-called abstraction-based controller design (ABCD). ABCD can handle nonlinear dynamics, (bounded) uncertainties and $\omega$-regular specifications. In particular, we use SCOTS which is a software tool for implementing abstraction-based controller synthesis (\cite{Rungger2016scots}). Next, we shortly introduce basics of ABCD.
 \subsubsection{Preliminaries of Abstraction-Based Controller Design}\hfill
 \smallskip
@@ -233,18 +213,46 @@ Finally, given the computed finite state abstraction $\widehat \Sigma$ and the L
 %So ideally, in Step~\ref{step:planning}, we should maximize $\varepsilon$ so that an open-loop controller can be obtained by ALTRO for $\Phi_\varepsilon$.
 %For this work, we did not implement this step in an algorithmic manner, and relied on the judgment of the system designer for choosing a suitable $\varepsilon$.
 
-\begin{algorithm}
-	\caption{ABCD-for-tracking}
-	\label{alg:abcd-with-time-for-tracking}
-	\begin{algorithmic}[1]
-		\Require $\Sigma=(X,x_\init,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $(x_{0,\nom},\ldots,x_{T,\nom})$, $\varepsilon \in \mathbb{R}_{>0}^{n}$
-		\Ensure Feedback controller $C\colon X\times[0;T]\to U$ (partial function)
-		\State $Domain \gets \bigcup_{t=0}^T\ball_{\varepsilon}(x_{t,\nom})$
-%		\For{$t$ from $0$ to $T$}
-%		\State $P \gets \ball_{\varepsilon}(x_{t,\nom})$
-%		\EndFor
-		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, Domain, \tau, \eta_{x} , \eta_u)$
-		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the specification in Eq. \eqref{eq:ltl_spec} %$(\ball_{\varepsilon}(x_K^\nom,k), \emptyset, (x_0^\nom,0))$
-		\State \Return $\widehat{C}\circ Q$
-	\end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}
+% 	\caption{ABCD-for-tracking}
+% 	\label{alg:abcd-with-time-for-tracking}
+% 	\begin{algorithmic}[1]
+% 		\Require $\Sigma=(X,x_\init,U,W,f)$, $\tau \in \mathbb{R}_{>0}$, $\eta_x\in \mathbb{R}^n_{>0}$, $\eta_u\in \mathbb{R}^m_{>0}$, $(x_{0,\nom},\ldots,x_{T,\nom})$, $\varepsilon \in \mathbb{R}_{>0}^{n}$
+% 		\Ensure Feedback controller $C\colon X\times[0;T]\to U$ (partial function)
+% 		\State $Domain \gets \bigcup_{t=0}^T\ball_{\varepsilon}(x_{t,\nom})$
+%% 		\For{$t$ from $0$ to $T$}
+%% 		\State $P \gets \ball_{\varepsilon}(x_{t,\nom})$
+%% 		\EndFor
+% 		\State $(\widehat{\Sigma},Q) \gets \findAbs(\Sigma, Domain, \tau, \eta_{x} , \eta_u)$
+% 		\State Synthesize controller $\widehat{C}$ for $\widehat{\Sigma}$ and the specification in Eq. \eqref{eq:ltl_spec} %$(\ball_{\varepsilon}(x_K^\nom,k), \emptyset, (x_0^\nom,0))$
+% 		\State \Return $\widehat{C}\circ Q$
+% 	\end{algorithmic}
+% \end{algorithm}
+
+
+\subsection{Hybrid vs Geometric Planning}
+
+Note that the nominal controller obtained in Step~\ref{step:planning} of Alg.~\ref{alg:main} is not directly used by Step~\ref{step:tracking}; 
+rather, only the nominal trajectories are used.
+Then one could argue that, instead of using ALTRO to generate nominal trajectories, one could simply employ a fast \emph{planner} \cite{Kavraki1996rrt} to 
+generate geometric plans.
+However, since fast geometric planners do not usually take into consideration the dynamics and control constraints, in our experience, the 
+generated plans (i.e., the nominal trajectories) are often untrackable unless the underlying system has special properties (e.g., differential flatness).
+This is especially true for systems with restricted control capabilities or under-actuated systems.
+We demonstrate this phenomenon on a single system $\Sigma$, a simple $2$-dimensional pendulum with the following nominal system dynamics:
+	\begin{align*}
+		\dot{x}_1 &= x_2\\
+		\dot{x}_2 &= -sin(x_1) + u/5,
+	\end{align*}
+where $x_1$ represents the angle (in radian) of the pendulum rod measured counter-clockwise from the vertical upright position, and $x_2$ represents the rate of change of $x_1$ or the angular velocity.
+Suppose the initial state of the pendulum is $(\pi,0)$, i.e., when the pendulum is in the vertical downward position and is stationary.
+Suppose we want to find a controller for the goal $\goal = \set{(0,0)}$, i.e., when the pendulum is in the vertical upward position and is stationary.
+(The set of unsafe states $\avoid$ is empty.)
+When we use ALTRO to compute an open-loop controller $C$, unsurprisingly, the controlled trajectory of $C\triangleright \Sigma$ looks like a spiral, as shown in Fig.~\ref{fig:traj 2d pendulum}.
+The synthesis of tracking controller using ABCD was indeed successful when we fed this nominal trajectory to our ABCD solver.
+However, if we would use a geometric planner for this example, the nominal trajectory would be a straight line path from $(\pi,0)$ to $(0,0)$, which would pose an infeasible tracking problem for ABCD, due to the restrictions in the dynamics of the pendulum.
+	\begin{figure}
+		\includegraphics[scale=0.2]{figures/2d_pendulum_spiral}
+		\caption{The nominal open-loop trajectory of the $2$-dimensional pendulum.}
+		\label{fig:traj 2d pendulum}
+	\end{figure}

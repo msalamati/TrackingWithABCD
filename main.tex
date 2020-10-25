@@ -1,10 +1,14 @@
 \documentclass[sigconf,review]{acmart} 
+\settopmatter{printacmref=false} % Removes citation information below abstract
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+% \pagestyle{plain} % removes running headers
+\fancyfoot{} % for removing "manuscript submitted to ACM" running footer
 
 %\bibliographystyle{plainurl}
 
 \include{preamble} % for the packages and the macros
 
-\title{Hierarchical Control for Multi-Agent Systems\\ with Formal Guarantees}
+\title{Multi-Agent Reach-Avoid Control with Formal Guarantees}
 
 %\author{Mehrdad, Kaushik, Mahmoud, Rupak, Sadegh}
 
