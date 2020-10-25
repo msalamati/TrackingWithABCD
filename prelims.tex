@@ -1,30 +1,31 @@
-%! TEX ROOT = ./main.tex
+% !TEX root = main.tex
 
 \section{Systems and Controllers}
 
 \smallskip
 \noindent\textbf{Notation.}\
 We use the notation $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the set of real numbers and the set of positive real numbers respectively.
-We use superscript $n>0$ with $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the cartesian product of $n$ copies of $\mathbb{R}$ and $\mathbb{R}_{>0}$ respectively.
-Given two points $x=(x_1,\ldots, x_n)$ and $y=(y_1,\ldots, y_n)$ in $ \mathbb{R}^n$ (or $\mathbb{R}^n_{>0}$) and a relational symbol $\triangleright\in \set{\leq, <, = , >, \geq}$, we write $x\triangleright y$ if for every $i=1,\ldots,n$, $x_i\triangleright y_i$.
+We use superscript $n>0$ with $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the Cartesian product of $n$ copies of $\mathbb{R}$ and $\mathbb{R}_{>0}$ respectively.
+Given two points $x=(x_1,\ldots, x_n)$ and $y=(y_1,\ldots, y_n)$ in $ \mathbb{R}^n$
+%(or $\mathbb{R}^n_{>0}$)
+and a relational symbol $\triangleright\in \set{\leq, <, = , >, \geq}$, we write $x\triangleright y$ if $x_i\triangleright y_i$ for every $i\in\set{1,2,\ldots,n}$.
 The operator $|\cdot |$ is used to denote both the absolute value of a vector and cardinality of a set, depending on the type of the operand, and the operator $\| \cdot \|$ is used to denote the infinity norm.  
 
 Let $f\colon A\to B$ and $g\colon C\to D$ be two functions.
 We define the product function $f\otimes g\colon A\times C\to B\times D $, $f\otimes g \colon (a,c)\mapsto (f(a),g(c))$.
 The product is associative and extends to more than two functions in the obvious way.
-
+%
 %Throughout, we measure distance between two points, within a space $\mathbb{R}^n$, using the \emph{distance metric} $d\colon \mathbb{R}^p\times \mathbb{R}^p\to \mathbb{R}_{\geq0}$, $d^p\colon \left(u,v\right)\mapsto \|u-v\|$. 
 %We extend the definition of $d^p$ to measure distance between a point and a set: for any given $u\in \mathbb{R}^p$ and $V\in \mathbb{R}^p$, $d^p(u,V) \coloneqq \inf_{v\in V}\|u-v\|$.
-Given a point $c\in \mathbb{R}^n$ and given the parameter $\varepsilon\in \mathbb{R}_{>0}^{n}$, we write $\ball_\epsilon(c)$ to denote the ball with center $c$ and radius $\epsilon$ in $\mathbb{R}^n$, i.e., 
+Given $c\in \mathbb{R}^n$ and $\varepsilon\in \mathbb{R}_{>0}^{n}$, the ball with center $c$ and radius $\varepsilon$ in $\mathbb{R}^n$ is denoted by 
 $\ball_\varepsilon(c)\coloneqq \set{x \in \mathbb{R}^n \mid  |x-c|\leq \varepsilon }$.
 
 Let $A$ be a set.
-We use the notation $A^\infty$ to denote the set of all finite and infinite sequences formed using the members of $A$. 
-Finally, to define our control tasks, we use a subset of Linear Temporal Logic (LTL). 
-In particular, we will use the until ($\mathcal{U}$) and next  ($\bigcirc$) operators. 
-Let $p$ and $q$ be subsets of $\reals^n$, and $\rho=(x_0,x_1,\dots)$ be an infinite sequence of elements from $\reals^n$. 
-We write $\rho\models\bigcirc p$ if $x_1\in p$ and similarly we write $\rho\models p\mathcal{U}q$ if there exists 
-$i\in\mathbb{N}$ s.t. $x_i\in q$ and for all $0\leq j<i$, $x_j\in p$. 
+We use the notation $A^\infty$ to denote the set of all finite and infinite sequences formed using the members of $A$. Our control tasks are defined using a subset of Linear Temporal Logic (LTL). 
+In particular, we use the \emph{until} operator $\mathcal{U}$ and the \emph{next} operator $\bigcirc$ defined as follows. 
+Let $p$ and $q$ be subsets of $\reals^n$ and $\rho=(x_0,x_1,\dots)$ be an infinite sequence of elements from $\reals^n$. 
+We write $\rho\models\bigcirc p$ if $x_1\in p$. We write $\rho\models p\mathcal{U}q$ if there exists 
+$i\in\mathbb{N}$ s.t. $x_i\in q$ and $x_j\in p$ for all $0\leq j<i$. 
 For detailed syntax and semantics of LTL, we refer to \cite{baier2008principles} and references therein.
 
 %Let $V$ be a finite set of real-valued variables.
@@ -57,6 +58,9 @@ For an initial state $x_0$ and a control input $u\in U$, we define
 \begin{equation}\label{equ:def_f}
 	\Sol_\Sigma(x_0,u)=\set{x\mid x\in f(x_0,u) + W}. 
 \end{equation} 
+\Sadegh{Trajectory should reflect the discrete nature of the system}
+
+\Sadegh{There are lots of inconsistencies in this definition. I will change this depending on how other things are used in the rest of the paper.}
 %We collect all such solutions in the set $\Sol_\Sigma(x_0,u,T)$. 
 % such that $f(\cdot,u)$ is locally Lipschitz for all $u\in U$.%, an \emph{output space} $Y\subseteq \mathbb{R}^p$, and
 %an \emph{output function} $h\colon X\mapsto Y$. 
@@ -86,24 +90,26 @@ if $|\rho| < \infty$ then $\delta(z_{|\rho|},u)= \emptyset$ for all $u\in U$.
 \smallskip
 \noindent\textbf{Product Control System.}\
 Let $\set{\Sigma^i}_{i\in [1;N]}$, $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i)$, be a set of $N$ control systems. 
-We assume that all of the control systems within $\set{\Sigma^i}_{i\in [1;N]}$ share an output space $Y\subseteq\reals^p$ to which there exists a set of projections of the form $h^i\colon X^i\rightarrow Y$. Recall our motivating example, wherein the crane's state space consists of the cart's position ($z$), the cart's speed ($v_z$), the pendulum's angular position ($\theta$), and angular speed ($v_\theta$). The state space for the vehicle is described with only one state variable $z'$ describing its position. Note that $X^1\subseteq \reals^4$ and $X^2\subseteq \reals$. Now, defining $h^1=\begin{bmatrix}z+l\sin(\theta)&0.6+l\cos(\theta)\end{bmatrix}^T$ and $h^2=\begin{bmatrix}z'&0.4\end{bmatrix}^T$, both state spaces can be projected to $Y\subseteq \reals^2$ in which we would like to compute distance.
+We assume that each control system $\Sigma^i$ in $\set{\Sigma^i}_{i\in [1;N]}$ is equipped with an output map $h^i\colon X^i\rightarrow Y$ where $Y\subseteq\reals^p$ is a shared output space. Recall our motivating example, wherein the crane's state space consists of the cart's position ($z$), the cart's speed ($v_z$), the pendulum's angular position ($\theta$), and angular speed ($v_\theta$). The state space for the vehicle is described with only one state variable $z'$ describing its position. Note that $X^1\subseteq \reals^4$ and $X^2\subseteq \reals$. By defining $h^1(z,v_z,\theta,v_\theta)=\begin{bmatrix}z+l\sin(\theta)&0.6+l\cos(\theta)\end{bmatrix}^T$ and $h^2(z')=\begin{bmatrix}z'&0.4\end{bmatrix}^T$, both state spaces can be mapped to $Y\subseteq \reals^2$ in which we would like to compute their distance.
 %For example, in a multi-robot scenario, all of the robots move within a two or three dimensional space independent of their individual dynamics.
-We define distance between two control systems as $D\colon X^i\times X^j\rightarrow \reals_{\geq 0}$, $D\colon (u,v)\mapsto\| h^i(u)-h^j(v)\|$. We extend the definition of $D$ to measure distance between a system's state and a set defined over the shared output space: for any given $u\in X^i$ and $V\subseteq Y$, $D(u,V) \coloneqq \inf_{v\in V}\|h^i(u)-v\|$. The \emph{product control system of } $\set{\Sigma^i}_{i\in [1;N]}$ is the control system $\Sigma^\times = (X^\times, x_\init^\times, U^\times, \set{0^n}, f^\times, D)$ wherein $X^\times\coloneqq X^1\times \ldots \times X^N$ and we assume that $\sum_{i\in [1;N]} n_i=n$, $x_\init^\times\coloneqq (x_\init^1,\ldots,x_\init^N)$, $U^\times\coloneqq U^1\times\dots\times U^N\subset \reals^m$ and $f^\times\coloneqq f^{1}\otimes \ldots\otimes f^{N}$. 
+We define distance between two control systems by $D\colon X^i\times X^j\rightarrow \reals_{\geq 0}$ with $D(u,v) = \| h^i(u)-h^j(v)\|$. We extend the definition of $D$ to measure distance between a system's state and a set defined over the shared output space: for any given $u\in X^i$ and $V\subseteq Y$, $D(u,V) \coloneqq \inf_{v\in V}\|h^i(u)-v\|$ \Sadegh{This is not right}.
+The \emph{product control system of } $\set{\Sigma^i}_{i\in [1;N]}$ is the control system $\Sigma^\times = (X^\times, x_\init^\times, U^\times, \set{0^n}, f^\times, D)$ \Sadegh{why do you have $D$?} wherein $X^\times\coloneqq X^1\times \ldots \times X^N$ and we assume that $\sum_{i\in [1;N]} n_i=n$, $x_\init^\times\coloneqq (x_\init^1,\ldots,x_\init^N)$, $U^\times\coloneqq U^1\times\dots\times U^N\subset \reals^m$ and $f^\times\coloneqq f^{1}\otimes \ldots\otimes f^{N}$. 
 We use the state projection operator $\proj^{i}\colon X^\times\to X^i$, $\proj^{i}\colon (x^1,\ldots,x^N)\mapsto x^i$. %We extend definition of $\proj^i$ to denote projection of a set $A\subseteq X^\times$ to $X^i$ as $\proj^i(A)\coloneqq \set{x\mid \exists x^\times\in A.\;\proj^i(x^\times)=x}$.
-From here on, we will omit the domain of $i$ and will use ``$\set{\Sigma^i}$'' instead of ``$\set{\Sigma^i}_{i\in [1;N]}$'' for simpler notation.
 
 \smallskip
 \noindent\textbf{Product Transition System.}\
 Let $\set{S^i}_{i\in [1;N]}$, $S^i=(Z^i,z_\init^i,U^i,\delta^i)$, be a set of $N$ transition systems.
-The \emph{product transition system of } $\set{S^i}_{i\in [1;N]}$ is the transition system $S^\times \coloneqq (Z^\times, z^\times, U^\times, \delta^\times)$ such that $Z^\times \coloneqq Z^1\times \ldots \times Z^N$, $z^\times_\init\coloneqq (z_\init^1,\ldots,z_\init^N)$, $U^\times \coloneqq U^1\times \ldots\times U^N$, and $\delta^\times \coloneqq \delta^1\otimes\ldots \otimes \delta^N$.
-From here on, we will omit the domain of $i$ and will use ``$\set{S^i}$'' instead of ``$\set{S^i}_{i\in [1;N]}$'' for simpler notation.
+The \emph{product transition system of } $\set{S^i}_{i\in [1;N]}$ is the transition system $S^\times \coloneqq (Z^\times, z_\init^\times, U^\times, \delta^\times)$ such that $Z^\times \coloneqq Z^1\times \ldots \times Z^N$, $z^\times_\init\coloneqq (z_\init^1,\ldots,z_\init^N)$, $U^\times \coloneqq U^1\times \ldots\times U^N$, and $\delta^\times \coloneqq \delta^1\otimes\ldots \otimes \delta^N$.
+From here on, we omit the domain of $i$ and use ``$\set{S^i}$'' and ``$\set{\Sigma^i}$'' respectively for ``$\set{S^i}_{i\in [1;N]}$'' and ``$\set{\Sigma^i}_{i\in [1;N]}$'' to simplify the notation.
 
-\subsection{Controllers} Here, we only introduce the notations for representing different types of controllers used in this paper. More detailes can be found in Sec.~\ref{sec:controllers}. %Let $\Sigma=(X,x_\init,U,W,f)$ denote a control system $\Sigma$.
-An open-loop controller of $\Sigma$ is a function $C\colon [0;T]\to U$ for some given time horizon $T\in\mathbb N$. The open-loop is obtained when we connect $C$ with $\Sigma$ serially (denoted by $C \triangleright \Sigma$). %The \emph{open-loop behavior} $\Beh^\ol(x_\init)$ of $\Sigma_\tau$ under $C$ is the set of all trajectories of the transition system $C \triangleright \Sigma_\tau$.
- A feedback controller of $\Sigma$ is a function $C\colon X\times[0;T]\to U$ for a given time horizon $T$. The closed-loop is obtained when we connect $C$ with $\Sigma$ in feedback (denoted by $C\parallel\Sigma_\tau$). %The \emph{closed-loop behavior} $\Beh^\cl(x_\init)$ of $\Sigma_\tau$ under $C$ is the set of all trajectories of the transition system $C\parallel\Sigma_\tau$. 
-Let $\Sigma^\times$ be the product sampled time abstraction of $\set{\Sigma^i} $.
+\subsection{Controllers} We introduce the notations for representing different types of controllers used in this paper. More details can be found in Sec.~\ref{sec:controllers}. %Let $\Sigma=(X,x_\init,U,W,f)$ denote a control system $\Sigma$.
+\Sadegh{why do you need this forward reference?}
+%\Sadegh{Which notation are we using for intervals $[a,b]$ or $[a;b]$?}
+An open-loop controller for $\Sigma=(X,x_\init,U,W,f)$ over a time interval $[0;T]$ with $T\in\mathbb N$ is a function $C\colon [0;T]\to U$. The open-loop is obtained when we connect $C$ with $\Sigma$ serially (denoted by $C \triangleright \Sigma$). %The \emph{open-loop behavior} $\Beh^\ol(x_\init)$ of $\Sigma_\tau$ under $C$ is the set of all trajectories of the transition system $C \triangleright \Sigma_\tau$.
+ A feedback controller for $\Sigma$ over a time interval $[0;T]$ is a function $C\colon X\times[0;T]\to U$. The closed-loop is obtained when we connect $C$ with $\Sigma$ in feedback (denoted by $C\parallel\Sigma$). %The \emph{closed-loop behavior} $\Beh^\cl(x_\init)$ of $\Sigma_\tau$ under $C$ is the set of all trajectories of the transition system $C\parallel\Sigma_\tau$. 
+\Sadegh{The following sentence doesn't make sense. Let $\Sigma^\times$ be the product sampled time abstraction of $\set{\Sigma^i} $}.
 A global open-loop (feedback) controller of $\set{\Sigma^i} $ is an open-loop (a feedback) controller of $\Sigma^\times$.
-On the other hand, a set of local open-loop (feedback) controllers of $\set{\Sigma^i} $ is a set $\set{C^i} $ where, for every $i\in [1;N]$, $C^i$ is an open-loop (a feedback) controller of $\Sigma^i$. Given $\set{\Sigma^i} $ and a set of open-loop (feedback) controllers $\set{C^i} $, we define the \emph{decentralized open-loop} (\emph{decentralized closed-loop})---denoted by $\set{C^i} \triangleright \set{\Sigma^i} $ ($\set{C^i} \parallel \set{\Sigma^i} $)---as the product transition system of $\set{C^i\triangleright \Sigma^i} $ ($\set{C^i\parallel \Sigma^i} $).
+On the other hand, a set of local open-loop (feedback) controllers of $\set{\Sigma^i} $ is a set $\set{C^i} $ where, for every $i\in [1;N]$, $C^i$ is an open-loop (a feedback) controller of $\Sigma^i$. Given $\set{\Sigma^i} $ and a set of open-loop (feedback) controllers $\set{C^i} $, we define the \emph{decentralized open-loop} (\emph{decentralized closed-loop})---denoted by $\set{C^i} \triangleright \set{\Sigma^i} $ ($\set{C^i} \parallel \set{\Sigma^i} $)---as the product \textcolor{magenta}{transition system} of $\set{C^i\triangleright \Sigma^i} $ ($\set{C^i\parallel \Sigma^i} $).
 
 %here
 %\subsection{Abstraction-Based Controller Synthesis Background}
