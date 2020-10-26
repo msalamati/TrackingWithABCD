@@ -4,7 +4,11 @@
 
 \subsection{Solution Outline}
 To solve our planning problem with formal guarantees, we propose to compute a nominal trajectory over the simplified dynamical model of the product system and then employ a guaranteed method to synthesize controllers locally that account for model mismatches. By simplified, we mean absence of disturbance, i.e., $W=\set{0}$.
-We summarize our approach for solving Prob.~\ref{problem} in Alg.~\ref{alg:main}. \Sadegh{I think it might be better to bring the algorithm as part of the text.}
+We summarize our approach for solving Prob.~\ref{problem} in Alg.~\ref{alg:main}.
+The approach is composed of three main steps:
+(1) Synthesize a global open-loop controller as a single planner task on the product system to satisfy $\Phi_\varepsilon$;
+(2) Project the controller into local controllers and obtain a nominal trajectory for each system; and
+(3) Design local closed-loop controllers to track the nominal trajectory while always staying within a given distance of the trajectory.  
 
 \begin{theorem}
 Local feedback controllers $\set{C^i}$ synthesized by Alg.~\ref{alg:main} guarantees that the global specification is satisfied by the product system $\set{C^i}\parallel \set{\Sigma^i}$. 
@@ -42,7 +46,6 @@ Next, we discuss our implementation of Alg.~\ref{alg:main} for the global \emph{
 		\label{step:tracking}
 	\end{enumerate}
 \end{algorithm}
-
 
 %We did not yet mention the role of the robustness margin $\varepsilon$.
 %Essentially, $\varepsilon$ accounts for the possible tracking error of the ABCD-generated controller in Step~\ref{step:abcd} while tracking the nominal trajectory.
@@ -134,36 +137,37 @@ The planner used for generating nominal trajectories in Step~\ref{step:planning}
 		& & &  h(x^\times_k,u^\times_k)=0,\qquad\forall k\in[0;T],
 	\end{aligned}
 \end{equation*}
-where $\ell_k(\cdot,\cdot)$ denotes a quadratic objective function assigning cost to each pair of state and input before the end of horizon, $\ell_T(\cdot)$ represents a quadratic objective function assigning penalty to the final state $x^\times_T$ being away from the goal set $\goal'$. The constraints $g(\cdot,\cdot)\leq 0$ and $h(\cdot,\cdot)$ denote inequality and equality constraints at each time point.
-\Sadegh{Here.}
-In multi-robot scenarios, we use inequality constraints to define collision and obstacle avoidance specifications and use equality constraints to define fixed formation specification. Following step~\ref{step:decompose} of Alg.~\ref{alg:main}, we get open-loop nominal trajectories $\rho^i$ for every agent.
-
+where $\ell_k(\cdot,\cdot)$ denotes a quadratic objective function assigning cost to each pair of state and input before the end of horizon, $\ell_T(\cdot)$ represents a quadratic objective function assigning penalty to the final state $x^\times_T$ being away from the goal set $\goal'$. The constraints $g(x^\times_k,u^\times_k)\leq 0$ and $h(x^\times_k,u^\times_k)=0$ capture the requirement that at each time $k$ the state should not be in $\avoid'$, the state $x^\times_T$ should be in $\goal'$, and the input $u^\times_k$ should always be in $U^\times$.
+%
+In multi-robot scenarios, the inequality constraints can be used to define collision and obstacle avoidance specifications and the equality constraints can define fixed formation specification.
+%Following step~\ref{step:decompose} of Alg.~\ref{alg:main}, we get open-loop nominal trajectories $\rho^i$ for every agent.
 
 \begin{remark}
-	Unfortunately, ALTRO only supports bounded horizon control problem.
-	For this reason, we were forced to specify a horizon while solving the synthesis problem in Step~\ref{step:planning} of Alg.~\ref{alg:main}.
-	We modeled the states in the set $\goal$ as sink states, and specified a horizon that is long enough for the system to be able to reach $\goal$.
-	We stress on the fact that this is an ALTRO-specific implementation detail, and our overall method does not rely on a fixed time horizon.
+	ALTRO supports only bounded horizon control problem.
+	For this reason, we model the states in $\goal'$ as a sink state and select a time horizon $T$ for solving the planning task on the nominal product system. We increase the horizon $T$ if ALTRO is not able to find a controller.
+	%we were forced to specify a horizon while solving the synthesis problem in Step~\ref{step:planning} of Alg.~\ref{alg:main}.
+	We stress that this is an ALTRO-specific implementation detail, and our overall method does not rely on a fixed time horizon.
 \end{remark}
 
 
 
 \subsection{Guaranteed Trajectory Tracking} 
 
-Trajectories computed in the planning stage might not be followed in the presence of disturbance and therefore we need to use a formally guaranteed tracker to satisfy the given reach-avoid specification. Our choice for this purpose is the so-called abstraction-based controller design (ABCD). ABCD can handle nonlinear dynamics, (bounded) uncertainties and $\omega$-regular specifications. In particular, we use SCOTS which is a software tool for implementing abstraction-based controller synthesis (\cite{Rungger2016scots}). Next, we shortly introduce basics of ABCD.
+Trajectories computed in the planning stage might not be followed in the presence of disturbance and therefore we need to use a formally guaranteed tracker to satisfy the given reach-avoid specification. Our choice for this purpose is the so-called abstraction-based controller design (ABCD). ABCD can handle nonlinear dynamics, (bounded) uncertainties and $\omega$-regular specifications. In particular, we use SCOTS~\cite{Rungger2016scots} which is a software tool for implementing ABCD. Next, we introduce briefly the basics of ABCD.
+For simpler notation, we omit the control system index $i$ in the rest of this section.
+
 \subsubsection{Preliminaries of Abstraction-Based Controller Design}\hfill
 
-
 \smallskip
-\noindent\textbf{Finite-state Abstraction of Control System.}\
-Let $\Sigma = (X,x_\init, U, W, f)$ be a control system, $\bound$ be a subset of $X$ which imposes a safety specification, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$.
+\noindent\textbf{Finite-state Abstraction of Control Systems.}\
+Let $\Sigma = (X,x_\init, U, W, f)$ be a control system and $\bound$ be a subset of $X$ which imposes a safety specification on all possible trajectories of the system. Let $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the input set $U$.
 %Note that, since $X$ is unbounded, hence some partition element of $\Xh$ will inevitably be unbounded set.
 A \emph{finite-state abstraction} of $\Sigma$ is a finite state-transition system $(\Xh,\Uh,\fh)$, where $\xh'$ is in $\fh(\xh,u)$ if there is a pair of states $x\in \xh$ and $x'\in \xh'$ such that $x'\in \Sol_\Sigma(x,u)$.
 
 In this work, we will use uniformly sized rectangular partition elements to construct the set $\Xh$ from the set $\bound$.
 Without going into the detail of the construction, we assume that the size of the partition elements is provided as a vector $\eta_x\in \mathbb{R}^n_{>0}$ which is an input to the abstraction procedure.
 Note that, the larger $\eta_x$ is (where comparison is made dimension-wise), the smaller is the state space $\Xh$ resulting in an efficient computation.
-On the other hand, the smaller $\eta_x$ is, the better is the precision of the abstraction $\widehat{\Sigma}$ increasing the chance of a successful controller synthesis. Similar to the state-space partition size $\eta_x$, we also assume that the set $\Uh$ is chosen based on an input-space discretization parameter $\eta_u\in \mathbb{R}^m_{>0}$ that governs the distance between the points in $\Uh$.
+On the other hand, the smaller $\eta_x$ is, the better is the precision of the abstraction $\widehat{\Sigma}$ increasing the chance of a successful controller synthesis. Similar to the state space partition size $\eta_x$, we also assume that the set $\Uh$ is chosen based on an input space discretization parameter $\eta_u\in \mathbb{R}^m_{>0}$ that governs the distance between the points in $\Uh$.
 
 %\smallskip
 %\noindent\textbf{An Additional Safety Restriction.}\
@@ -201,8 +205,8 @@ It is known that this three step process produces a controller $C$ that realizes
 
 \smallskip
 \noindent\textbf{Computation of the Finite-State Abstraction.}\
-We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,x_\init,U,W,f)$, a compact subset $\bound$ of the set $X$ and state space and input space discretization parameters $\eta_x$ and $\eta_u$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma\frr{Q} \widehat{\Sigma}$.
-The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
+We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,x_\init,U,W,f)$, a compact subset $\bound$ of the set $X$ and discretization parameters $\eta_x$ and $\eta_u$, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma\frr{Q} \widehat{\Sigma}$.
+An implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
 
 
 
@@ -214,13 +218,15 @@ The actual implementation of $\findAbs$ can be found in \cite{reissig2016feedbac
 
 \subsubsection{Optmization: Local ABCD around the nominal trajectory}\hfill
 
-Usually, in ABCD the abstraction process requires computation of abstract transitions all over the state space, which is computationally expensive.
+The abstraction process of ABCD usually requires computation of abstract transitions over the whole compact set $\bound$, which is computationally expensive.
 Luckily, for Step~\ref{step:tracking} of Alg.~\ref{alg:main}, we only need to compute transitions in the $\varepsilon$-neighborhood of the given nominal trajectory.
 %We summarize our optimized approach for Step~\ref{step:tracking} in Algorithm~\ref{alg:abcd-with-time-for-tracking}.
-For simpler notation, we omit the system index $i$.
-Given a control system $\Sigma$, together with a reference open-loop trajectory $\rho=(x_{0,\nom},\ldots,x_{T,\nom})$ satisfying $\Phi_\varepsilon$ and a tube size $\varepsilon\in \reals_{>0}^n$, we iteratively construct a tube as union of $\varepsilon$-balls around the reference trajectory's points. 
-Next, we compute finite state abstraction for $\Sigma$ setting $Domain=\bigcup_{t=0}^T\ball_{\varepsilon}(x_{t,\nom})$ and for the chosen parameters $\eta_x$, $\eta_u$. 
-Finally, given the computed finite state abstraction $\widehat \Sigma$ and the LTL specification in Eq.~\eqref{eq:ltl_spec}, we synthesize controller using usual ABCD, implemented using SCOTS. %\MS{perhaps we can add a discussion here about our actual implementation.}
+Given a control system $\Sigma$, together with a reference open-loop trajectory $\rho=(x_{0,\nom},\ldots,x_{T,\nom})$ and a tube size $\varepsilon\in \reals_{>0}^n$, we iteratively construct a tube as union of $\varepsilon$-balls around the reference trajectory (note that we have omitted  the system index $i$ for simpler notation).
+Next, we compute finite state abstraction for $\Sigma$ for the chosen parameters $\eta_x$, $\eta_u$ by setting
+\begin{equation*}
+Domain:=\bigcup_{k=0}^T\ball_{\varepsilon}(x_{k,\nom}).
+\end{equation*}
+Finally, given the computed finite state abstraction $\widehat \Sigma$ and the specification in Eq.~\eqref{eq:ltl_spec}, we synthesize a symbolic controller using ABCD implemented in SCOTS~\cite{Rungger2016scots}. %\MS{perhaps we can add a discussion here about our actual implementation.}
 
 %We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:tracking_with_time} using finite abstraction.
 
@@ -251,14 +257,11 @@ Finally, given the computed finite state abstraction $\widehat \Sigma$ and the L
 
 \subsection{Hybrid vs Geometric Planning}
 
-Note that the nominal controller obtained in Step~\ref{step:planning} of Alg.~\ref{alg:main} is not directly used by Step~\ref{step:tracking}; 
-rather, only the nominal trajectories are used.
-Then one could argue that, instead of using ALTRO to generate nominal trajectories, one could simply employ a fast \emph{planner} \cite{Kavraki1996rrt} to 
-generate geometric plans.
-However, since fast geometric planners do not usually take into consideration the dynamics and control constraints, in our experience, the 
-generated plans (i.e., the nominal trajectories) are often untrackable unless the underlying system has special properties (e.g., differential flatness).
+Note that Step~\ref{step:tracking} of Alg.~\ref{alg:main} does not use the nominal controller obtained in Step~\ref{step:planning} and requires only the nominal trajectories.
+Then one could argue that, instead of using ALTRO to generate nominal trajectories, a fast \emph{geometric planner} \cite{Kavraki1996rrt} can be employed to generate geometric plans.
+However, fast geometric planners do not usually take into consideration the dynamics and control constraints. In our experience, the plans for nominal trajectories generated while ignoring the system dynamics are often untracktable unless the underlying system has special properties (e.g., differential flatness \cite{}).
 This is especially true for systems with restricted control capabilities or under-actuated systems.
-We demonstrate this phenomenon on a single system $\Sigma$, a simple $2$-dimensional pendulum with the following nominal system dynamics:
+We demonstrate this phenomenon on a control system $\Sigma$ that is a simple $2$-dimensional pendulum with the following nominal dynamics:
 	\begin{align*}
 		\dot{x}_1 &= x_2\\
 		\dot{x}_2 &= -sin(x_1) + u/5,
@@ -266,12 +269,12 @@ We demonstrate this phenomenon on a single system $\Sigma$, a simple $2$-dimensi
 where $x_1$ represents the angle (in radian) of the pendulum rod measured counter-clockwise from the vertical upright position, and $x_2$ represents the rate of change of $x_1$ or the angular velocity.
 Suppose the initial state of the pendulum is $(\pi,0)$, i.e., when the pendulum is in the vertical downward position and is stationary.
 Suppose we want to find a controller for the goal $\goal = \set{(0,0)}$, i.e., when the pendulum is in the vertical upward position and is stationary.
-(The set of unsafe states $\avoid$ is empty.)
+The set of unsafe states $\avoid$ is empty, i.e., no safety constraint is imposed.
 When we use ALTRO to compute an open-loop controller $C$, unsurprisingly, the controlled trajectory of $C\triangleright \Sigma$ looks like a spiral, as shown in Fig.~\ref{fig:traj 2d pendulum}.
-The synthesis of tracking controller using ABCD was indeed successful when we fed this nominal trajectory to our ABCD solver.
-However, if we would use a geometric planner for this example, the nominal trajectory would be a straight line path from $(\pi,0)$ to $(0,0)$, which would pose an infeasible tracking problem for ABCD, due to the restrictions in the dynamics of the pendulum.
+The synthesis of tracking controller using ABCD is indeed successful when we feed this nominal trajectory to our ABCD solver.
+However, if we use a geometric planner for this example that ignores the dynamics, the nominal trajectory would be a straight line path from $(\pi,0)$ to $(0,0)$, which gives an infeasible tracking problem for ABCD, due to the restrictions on possible trajectories of the pendulum coming from the its dynamics.
 	\begin{figure}
 		\includegraphics[scale=0.2]{figures/2d_pendulum_spiral}
-		\caption{The nominal open-loop trajectory of the $2$-dimensional pendulum.}
+		\caption{The nominal open-loop trajectory of the $2$-dimensional pendulum. \Sadegh{Text inside the figure is very small, make it larger so that it is readable.}}
 		\label{fig:traj 2d pendulum}
 	\end{figure}
