@@ -60,3 +60,38 @@
 % environments
 \newtheorem{subproblem}{Subproblem}
 \newtheorem{remark}{Remark}
+
+
+\usepackage[many]{tcolorbox}
+\usetikzlibrary{calc}
+\tcbuselibrary{skins}
+
+
+\newtcolorbox{resp}[1][]{%
+	enhanced jigsaw,%
+	colback=gray!5!white,%
+	colframe=gray!80!black,%
+	size=small,%
+	boxrule=1pt,%
+	halign title=flush center,%
+	coltitle=black,%
+	breakable,%
+	drop shadow=black!50!white,%
+	attach boxed title to top left={xshift=1cm,yshift=-\tcboxedtitleheight/2,yshifttext=-\tcboxedtitleheight/2},%
+	minipage boxed title=3cm,%
+	boxed title style={%
+		colback=white,%
+		size=fbox,%
+		boxrule=1pt,%
+		boxsep=2pt,%
+		underlay={%
+			\coordinate (dotA) at ($(interior.west) + (-0.5pt,0)$);
+			\coordinate (dotB) at ($(interior.east) + (0.5pt,0)$);
+			\begin{scope}[gray!80!black]
+				\fill (dotA) circle (2pt);
+				\fill (dotB) circle (2pt);
+			\end{scope}
+		}%
+	},%
+	#1%
+}

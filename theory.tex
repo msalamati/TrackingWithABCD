@@ -1,31 +1,48 @@
+% !TEX root = main.tex
+
 % \section{Robust Reach-Avoid for Multi-Agent Systems}
 
 \subsection{Solution Outline}
-We summarize our approach for algorithmic solution of the posed problem in Alg.~\ref{alg:main}.
+To solve our planning problem with formal guarantees, we propose to compute a nominal trajectory over the simplified dynamical model of the product system and then employ a guaranteed method to synthesize controllers locally that account for model mismatches. By simplified, we mean absence of disturbance, i.e., $W=\set{0}$.
+We summarize our approach for solving Prob.~\ref{problem} in Alg.~\ref{alg:main}. \Sadegh{I think it might be better to bring the algorithm as part of the text.}
+
+\begin{theorem}
+Local feedback controllers $\set{C^i}$ synthesized by Alg.~\ref{alg:main} guarantees that the global specification is satisfied by the product system $\set{C^i}\parallel \set{\Sigma^i}$. 
+\end{theorem}
+\begin{proof}
+Note that $\Phi_\varepsilon$ is a stronger version of $\Phi$ and is intentionally made conservative to allow for $\varepsilon$-deviation in the trajectory of the product system.
+Since $\set{\rho^i}$ is the unique solution of the nominal product system and satisfies $\Phi_\varepsilon$, it is guaranteed that $\varepsilon$-perturbation of this nominal trajectory satisfies $\Phi$.
+It can be observed that all solutions of $\Sigma^i$ stays within $\varepsilon^i$ distance of the nominal trajectory $\rho^i$ regardless of the disturbance. This completes the proof.
+\end{proof}
+
+%The local controllers synthesized by Alg.~\ref{alg:main} is guaranteed to solve Prob.~\ref{problem}.  
+%It can be observed that if every  $C^i\parallel \Sigma^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma^i}_{i\in [1;N]}$ will realize $\Phi$ under the worst-case disturbance.
+Next, we discuss our implementation of Alg.~\ref{alg:main} for the global \emph{open-loop planner} (Step~\ref{step:planning}) and the local \emph{guaranteed trajectory tracking} (Step~\ref{step:tracking}). Note that Step~\ref{step:decompose} is a simple projection from the product space into local spaces.
 
 \begin{algorithm}[t]
 	\caption{Multi-agent Controller Synthesis}
 	\label{alg:main}
 	\begin{enumerate}
-		\item For every $i$, let $\Sigma_{\nom}^i = (X^i,x_\init^i,U^i,\set{0},f^i)$ be the respective \emph{nominal} control system that ignores the disturbances.
+		\item For every $i$, let $\Sigma_{\nom}^i = (X^i,x_\init^i,U^i,\set{0},f^i)$ be the nominal control system of $\Sigma^i$ that ignores the disturbance.
 		Compute the product control system $\Sigma^\times_{\nom}$ of $\set{\Sigma^i_{\nom}}$. 
 		%Let $\varepsilon\in \mathbb{R}^n_{>0}$ be a robustness margin. %a discussion on $\varepsilon$ follows subsequently.
-		Use a scalable \emph{planner} to compute an open-loop controller $C^\times_{\nom}$ for $\Sigma^\times_{\nom}$ so that $C^\times_\nom\triangleright\Sigma_{,\nom}^{\times}$ realizes  $\Phi_\varepsilon$.
-		Let $T$ be the time horizon when $\Phi_\varepsilon$ has been fulfilled for the first time. \label{step:planning}
-		\item Decompose $C^\times_\nom$ into \emph{local} open-loop controllers $\set{C^i_\nom}$ for the set of $\set{\Sigma^i_{\nom}}$.
-		The decomposition is straightforward since $C^\times_\nom$ is open-loop. Further, for every $i$, find the unique nominal open-loop trajectory $\rho^i=(x_{0,\nom}^i,\ldots,x_{T,\nom}^i)$ of length $T$ of $C^i_\nom\triangleright \Sigma_{\nom}^i$---unique, because there is no disturbance. \label{step:decompose}
-		\item Let $\varepsilon^i\in \mathbb{R}^{n_i}_{>0}$ be the projection of $\varepsilon$ to the state dimensions of $\Sigma^i$.
-		Use a \emph{guaranteed tracking} method to find a closed loop controller $C^i$ for $\Sigma^i$ so that $C^i\parallel \Sigma^i$ \emph{tracks} the nominal trajectory $\rho^i$, i.e., $C^i\parallel \Sigma^i$ satisfies the following specification:
+		Use a scalable \emph{planner} to compute a nominal open-loop controller $C^\times_{\nom}:[0;T]\rightarrow U^\times$ such that the specification $\Phi_\varepsilon$ is satisfied by $C^\times_\nom\triangleright\Sigma_{\nom}^{\times}$.
+		Note that $T$ is the first time the set $\goal'$ is visited. \label{step:planning}
+		\item Decompose $C^\times_\nom$ into \emph{local} open-loop controllers $\set{C^i_\nom}$ for the set of $\set{\Sigma^i_{\nom}}$ by projecting the output of $C^\times_\nom$ into local input spaces $U^i$.
+		%The decomposition is straightforward since $C^\times_\nom$ is open-loop.
+		Further, for every $i$, find the unique nominal open-loop trajectory $\rho^i=(x_{0,\nom}^i,\ldots,x_{T,\nom}^i)$ of $C^i_\nom\triangleright \Sigma_{\nom}^i$. These trajectories are unique since there is no disturbance. \label{step:decompose}
+		\item Let $\varepsilon^i\in \mathbb{R}^{n_i}_{>0}$, $i\in[1;N]$, be the projections of $\varepsilon$ compatible with the state dimensions of $\Sigma^i$.
+		Each control system $\Sigma^i$ uses a \emph{guaranteed tracking} method to compute a closed-loop controller $C^i$ such that $C^i\parallel \Sigma^i$ \emph{tracks} the nominal trajectory $\rho^i$ and stays within its $\varepsilon^i$-neighborhood, i.e., $C^i\parallel \Sigma^i$ satisfies the specification
 		\begin{align}
 			\label{eq:ltl_spec}
-			\Phi_{\track}^i\coloneqq \ball_{\varepsilon^i}(x_{0,\nom}^i) \wedge \bigwedge_{k\in [1;T]} \bigcirc^t \ball_{\varepsilon^i}(x_{k,\nom}^i),
+			\Phi_{\track}^i\coloneqq \bigwedge_{k\in [0;T]} \bigcirc^k \ball_{\varepsilon^i}(x_{k,\nom}^i).
 		\end{align}
-		where %$\bigcirc$ denotes the next operator in LTL (\cite{baier2008principles}) and
-		$\bigcirc^t$ represents the juxtaposition of $t$ consecutive ``$\bigcirc$'' operators.\label{step:tracking}
+		%where %$\bigcirc$ denotes the next operator in LTL (\cite{baier2008principles}) and
+		%$\bigcirc^t$ represents the juxtaposition of $t$ consecutive ``$\bigcirc$'' operators.
+		\label{step:tracking}
 	\end{enumerate}
 \end{algorithm}
 
-It can be observed that if every  $C^i\parallel \Sigma^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma^i}_{i\in [1;N]}$ will realize $\Phi$ under the worst-case disturbance. Next, we discuss our implementation for each of steps~\ref{step:planning} and \ref{step:tracking} in Alg.~\ref{alg:main}.
 
 %We did not yet mention the role of the robustness margin $\varepsilon$.
 %Essentially, $\varepsilon$ accounts for the possible tracking error of the ABCD-generated controller in Step~\ref{step:abcd} while tracking the nominal trajectory.
@@ -106,18 +123,19 @@ It can be observed that if every  $C^i\parallel \Sigma^i$ can realize $\Phi_\tra
 %In the following, we summarize some ALTRO-specific implementation details.
 
 \subsection{Open-loop Planning}
-To achieve formally guaranteed planning, a commonly adopted practice is to compute a nominal trajectory over simplified dynamical model and then employ a guaranteed method to account for model mismatches. By simplified, we mean absence of disturbance ($W=\set{0}$). The planner used for generating nominal trajectories should be fast and scalable. In addition, it should be capable of handling non-linear dynamics and constraints. Our choice for the planner is ALTRO (\cite{howell2019altro}). ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and handles nonlinear state and input constraints. Given a product system $\Sigma_{\nom}^\times$, reach-avoid specificaton $\Phi_\varepsilon$ and a horizon length $T$, ALTRO computes open-loop controller $C^\times_{\nom}$ by solving the following optimization problem,
+The planner used for generating nominal trajectories in Step~\ref{step:planning} of our algorithm should be fast and scalable. In addition, it should be capable of handling non-linear dynamics and constraints. Our choice for the planner is ALTRO \cite{howell2019altro}. ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and and is capable of handling nonlinear state and input constraints. Given a product system $\Sigma_{\nom}^\times$, reach-avoid specification $\Phi_\varepsilon$ and time horizon $T$, ALTRO computes an open-loop controller $C^\times_{\nom}:[0;T]\rightarrow U^\times$ by solving the optimization
 \begin{equation*}
 	\begin{aligned}
-		& \underset{u_{0:T-1}}{\text{minimize}}
-		& & \ell_N(x_T)+\sum_{k=0}^{T-1}\ell_k(x_k,u_k) \\
+		& \underset{u^\times_0,u^\times_1,\ldots,u^\times_T}{\text{minimize}}
+		& & \ell_T(x^\times_T)+\sum_{k=0}^{T-1}\ell_k(x^\times_k,u^\times_k) \\
 		& \text{subject to}
-		& & x_{k+1}=f^\times(x_k,u_k),\\
-		& & &  g(x_k,u_k)\leq 0,\\
-		& & &  h(x_k,u_k)=0,
+		& & x^\times_{k+1}=f^\times(x^\times_k,u^\times_k),\,\,\,\forall k\in[0;T-1]\\
+		& & &  g(x^\times_k,u^\times_k)\leq 0, \qquad\forall k\in[0;T]\\
+		& & &  h(x^\times_k,u^\times_k)=0,\qquad\forall k\in[0;T],
 	\end{aligned}
 \end{equation*}
-where $\ell_k(\cdot,\cdot)$ denotes a quadratic objective function assigning cost to each pair of state and input before the end of horizon, $\ell_N(\cdot)$ represents a quadratic objective function assigning penalty based on the reached state at the end of the horizon ($x_T$), $g(\cdot,\cdot)$ and $h(\cdot,\cdot)$ denote inequality and equality constraints at each time point.
+where $\ell_k(\cdot,\cdot)$ denotes a quadratic objective function assigning cost to each pair of state and input before the end of horizon, $\ell_T(\cdot)$ represents a quadratic objective function assigning penalty to the final state $x^\times_T$ being away from the goal set $\goal'$. The constraints $g(\cdot,\cdot)\leq 0$ and $h(\cdot,\cdot)$ denote inequality and equality constraints at each time point.
+\Sadegh{Here.}
 In multi-robot scenarios, we use inequality constraints to define collision and obstacle avoidance specifications and use equality constraints to define fixed formation specification. Following step~\ref{step:decompose} of Alg.~\ref{alg:main}, we get open-loop nominal trajectories $\rho^i$ for every agent.
 
 

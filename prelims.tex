@@ -24,7 +24,7 @@ Let $A$ be a set.
 We use the notation $A^\infty$ to denote the set of all finite and infinite sequences formed using the members of $A$. Our control tasks are defined using a subset of Linear Temporal Logic (LTL). 
 In particular, we use the \emph{until} operator $\mathcal{U}$ and the \emph{next} operator $\bigcirc$ defined as follows. 
 Let $p$ and $q$ be subsets of $\reals^n$ and $\rho=(x_0,x_1,\dots)$ be an infinite sequence of elements from $\reals^n$. 
-We write $\rho\models\bigcirc p$ if $x_1\in p$. We write $\rho\models p\mathcal{U}q$ if there exists 
+We write $\rho\models\bigcirc^k p$ if $x_k\in p$. We write $\rho\models p\mathcal{U}q$ if there exists 
 $i\in\mathbb{N}$ s.t. $x_i\in q$ and $x_j\in p$ for all $0\leq j<i$. 
 For detailed syntax and semantics of LTL, we refer to \cite{baier2008principles} and references therein.
 
