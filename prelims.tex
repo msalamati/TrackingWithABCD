@@ -89,7 +89,7 @@ $x_{i+1} \in \Sol(x_i, u_i, \tau)$ for some $u_i \in U$.
 Given a continuous-time nonlinear dynamical system with the tuple $(X, x_\init, U, W, f)$ as above and a sampling time $\tau$, there exist techniques to construct
 a control system $\Sigma = (X, x_\init, U, W, f_\tau)$ such that every time-sampled trajectory of the continuous-time system is
 also a trajectory of $\Sigma$.
-We omit the details of the construction; see, e.g., \cite{FRR?}. 
+We omit the details of the construction; see, e.g., \cite{reissig2016feedback}. 
 
 \begin{comment}
 We assume that each control system $\Sigma^i$ in $\set{\Sigma^i}_{i\in [1;N]}$ is equipped with an output map $h^i\colon X^i\rightarrow Y$ where $Y\subseteq\reals^p$ is a shared output space. Recall our motivating example, wherein the crane's state space consists of the cart's position ($z$), the cart's speed ($v_z$), the pendulum's angular position ($\theta$), and angular speed ($v_\theta$). The state space for the vehicle is described with only one state variable $z'$ describing its position. Note that $X^1\subseteq \reals^4$ and $X^2\subseteq \reals$. By defining $h^1(z,v_z,\theta,v_\theta)=\begin{bmatrix}z+l\sin(\theta)&0.6+l\cos(\theta)\end{bmatrix}^T$ and $h^2(z')=\begin{bmatrix}z'&0.4\end{bmatrix}^T$, both state spaces can be mapped to $Y\subseteq \reals^2$ in which we would like to compute their distance.
