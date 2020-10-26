@@ -2,13 +2,18 @@
 
 % \section{Robust Reach-Avoid for Multi-Agent Systems}
 
-\subsection{Solution Outline}
-To solve our planning problem with formal guarantees, we propose to compute a nominal trajectory over the simplified dynamical model of the product system and then employ a guaranteed method to synthesize controllers locally that account for model mismatches. By simplified, we mean absence of disturbance, i.e., $W=\set{0}$.
+% \subsection{Solution Outline}
+To solve the decentralized control problem, 
+we propose to compute a nominal trajectory over the simplified dynamical model of the product system and then to
+employ a guaranteed method to synthesize controllers locally that account for model mismatches. 
+By simplified, we mean absence of disturbance, i.e., we set $W=\set{0}$.
 We summarize our approach for solving Prob.~\ref{problem} in Alg.~\ref{alg:main}.
 The approach is composed of three main steps:
-(1) Synthesize a global open-loop controller as a single planner task on the product system to satisfy $\Phi_\varepsilon$;
+(1) Synthesize a global open-loop controller for the \emph{nominal system} as a single planner task on the product system to satisfy $\Phi_\varepsilon$;
 (2) Project the controller into local controllers and obtain a nominal trajectory for each system; and
-(3) Design local closed-loop controllers to track the nominal trajectory while always staying within a given distance of the trajectory.  
+(3) Design local closed-loop controllers to track the nominal trajectory while always staying within the robustness margin.
+% a given distance of the trajectory.  
+The soundess of the technique is summarized below.
 
 \begin{theorem}
 Local feedback controllers $\set{C^i}$ synthesized by Alg.~\ref{alg:main} guarantees that the global specification is satisfied by the product system $\set{C^i}\parallel \set{\Sigma^i}$. 
@@ -16,12 +21,15 @@ Local feedback controllers $\set{C^i}$ synthesized by Alg.~\ref{alg:main} guaran
 \begin{proof}
 Note that $\Phi_\varepsilon$ is a stronger version of $\Phi$ and is intentionally made conservative to allow for $\varepsilon$-deviation in the trajectory of the product system.
 Since $\set{\rho^i}$ is the unique solution of the nominal product system and satisfies $\Phi_\varepsilon$, it is guaranteed that $\varepsilon$-perturbation of this nominal trajectory satisfies $\Phi$.
-It can be observed that all solutions of $\Sigma^i$ stays within $\varepsilon^i$ distance of the nominal trajectory $\rho^i$ regardless of the disturbance. This completes the proof.
+It can be observed that all solutions of $\Sigma^i$ stays within distance $\varepsilon^i$ of the nominal trajectory 
+$\rho^i$ regardless of the disturbance. 
+This completes the proof.
 \end{proof}
 
 %The local controllers synthesized by Alg.~\ref{alg:main} is guaranteed to solve Prob.~\ref{problem}.  
 %It can be observed that if every  $C^i\parallel \Sigma^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma^i}_{i\in [1;N]}$ will realize $\Phi$ under the worst-case disturbance.
 Next, we discuss our implementation of Alg.~\ref{alg:main} for the global \emph{open-loop planner} (Step~\ref{step:planning}) and the local \emph{guaranteed trajectory tracking} (Step~\ref{step:tracking}). Note that Step~\ref{step:decompose} is a simple projection from the product space into local spaces.
+While we instantiate particular techniques, our method can be used with other implementations as well.
 
 \begin{algorithm}[t]
 	\caption{Multi-agent Controller Synthesis}
@@ -153,10 +161,13 @@ In multi-robot scenarios, the inequality constraints can be used to define colli
 
 \subsection{Guaranteed Trajectory Tracking} 
 
-Trajectories computed in the planning stage might not be followed in the presence of disturbance and therefore we need to use a formally guaranteed tracker to satisfy the given reach-avoid specification. Our choice for this purpose is the so-called abstraction-based controller design (ABCD). ABCD can handle nonlinear dynamics, (bounded) uncertainties and $\omega$-regular specifications. In particular, we use SCOTS~\cite{Rungger2016scots} which is a software tool for implementing ABCD. Next, we introduce briefly the basics of ABCD.
+Trajectories computed in the planning stage might not be followed in the presence of disturbance and therefore we need to use a 
+formally guaranteed tracker to satisfy the given reach-avoid specification. 
+Our choice for this purpose is the so-called abstraction-based controller design (ABCD). 
+ABCD can handle nonlinear dynamics, (bounded) uncertainties and $\omega$-regular specifications. In particular, we use SCOTS~\cite{Rungger2016scots} which is a software tool for implementing ABCD. Next, we introduce briefly the basics of ABCD.
 For simpler notation, we omit the control system index $i$ in the rest of this section.
 
-\subsubsection{Preliminaries of Abstraction-Based Controller Design}\hfill
+% \subsubsection{Preliminaries of Abstraction-Based Controller Design}\hfill
 
 \smallskip
 \noindent\textbf{Finite-state Abstraction of Control Systems.}\
@@ -210,14 +221,9 @@ An implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
 
 
 
-
-
-%here
-
-
-
-\subsubsection{Optmization: Local ABCD around the nominal trajectory}\hfill
-
+\smallskip
+\noindent\textbf{Optmization: Local ABCD around the nominal trajectory}\hfill
+%
 The abstraction process of ABCD usually requires computation of abstract transitions over the whole compact set $\bound$, which is computationally expensive.
 Luckily, for Step~\ref{step:tracking} of Alg.~\ref{alg:main}, we only need to compute transitions in the $\varepsilon$-neighborhood of the given nominal trajectory.
 %We summarize our optimized approach for Step~\ref{step:tracking} in Algorithm~\ref{alg:abcd-with-time-for-tracking}.

@@ -4,20 +4,28 @@
 \label{sec:problem}
 
 \subsection{Problem Statement}
-%\textcolor{blue}{
-In this paper, we consider the feedback controller synthesis problem for a heterogeneous swarm of $N$ different control systems $\set{\Sigma^i}_{i\in [1;N]}$.
-Each system is modeled as a nonlinear control systems affected by disturbances. We consider \emph{reach-avoid} specifications denoted as $\Phi=(\lnot\avoid\,\mathcal{U}\,\goal)$ with some $\avoid\subseteq X^\times$ and $\goal\subseteq X^\times$, where $X^\times$ is the state space of the product control system of $\set{\Sigma^i}$.
-Let $\varepsilon\in \mathbb{R}^n_{>0}$ be a \emph{robustness margin}. We define a robust version of $\Phi$ by $\Phi_\varepsilon:=(\lnot\avoid'\,\mathcal{U}\,\goal')$ with $\avoid'=\avoid'\oplus\ball_\varepsilon(0)$ and $\goal'=\goal\ominus\ball_\varepsilon(0)$, where $\oplus$ and $\ominus$ are set operators denoting the Minkowski addition and difference, respectively. %Given a sampled-time abstraction product control system $\Sigma^\times_\tau$ and reach-avoid specification $\Phi$ defined over $X^\times$, we will say that decentralized open-
-%loop (decentralized closed-loop) realizes $\Phi$ if every trajectory of $C\colon [0;T]\to U$ ($C\parallel\Sigma_\tau$) satisfies $\Phi$.
 
-Our goal is to synthesize \emph{local} feedback controllers for each control system so that the global specification $\Phi$, defined on the state space of the product system, is fulfilled for any allowed disturbance affecting these systems.
+We now consider the decentralized controller synthesis problem for a set of control systems 
+$\set{\Sigma^i}$ w.r.t.\ a global reach-avoid specification $\Phi = \lnot\avoid\, \mathcal{U}\,\goal$,
+where $\avoid, \goal \subseteq X^\times$ are subsets of the product state space.
+
+% 
+% In this paper, we consider the feedback controller synthesis problem for a heterogeneous swarm of $N$ different control systems $\set{\Sigma^i}_{i\in [1;N]}$.
+% Each system is modeled as a nonlinear control systems affected by disturbances. We consider \emph{reach-avoid} specifications denoted as $\Phi=(\lnot\avoid\,\mathcal{U}\,\goal)$ with some $\avoid\subseteq X^\times$ and $\goal\subseteq X^\times$, where $X^\times$ is the state space of the product control system of $\set{\Sigma^i}$.
+
+First, we define a \emph{robust version} of the control specification.
+Let $\varepsilon\in \mathbb{R}^n_{>0}$ be a \emph{robustness margin}. 
+We define the $\varepsilon$-robust version of $\Phi$, denoted $\Phi_\varepsilon:=(\lnot\avoid'\,\mathcal{U}\,\goal')$,
+where $\avoid'=\avoid'\oplus\ball_\varepsilon(0)$ and 
+$\goal'=\goal\ominus\ball_\varepsilon(0)$, where $\oplus$ and $\ominus$ are set operators denoting the Minkowski addition and difference, respectively. 
+Intuitively, if a trajectory $x_0,x_1,\ldots$ satisfies $\Phi_\varepsilon$, then any trajectory $y_0, y_1,\ldots$ such that
+$|x_i - y_i | \leq \varepsilon$ satisfies $\Phi$.
+
 
 \begin{resp}
-\begin{problem}
+\begin{problem}[Decentralized Controller Synthesis]
 \label{problem}
-Develop an algorithm with the following inputs and outputs:
-
-\noindent\textbf{Inputs:} Control systems $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i)$, $i\in [1;N]$, and the global specification $\Phi=\lnot\avoid\,\mathcal{U}\,\goal$.
+\noindent\textbf{Inputs:} Control systems $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i)$, $i\in [1;N]$, and global specification $\Phi=\lnot\avoid\,\mathcal{U}\,\goal$.
 
 \noindent\textbf{Parameters:} A robustness margin $\varepsilon\in \reals^n_{>0}$.
 
@@ -33,12 +41,15 @@ Develop an algorithm with the following inputs and outputs:
 \end{description}
 \end{comment}
 
-It is important to notice that any solution for this problem is required to provide a formal guarantee on the satisfaction of $\Phi$, i.e., the reach-avoid specification $\Phi$ must be satisfied under any disturbance affecting the control systems.
+It is important to notice that any solution for this problem is required to provide a \emph{formal guarantee} on the satisfaction of $\Phi$, 
+i.e., the reach-avoid specification $\Phi$ \emph{must} be satisfied under any disturbance affecting the control systems.
 
+\RM{see if this can be subsumed with the example in Sec 2}
 Our choice of the specification $\Phi$ on the product state space $X^\times$ subsumes many interesting class of control tasks.
 For example, we can express situations when the robots have their own local reach-avoid specifications, and they need to avoid collision among each other; we consider such a specification in our examples in Sec.~\ref{sec:local reach-avoid}.
 In addition, we can also specify more general tasks which cannot be easily decomposed into individual subtasks for the robots.
 One example is the \emph{formation control problem}, which we consider in the example in Sec.~\ref{sec:global formation control}, where a set of robots need to reach some location while maintaining a given geometric formation. Since the formation is defined using the relative positions of the robots, it is not possible to decompose this task into separate local reach-avoid subtasks.
+\RM{End }
 
 %The robustness margin $\varepsilon$ accounts for the possible tracking error of the ABCD-generated controller in Step~\ref{step:abcd} while tracking the nominal trajectory.
 %Because ALTRO ignores the disturbances, hence a positive tracking error is inevitable.
