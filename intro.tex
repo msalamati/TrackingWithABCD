@@ -2,8 +2,116 @@
 
 \section{Introduction}
 
-Synthesizing formally verified controllers for safety-critical dynamical systems has emerged as an important problem.
-The goal is to algorithmically synthesize controllers so that the systems under control only do what they are meant to do, even in the presence of external disturbances.
+
+
+We consider the \emph{decentralized} feedback controller synthesis problem for \emph{multi-agent}, nonlinear systems against temporal 
+\emph{reach-avoid} specifications.
+%
+By multi-agent, we mean that the systems under study are composed of a number of concurrently executing components.
+Each component is a modeled as a possibly nonlinear dynamical system that evolves under the influence of a control as well as an environmental
+disturbance.
+Our specifications require that the global state of the system eventually reaches a target while avoiding certain bad states along the way.
+While the dynamics of each component is independent of the others, the overall trajectories can be coupled by the global specification.
+Decentralized means that we require a solution in which each component has a local feedback controller that sees only the local
+state, but the combination of all the closed loops satisfy the global specification.
+Above all, our goal is to ensure the resulting controllers are \emph{provably correct} against the worst case model of disturbances.
+
+Such multi-agent control problems are ubiquitous in the domain of robotics, where a number of 
+(possibly heterogeneous) mobile robots move concurrently in a shared workspace.
+A global specification can ask, for example, that a set of robots are able to reach certain locations while avoiding collisions among themselves
+or with obstacles in the environment,
+or that a set of drones fly in formation while reaching a target.
+Indeed, automatic generation of decentralized controllers is a classical problem in robotics, AI, and control theory, 
+and there is an enormous literature on the subject---too many to enumerate---across these disciplines.
+
+Despite the large body of research, few techniques today can handle all our desiderata.
+Multi-agent planning algorithms, such as (hybrid variants of) A* search, scale to large systems but typically either disregard or simplify the 
+underlying dynamics and work with geometric or discrete models or disregard the effect of disturbances or nonlinear dynamics.
+Most planning and trajectory optimization techniques handle the \emph{nominal} dynamics, that is, the dynamics free of disturbances,
+and construct \emph{open-loop} controllers.
+However, the open loop behaviors do not guarantee correct behavior in the presence of disturbances.
+On the other hand, correct-by-construction controller synthesis techniques from control theory, 
+such as abstraction-based control or Hamilton-Jacobi techniques,
+handle precise models of nonlinear dynamics and the effects of disturbance, but are difficult to scale beyond tens of dimensions.
+
+\begin{figure}[t]
+\includegraphics[scale=0.28]{figures/Algorithm_outline.pdf}
+\caption{Overall algorithm\label{fig:overall}}
+\end{figure}
+
+In this paper, we provide a simple but effective \emph{combined} approach, where a global planning approach is used for nominal trajectory generation and 
+a local correct-by-construction feedback controller synthesis approach for guaranteed adherence to specification for each component
+in the presence of disturbances.
+Fig.~\ref{fig:overall} shows the overall algorithm.
+In the first step, 
+given a set of control systems, one for each component, and a reach-avoid specification on the global state space, we use a trajectory planner to
+find a nominal open loop controller for the global system.
+The trajectory planner ignores the effect of disturbances, but takes a \emph{robustness parameter} $\varepsilon$.
+The role of the robustness parameter is to ensure the specification is robustly satisfied: any trajectory within an $\varepsilon$-tube
+of the open loop trajectory also satisfies the specification.
+
+Next, we project the unique open loop trajectory on to a nominal trajectory for each individual component.
+The robustness of the trajectory means that there is a tube around the nominal trajectory.
+In a second step, we solve a number of local \emph{guaranteed tracking control} problems, where we synthesize correct-by-construction
+controllers whose objective is to track the nominal trajectory while staying within the tube.
+
+The overall algorithm is more scalable and provides stronger guarantees
+than each component by itself.
+Global trajectory planning scales to large state spaces but does not guarantee correctness
+and each controller synthesis problem is solved locally.
+Empirically, we show that our algorithm is able to generate provably correct feedback controllers for many
+systems for which neither technique is individually effective.
+Of course, since we decompose the problem, it is possible that there is no controller for a particular choice of the
+robustness parameter, or indeed, for other parameters used by the individual tools.
+In that case, there is an outer loop that searches through the parameter space.
+
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.5\textwidth]{figures/crane_and_forklifter.pdf}
+	\caption{Illustration of the trajectories generated by the open-loop controller for the crane and vehicle example under disturbance-free (\textbf{left}) and perturbed (\textbf{right}) situations} 
+	\label{fig:cr_and_lft}
+\end{figure}
+
+
+
+
+We have implemented our technique based on two ingredients: the ALTRO open loop trajectory planner \cite{howell2019altro} and the 
+SCOTS correct-by-construction controller synthesis tool \cite{SCOTS}. 
+ALTRO is a state-of-the-art trajectory planning tool absed on optimal control.
+It handles nonlinear dynamics and scales to large dimensions, but ignores disturbances or modeling uncertainties.
+SCOTS implements a highly parallelizable \emph{abstraction-based controller synthesis} algorithm that generates a provably
+correct feedback controller for any linear temporal logic specification.
+
+We evaluate our tool empirically on a number of multi-robot benchmarks, including multi-robot co-ordination,
+formation flight, and lane merging.
+In each case, we demonstrate that our system can efficiently find decentralized and correct controllers.
+
+Fig.~\ref{fig:cr_and_lft} shows a concrete multi-robot reach-avoid scenario with an overhead crane hanging from a trolley along a horizontal rail
+and a cart that drives underneath the crane in the same horizontal axis.
+The goal is to move the crane and the vehicle such that they do not collide.
+Fig.~\ref{fig:cr_and_lft} (\textbf{left}) shows an animation of a possible open loop behavior from an initial configuration (frame 1) to a final
+one (frame 4), where the crane and the vehicle have crossed each other.
+The trajectory is generated by accelerating the trolley, causing the crane to swing up and thus creating enough space for the vehicle to pass.
+Unfortunately, in the presence of disturbances, such as wind or a slippery floor, a trajectory may not be free of collisions: the same open loop
+behavior can cause a collision (Fig.~\ref{fig:cr_and_lft} \textbf{right}).
+Instead, our algorithm computes a global \emph{robust} trajectory for the system; the robustness parameter ensures a ``wider berth.''
+The global trajectory is projected to the crane and the vehicle, and we compute guaranteed tracking controllers that ensure there is no collision despite the disturbance.
+In our experiments, planning with ALTRO took less than a second and feedback controller synthesis with SCOTS about 10 minutes.
+At the same time, a global approach to find a correct solution does not scale. 
+The global state space is $10^{10}$ times larger and SCOTS timed out with 1.5 TB of memory. 
+
+
+ 
+\begin{comment}
+
+Synthesizing formally verified controllers for safety-critical dynamical systems is an important problem. 
+The goal is to \emph{algorithmically} synthesize controllers for temporal objectives
+so that the closed loop systems only do what they are meant to do, even in the presence of external disturbances.
+
+
+
+
 One such algorithmic technique is the so-called Abstraction-Based Controller Design (ABCD).
 In ABCD, we start with a model of a continuous nonlinear dynamical system and a control task.
 The sought controller is synthesized in three stages:
@@ -43,7 +151,7 @@ Our approach is modular:
 We could replace ALTRO with any other fast and scalable method, and we could replace ABCD with any other suitable method that provides guarantees, and we would still get the formally verified decentralized controllers for the robots.
 
 We demonstrate the usefulness of our approach using several multi-robot controller synthesis examples.
-
+\end{comment}
 
 
 \begin{comment}
@@ -68,6 +176,8 @@ So in the bottom layer, we use ABCD to synthesize formally verified \emph{tracki
 \end{comment}
 
 
+
+\begin{comment}
 
 \subsection{Motivating Example}
 
@@ -107,15 +217,11 @@ Our choice to achieve guaranteed tracking is ABCD. More concretely, we consider 
 The goal of the tracking controller is to track the open-loop trajectories within some small neighborhood, even in the presence of worst-case disturbances.
 ABCD gives us the sought \emph{local feedback controller} for each individual system.
 
+\end{comment}
+
 %\begin{figure}[t]
 %	\centering
 %	\includegraphics[width=0.45\textwidth]{figures/crane_and_lifter.png}
 %	\caption{Illustration of the reference trajectories produced by the open-loop planner for the crane and the factory vehicle example}
 %	\label{fig:cr_and_lft}
 %\end{figure}
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.5\textwidth]{figures/crane_and_forklifter.pdf}
-	\caption{Illustration of the trajectories generated by the open-loop controller for the crane and vehicle example under disturbance-free (\textbf{left}) and perturbed (\textbf{right}) situations} 
-	\label{fig:cr_and_lft}
-\end{figure}
