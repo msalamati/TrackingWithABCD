@@ -10,10 +10,11 @@ The formal controller synthesis has been performed
 on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of
 RAM. %\MS{TODO: adding a table with complete information regarding sizes and times for all of the examples}
 
-We consider two distinct types of problems, and demonstrate how they can be solved using our approach. Table~\ref{tab:runtimes} demonstrates  runtimes of different stages for each of the experiment. The reported numbers for local ABCD correspond to the agent with maximum number of input-state pairs. This is sensible because feedback controllers for different agents can be computed independently over different machines. Note that using global ABCD, memory requirement exceeds our system's limit (1.5TB of RAM) for all of the experiments. %\MS{For reporting number of input-state pairs and runtimes of local ABCD we could report total, average or maximum values; currently, Tab.~\ref{tab:runtimes} contains maximum values (taken over all of the agents, corresponding to multi-machine implementation), while total and average values are reported in the body of the paper. Data will be unified once the decision is made.}
+We consider two distinct types of problems, and demonstrate how they can be solved using our approach. Table~\ref{tab:runtimes} demonstrates  runtimes of different stages for each of the experiment. The reported numbers for local ABCD correspond to the agent with maximum number of input-state pairs. On the other hand, Fig.~\ref{fig:box_plot} illustrates variations of runtimes among different agents for every experiment except the crane and vehicle example for which variation is too large due to different dynamics. This is sensible because feedback controllers for different agents can be computed independently over different machines. Note that using global ABCD, memory requirement exceeds our system's limit (1.5TB of RAM) for all of the experiments. %\MS{For reporting number of input-state pairs and runtimes of local ABCD we could report total, average or maximum values; currently, Tab.~\ref{tab:runtimes} contains maximum values (taken over all of the agents, corresponding to multi-machine implementation), while total and average values are reported in the body of the paper. Data will be unified once the decision is made.}
 %Note that while reported numbers for local controller synthesis correspond to the total runtimes over all of the robots, significant reduction would be expected if abstraction and synthesis phases were parallelized.
-
+%\begin{huge}
 \begin{table*}
+	\large
 	\centering
 	\caption{List of runtimes for different case-studies
 		\textmd{Runtimes (in seconds) for computing open-loop controllers over the corresponding product spaces using ALTRO ($T_{AL}$), number of input-state pairs of finite-state abstraction for local ABCD ($N_l$), abstraction and synthesis times for computing local feedback controllers using SCOTS ($T_{l}^{abs}$ and $T_{l}^{syn}$, respectively), number of input-state pairs of finite-state abstraction for global ABCD ($N_g$), abstraction and synthesis times for computing a global controller for the product system using SCOTS ($T_{g}^{abs}$ and $T_{g}^{syn}$, respectively). For local ABCD, the reported numbers correspond to the agent with maximum number of input-state pairs.}
@@ -22,10 +23,10 @@ We consider two distinct types of problems, and demonstrate how they can be solv
 
 	\renewcommand{\arraystretch}{1.2}
 	\setlength{\tabcolsep}{0.7em} % for the horizontal padding
-	\resizebox{1\columnwidth}{!}{
+	%\resizebox{1\columnwidth}{!}{
 		\begin{tabular}{l|c|ccc|ccc}
 			\toprule
-			Case-studies&\multicolumn{1}{c}{Global planning}&
+			Case-studie&\multicolumn{1}{c}{Global planning}&
 			\multicolumn{3}{|c}{Local ABCD}&\multicolumn{3}{|c}{Global ABCD}\\
 			
 			&$T_{AL}$&$N_l$&$T_{l}^{abs}$&$T_{l}^{syn}$&$N_g$&$T_g^{abs}$&$T_g^{syn}$\\
@@ -43,10 +44,9 @@ We consider two distinct types of problems, and demonstrate how they can be solv
 			\midrule
 			\multirow{1}{*}{\rotatebox{0}{Multi-drone formation control}} & $163$ & $4.02\times 10^8$&$69.78$  & $13.6$&$3.7\times 10^{59}$&OOM&OOM\\
 			\bottomrule
-	\end{tabular}}
+	\end{tabular}%}
 \end{table*}
-
-
+%\end{huge}
 \subsection{Local reach-avoid problems for each robot}
 \label{sec:local reach-avoid}
 
