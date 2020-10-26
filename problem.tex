@@ -44,13 +44,6 @@ $|x_i - y_i | \leq \varepsilon$ satisfies $\Phi$.
 It is important to notice that any solution for this problem is required to provide a \emph{formal guarantee} on the satisfaction of $\Phi$, 
 i.e., the reach-avoid specification $\Phi$ \emph{must} be satisfied under any disturbance affecting the control systems.
 
-\RM{see if this can be subsumed with the example in Sec 2}
-Our choice of the specification $\Phi$ on the product state space $X^\times$ subsumes many interesting class of control tasks.
-For example, we can express situations when the robots have their own local reach-avoid specifications, and they need to avoid collision among each other; we consider such a specification in our examples in Sec.~\ref{sec:local reach-avoid}.
-In addition, we can also specify more general tasks which cannot be easily decomposed into individual subtasks for the robots.
-One example is the \emph{formation control problem}, which we consider in the example in Sec.~\ref{sec:global formation control}, where a set of robots need to reach some location while maintaining a given geometric formation. Since the formation is defined using the relative positions of the robots, it is not possible to decompose this task into separate local reach-avoid subtasks.
-\RM{End }
-
 %The robustness margin $\varepsilon$ accounts for the possible tracking error of the ABCD-generated controller in Step~\ref{step:abcd} while tracking the nominal trajectory.
 %Because ALTRO ignores the disturbances, hence a positive tracking error is inevitable.
 %For this reason, if we choose $\varepsilon$ too small, then it will be more difficult for ABCD to find a controller against the worst case disturbances, and we might not be able to obtain a controller in Step~\ref{step:abcd} in the end.

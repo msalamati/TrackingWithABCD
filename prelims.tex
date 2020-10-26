@@ -198,6 +198,13 @@ for all $i \in [0; j-1]$, we have $x_i \not \in\avoid$.
 Our notion of product of control systems is a Cartesian product of each component. Thus, we assume that the dynamics of individual control
 systems are not coupled.
 However, the overall trajectories of the control systems can be coupled through the control objective.
+Indeed, our choice of the specification $\Phi$ on the product state space $X^\times$ subsumes many interesting class of control tasks.
+For example, we can express situations when the robots have their own local reach-avoid specifications, and they 
+need to avoid collision among each other; we consider such a specification in our examples in Sec.~\ref{sec:local reach-avoid}.
+In addition, we can also specify more general tasks which cannot be easily decomposed into individual subtasks for the robots.
+One example is the \emph{formation control problem}, which we consider in the example in Sec.~\ref{sec:global formation control}, where a set of robots need to 
+reach some location while maintaining a given geometric formation. 
+Since the formation is defined using the relative positions of the robots, it is not possible to decompose this task into separate local reach-avoid subtasks.
 
 \begin{example}
 	Consider our motivating example in which there are two control systems: the crane and the factory vehicle. The detailed models for both of the systems are given in Sec.~\ref{subsec}. The crane starts at $x_\init^1=\begin{bmatrix}0&0&\pi&0\end{bmatrix}^T$, while the vehicle starts at $x_\init^2=8$.

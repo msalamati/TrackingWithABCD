@@ -1,10 +1,27 @@
 \smallskip
 \noindent\textbf{Related Work}
 %
-We categorize the related work into (1) the ones which propose hierarchical controller synthesis techniques, (2) the ones which address the problem of multi-agent controller synthesis, and (3) the ones which combine (1) and (2) like us.
+The field of multi-agent planning is too large for a comprehensive survey; we point to very good text books
+\cite{LaValle,Kavraki,AIPlanning} for an introduction.
+We categorize closely related work into (1) ones combining planning and tracking controller synthesis, 
+(2) ones addressing multi-agent formal controller synthesis, and 
+(3) approaches combining (1) and (2).
 
-Recently, using hierarchical approach, that is combination of high-level planning and low-level tracking has gained especial attention. The existing methods can be categorized based on the dynamics that they can handle (e.g. nonlinear, perturbed, etc.), considered class of specifications and their scalability. A common approach to solve for reach-avoid specifications is to perform the high-level planning over a lower dimensional dynamical model and use
-Sum-of-Squares (SOS) programming or Hamilton Jacobi (HJ) method to obtain a low-level controller ensuring a bounded error between the two models \cite{herbert2017fastrack,DBLP:journals/corr/abs-1911-09773,singh2018robust}. However, These mehods (SOS and HJ) are not easilly parallelizable and hence are not scalabe. To design low-level tracking controllers, we use ABCD for which there exists known parallelization schemes (\cite{KhaledZ19pfaces}). Furthermore, in contrast to \cite{herbert2017fastrack,singh2018robust}, our method does not require finding a linear mapping between the low and high dimensional models. Furthermore, there are other works that only consider special classes of systems such as linear (\cite{fan2018controller,wongpiromsarn2012receding}), disturbance-free (\cite{tedrake2010lqr,fan2020fast}) and finite transition systems (\cite{Yang2017milp}). In contrast, our method supports arbitrary continuous time nonlinear dynamics and gives guarantee against worst-case bounded disturbance.
+Techniques combining high-level planning and low-level tracking are a staple of classical planning and control. 
+More recently, several techniques consider the problem of formal guarantees for such planners.
+Existing methods can be categorized based on the dynamics that they can handle (e.g., linear or nonlinear),
+whether the system is subject to disturbances, considered class of specifications, and scalability. 
+A common approach to solve for reach-avoid specifications is to perform the high-level planning over a lower dimensional dynamical model and then use
+Sum-of-Squares (SOS) programming or Hamilton Jacobi (HJ) methods to obtain a low-level controller ensuring a bounded error between the 
+two models \cite{herbert2017fastrack,DBLP:journals/corr/abs-1911-09773,singh2018robust}. 
+In contrast to \cite{herbert2017fastrack,singh2018robust}, our method does not require finding 
+a linear mapping between the low and high dimensional models. 
+While we choose SCOTS because the algorithm can be effectively parallelized \cite{KhaledZ19pfaces}, in principle, we could
+also use SOS or Hamilton Jacobi approaches.
+Some other works that only consider special classes of systems such as linear (\cite{fan2018controller,wongpiromsarn2012receding}), 
+disturbance-free (\cite{tedrake2010lqr,fan2020fast}), or finite transition systems (\cite{Yang2017milp}). 
+In contrast, our method supports arbitrary continuous time nonlinear dynamics and provides a guarantee 
+against worst-case bounded disturbance.
 	
 	%The hierarchical approach, combining high-level planning and low-level tracking, is not new.
 	%Yet most of the existing works use the hierarchical approach for controller synthesis for a single robot \cite{herbert2017fastrack, fan2020fast, fan2018controller, wongpiromsarn2012receding, tedrake2010lqr, singh2018robust, DBLP:journals/tac/MeyerD19, DBLP:journals/corr/abs-1911-09773, Yang2017milp}.
@@ -13,27 +30,37 @@ Sum-of-Squares (SOS) programming or Hamilton Jacobi (HJ) method to obtain a low-
 %	On the other hand, there are methods which compute a tracking controller which minimizes the tracking error for any given nominal trajectory:
 %	Some of them do not consider external disturbances \cite{tedrake2010lqr, singh2018robust}, some of them only consider linear dynamics \cite{wongpiromsarn2012receding}, and all of them consider only a single monolithic system structure \cite{herbert2017fastrack}.
 
-item There are many papers which address the problem of multi-robot controller synthesis, which do not use a hierarchical approach as we do.
-Chen et al.\ proposed a method, using control barrier functions, that requires some form of inter-robot communication and does not consider external disturbances \cite{Chen2018cbf}.
+% Many papers address the problem of multi-robot controller synthesis without a hierarchical approach.
+Chen et al.\ proposed a method, using control barrier functions, that requires some form of inter-robot 
+communication and does not consider external disturbances \cite{Chen2018cbf}.
 Sahin et al.\ proposed a method that requires the group of robots to be homogeneous \cite{Shahin2017cltl}.
 There are methods which do not consider external disturbances and do not provide formal guarantees \cite{jackson2020scalable}.
-In contrast, our method can synthesize formally verified controllers for heterogeneous group of robots, subjected to external disturbances, and lacking any form of communications. There are other works that use a pre-defined motion primitive library to perform verified planning for multi-robot systems \cite{saha2016implan,BanusicMPSZ19pgcd}. In contrast, our method deals with dynamical model of robots instead of using motion primitives which encapsulate the low-level control design. %Therefore, our guarantees are stronger.
+% In contrast, our method can synthesize formally verified controllers for heterogeneous group of robots, subjected 
+% to external disturbances, and lacking any form of communications. 
+
+There are other works that use a pre-defined motion primitive library to perform planning for multi-robot 
+systems \cite{saha2016implan,BanusicMPSZ19pgcd,Antlab,Drona}. 
+In contrast, our method directly deals with the dynamical model. 
 The closest related work that match our level of generality is the one by Bansal et al.\ \cite{bansal2017safe}.
-However, they assume that each robot has got its own reach-avoid specification and they need to avoid collision with the other robots.
-Whereas, we allow global reach-avoid specifications, which subsumes the specifications that they consider.
+However, they assume that each robot has its own reach-avoid specification and they only need to avoid collision with the other robots.
+In contrast, we allow global reach-avoid specifications, which subsume the specifications that they consider.
 In fact, there are control problems which cannot be easily expressed in their problem setting, but can be easily expressed in our problem setting: 
 examples are robots maintaining a formation while fulfilling their tasks \cite{alonso2019distributed}, etc.
 
-The works which use hierarchical controller synthesis approach for decentralized control of multi-robot systems is relatively rare.
+% Hierarchical controller synthesis for decentralized control of multi-robot systems is relatively rare.
 Alonso-Mora et al.\ proposed a method for formation control of a group of communicating homogeneous robots \cite{alonso2019distributed}.
-They first synthesize nominal controller using a fast randomized geometric planning method, namely RRT, and then use optimal control to track the obtained nominal solution.
-Unlike us, neither they consider external disturbances, nor they provide formal guarantees.
-Recently, Xiao et al.\ \cite{xiao2019merging} proposed a method for synthesis of distributed controllers for a set of autonomous vehicles in a lane merging situation.
-They use optimal control to compute a nominal controller for the product system, whose goal is to ensure some safety constraints together with ensuring optimality in some respect (like fuel consumption).
+They first synthesize nominal controller using a fast randomized geometric planning method, namely RRT, and 
+then use optimal control to track the obtained nominal solution.
+Unlike us, they neither consider external disturbances nor provide formal guarantees.
+Recently, Xiao et al.\ \cite{xiao2019merging} proposed a method for synthesis of distributed controllers for a 
+set of autonomous vehicles in a lane merging situation.
+They use optimal control to compute a nominal controller for the product system, 
+whose goal is to ensure some safety constraints together with ensuring optimality in some respect (like fuel consumption).
 After that, they use control barrier functions for each robot for tracking the obtained nominal solution.
-Even though they consider external noise in the system, yet, when there is noise, their controllers can occasionally violate the safety constraints for finite number of time steps.
+Even though they consider external noise in the system, yet, when there is noise, their controllers can 
+occasionally violate the safety constraints for finite number of time steps.
 Moreover, they only consider simple linear systems (double integrators) as vehicle models.
-In contrast, our method provides guarantee against worst-case system noise at all time, and in addition can support nonlinear systems. 
+% In contrast, our method provides guarantee against worst-case system noise at all time, and in addition can support nonlinear systems. 
  
 
 %\begin{enumerate}
