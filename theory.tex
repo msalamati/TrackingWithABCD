@@ -164,7 +164,8 @@ In multi-robot scenarios, the inequality constraints can be used to define colli
 Trajectories computed in the planning stage might not be followed in the presence of disturbance and therefore we need to use a 
 formally guaranteed tracker to satisfy the given reach-avoid specification. 
 Our choice for this purpose is the so-called abstraction-based controller design (ABCD). 
-ABCD can handle nonlinear dynamics, (bounded) uncertainties and $\omega$-regular specifications. In particular, we use SCOTS~\cite{Rungger2016scots} which is a software tool for implementing ABCD. Next, we introduce briefly the basics of ABCD.
+ABCD can handle nonlinear dynamics, (bounded) uncertainties and $\omega$-regular specifications. In particular, we use the SCOTS tool~\cite{Rungger2016scots} 
+for implementing ABCD. Next, we introduce briefly the basics of ABCD.
 For simpler notation, we omit the control system index $i$ in the rest of this section.
 
 % \subsubsection{Preliminaries of Abstraction-Based Controller Design}\hfill
@@ -211,13 +212,15 @@ The abstraction-based controller design (ABCD) \cite{reissig2016feedback} is a $
 First, we compute a finite state abstraction $\widehat{\Sigma}$ s.t.\ $\Sigma \frr{Q} \widehat{\Sigma}$.
 Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow \Uh$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
 Finally, we obtain the desired controller $C$ as $C:=\widehat{C}\circ Q$.
-It is known that this three step process produces a controller $C$ that realizes the given specification on $\Sigma$ \cite{reissig2016feedback}.
+It is known that this three step process produces a feedback controller $C$ such that $C\parallel \Sigma$ satisfies the specification \cite{reissig2016feedback}.
 
+If a controller cannot be found, we reduce the discretization parameters $\eta_x$ and $\eta_u$ and try again,
+or use a larger robustness margin $\varepsilon$.
 
-\smallskip
-\noindent\textbf{Computation of the Finite-State Abstraction.}\
-We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,x_\init,U,W,f)$, a compact subset $\bound$ of the set $X$ and discretization parameters $\eta_x$ and $\eta_u$, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma\frr{Q} \widehat{\Sigma}$.
-An implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
+% \smallskip
+% \noindent\textbf{Computation of the Finite-State Abstraction.}\
+% We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,x_\init,U,W,f)$, a compact subset $\bound$ of the set $X$ and discretization parameters $\eta_x$ and $\eta_u$, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a relation $Q$ s.t.\ $\Sigma\frr{Q} \widehat{\Sigma}$.
+% An implementation of $\findAbs$ can be found in \cite{reissig2016feedback}.
 
 
 
@@ -232,7 +235,10 @@ Next, we compute finite state abstraction for $\Sigma$ for the chosen parameters
 \begin{equation*}
 Domain:=\bigcup_{k=0}^T\ball_{\varepsilon}(x_{k,\nom}).
 \end{equation*}
-Finally, given the computed finite state abstraction $\widehat \Sigma$ and the specification in Eq.~\eqref{eq:ltl_spec}, we synthesize a symbolic controller using ABCD implemented in SCOTS~\cite{Rungger2016scots}. %\MS{perhaps we can add a discussion here about our actual implementation.}
+%
+Experimentally, this local domain is key to scalability.
+% 
+% Finally, given the computed finite state abstraction $\widehat \Sigma$ and the specification in Eq.~\eqref{eq:ltl_spec}, we synthesize a symbolic controller using ABCD implemented in SCOTS~\cite{Rungger2016scots}. %\MS{perhaps we can add a discussion here about our actual implementation.}
 
 %We use Alg.~ \ref{alg:abcd-with-time-for-tracking} for solving Prob.~\ref{prob:tracking_with_time} using finite abstraction.
 
@@ -269,8 +275,8 @@ However, fast geometric planners do not usually take into consideration the dyna
 This is especially true for systems with restricted control capabilities or under-actuated systems.
 We demonstrate this phenomenon on a control system $\Sigma$ that is a simple $2$-dimensional pendulum with the following nominal dynamics:
 	\begin{align*}
-		\dot{x}_1 &= x_2\\
-		\dot{x}_2 &= -sin(x_1) + u/5,
+		\dot{x}_1 = x_2\quad
+		\dot{x}_2 = -\sin(x_1) + u/5,
 	\end{align*}
 where $x_1$ represents the angle (in radian) of the pendulum rod measured counter-clockwise from the vertical upright position, and $x_2$ represents the rate of change of $x_1$ or the angular velocity.
 Suppose the initial state of the pendulum is $(\pi,0)$, i.e., when the pendulum is in the vertical downward position and is stationary.
