@@ -1,26 +1,6 @@
 %!TEX ROOT = ./main.tex
 
 \section{Experimental Evaluation}\label{sec:experiments}
-%\MS{List the specifications of the cluster machine/laptop with which we have run our experiments.}
-We evaluate a prototype implementation of ALg.~\ref{alg:main}
-on two examples. 
-The design of nominal controller has been performed on a laptop with core i7-4510u CPU at 3.10GHz, with 8GB of
-RAM.
-The formal controller synthesis has been performed
-on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of
-RAM. %\MS{TODO: adding a table with complete information regarding sizes and times for all of the examples}
-
-We consider two distinct types of problems, and demonstrate how they can be solved using our approach. Table~\ref{tab:runtimes} demonstrates  runtimes of different stages for each of the experiment. The reported numbers for local ABCD correspond to the agent with maximum number of input-state pairs. On the other hand, Fig.~\ref{fig:box_plot} illustrates variations of runtimes among different agents for every experiment except the crane and vehicle example for which variation is too large due to different dynamics. This is sensible because feedback controllers for different agents can be computed independently over different machines. Note that using global ABCD, memory requirement exceeds our system's limit (1.5TB of RAM) for all of the experiments. %\MS{For reporting number of input-state pairs and runtimes of local ABCD we could report total, average or maximum values; currently, Tab.~\ref{tab:runtimes} contains maximum values (taken over all of the agents, corresponding to multi-machine implementation), while total and average values are reported in the body of the paper. Data will be unified once the decision is made.}
-%Note that while reported numbers for local controller synthesis correspond to the total runtimes over all of the robots, significant reduction would be expected if abstraction and synthesis phases were parallelized.
-%\begin{huge}
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.45\textwidth]{figures/Box_plot.eps}
-	\caption{Variations of runtimes among agents in diffrenet examples}
-	\label{fig:box_plot}
-\end{figure}
-
 
 
 \begin{table*}
@@ -56,6 +36,55 @@ We consider two distinct types of problems, and demonstrate how they can be solv
 			\bottomrule
 	\end{tabular}%}
 \end{table*}
+
+
+%\MS{List the specifications of the cluster machine/laptop with which we have run our experiments.}
+We evaluate a prototype implementation of ALg.~\ref{alg:main}
+on two examples. 
+The design of nominal controller has been performed on a laptop with core i7-4510u CPU at 3.10GHz, with 8GB of
+RAM.
+The formal controller synthesis has been performed
+on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of
+RAM. %\MS{TODO: adding a table with complete information regarding sizes and times for all of the examples}
+
+We consider two distinct types of problems, and demonstrate how they can be solved using our approach. Table~\ref{tab:runtimes} demonstrates  runtimes of different stages for each of the experiment. The reported numbers for local ABCD correspond to the agent with maximum number of input-state pairs. On the other hand, Fig.~\ref{fig:box_plot} illustrates variations of runtimes among different agents for every experiment except the crane and vehicle example for which variation is too large due to different dynamics. This is sensible because feedback controllers for different agents can be computed independently over different machines. Note that using global ABCD, memory requirement exceeds our system's limit (1.5TB of RAM) for all of the experiments. %\MS{For reporting number of input-state pairs and runtimes of local ABCD we could report total, average or maximum values; currently, Tab.~\ref{tab:runtimes} contains maximum values (taken over all of the agents, corresponding to multi-machine implementation), while total and average values are reported in the body of the paper. Data will be unified once the decision is made.}
+%Note that while reported numbers for local controller synthesis correspond to the total runtimes over all of the robots, significant reduction would be expected if abstraction and synthesis phases were parallelized.
+%\begin{huge}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/Box_plot.eps}
+	\caption{Variations of runtimes among agents in diffrenet examples}
+	\label{fig:box_plot}
+\end{figure}
+
+\begin{figure*}[t]
+    \large
+     \centering
+     \begin{subfigure}[b]{0.24\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/MA1.pdf}
+         \caption{}
+         \label{fig:MA}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/tubes10.eps}
+         \caption{}
+         \label{fig:3dtubes}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.24\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/dist_path_planning.pdf}
+         \caption{}
+         \label{fig:multi_drone_distance}
+     \end{subfigure}
+        \caption{(a) The mission map for the multi-drone path planning example (b) Time-state space illustration of tubes enclosing nominal trajectories for the multi-drone path planning (c) Performance of open-loop and feedback controllers in regulating distance between drones for disturbance-free and perturbed situations for the multi-drone path planning example}
+        \label{fig:three figures}
+\end{figure*}
+
 %\end{huge}
 \subsection{Local reach-avoid problems for each robot}
 \label{sec:local reach-avoid}
@@ -131,32 +160,7 @@ $U=[-2.4,2.4]^2$, respectively. Choosing  $\eta_{X}=\begin{bmatrix}0.02&0.02&0.0
 %results in $\hat X$ and $\hat U$ with $9.61\times 10^7$ and $289$ points. We compute the transition system over the inter-tube space characterized by $\varepsilon=\begin{bmatrix}0.16&0.16&0.18\end{bmatrix}^T$, which results in finite-state transition system with $4.0\times 10^5$ points. Given the above settings, SCOTS computes abstraction in $340$ seconds ($34.0$ seconds in average) and synthesis in $73$ seconds ($7.3$ seconds in average). %(the ones with red dashed circles around them in Fig~\ref{fig:MA}). 
 %It can be noticed that success in restricting the trajectories generated under the worst-case disturbance within the tubes guarantees a collision-free mission.
 %Fig~\ref{fig:blowup} illustrates the fact that increasing number of agents ($N$) causes an exponential blow-up in the number of transitions if we wanted to solve the given reach-avoid problem over the product state and input spaces. However, since we compute tracking controllers locally, our method experiences linear blow-up as $N$ increases.
-\begin{figure*}[t]
-    \large
-     \centering
-     \begin{subfigure}[b]{0.24\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{figures/MA1.pdf}
-         \caption{}
-         \label{fig:MA}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.5\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{figures/tubes10.eps}
-         \caption{}
-         \label{fig:3dtubes}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.24\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{figures/dist_path_planning.pdf}
-         \caption{}
-         \label{fig:multi_drone_distance}
-     \end{subfigure}
-        \caption{(a) The mission map for the multi-drone path planning example (b) Time-state space illustration of tubes enclosing nominal trajectories for the multi-drone path planning (c) Performance of open-loop and feedback controllers in regulating distance between drones for disturbance-free and perturbed situations for the multi-drone path planning example}
-        \label{fig:three figures}
-\end{figure*}
+
 
 On the other hand, using ALTRO alone would not provide guarantee against bounded disturbance.  %By allowing disturbance to take non-zero values, there is no guarantee that the open-loop trajectories are followed.
 Fig.~\ref{fig:multi_drone_distance} illustrates performance of open-loop and feedback controllers on regulating distance between the two of drones with and without disturbance. As expected, in the absence of disturbance open-loop controller suffices and distance between the two drones (shown in solid blue) does not go below the defined threshold. Next, we consider the case when constant additive disturbance vectors $\begin{bmatrix}0 &0.025&0.025\end{bmatrix}^T$ and $\begin{bmatrix}0 &-0.025&-0.025\end{bmatrix}^T$ are being applied to the first and second drones throughout the whole horizon. It can be noticed that applying the open-loop controller causes that distance between the two drones (shown in solid green) goes blow the predefined threshold. However, the feedback controller is still capable of maintaining distance (shown in solid red) within the safe region.
@@ -444,6 +448,8 @@ whereas the feedback controller is still capable of maintaining distance above t
 %	Otherwise, the SCOTS would not be able to track the nominal trajectory within the given precision using any level of discretization. 
 %	\item For the ship example, applying the largest disturbance with which SCOTS is able to compute a controller, the trajectory resulted from using the open loop controller does not leave  $\varepsilon-$tube around it; in general magnitude of disturbance for which SCOTS can find a controller is relatively small for most of examples that we have tried.
 %\end{enumerate}
+
+
 
 
 
