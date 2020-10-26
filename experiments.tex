@@ -1,4 +1,4 @@
-%!TEX ROOT = ./main.tex
+% !TEX root = main.tex
 
 \section{Experimental Evaluation}\label{sec:experiments}
 
@@ -6,8 +6,8 @@
 \begin{table*}
 	\large
 	\centering
-	\caption{List of runtimes for different case-studies
-		\textmd{Runtimes (in seconds) for computing open-loop controllers over the corresponding product spaces using ALTRO ($T_{AL}$), number of input-state pairs of finite-state abstraction for local ABCD ($N_l$), abstraction and synthesis times for computing local feedback controllers using SCOTS ($T_{l}^{abs}$ and $T_{l}^{syn}$, respectively), number of input-state pairs of finite-state abstraction for global ABCD ($N_g$), abstraction and synthesis times for computing a global controller for the product system using SCOTS ($T_{g}^{abs}$ and $T_{g}^{syn}$, respectively). For local ABCD, the reported numbers correspond to the maximum value among all of the agents.}
+	\caption{Runtimes for four case studies.
+		\textmd{Runtimes (in seconds) for computing open-loop controllers over the corresponding product spaces using ALTRO ($T_{AL}$), number of input-state pairs of the finite abstraction for the local ABCD ($N_l$), abstraction and synthesis times for computing local feedback controllers using SCOTS ( respectively $T_{l}^{abs}$ and $T_{l}^{syn}$), number of input-state pairs of the finite state abstraction for the global ABCD ($N_g$), abstraction and synthesis times for computing a global controller for the product system using SCOTS (respectively $T_{g}^{abs}$ and $T_{g}^{syn}$). For local ABCD, the reported numbers correspond to the maximum value among all of the agents.}
 		\label{tab:runtimes}
 	}
 
@@ -16,7 +16,7 @@
 	%\resizebox{1\columnwidth}{!}{
 		\begin{tabular}{l|c|ccc|ccc}
 			\toprule
-			Case-studie&\multicolumn{1}{c}{Global planning}&
+			Case-study&\multicolumn{1}{c}{Global planning}&
 			\multicolumn{3}{|c}{Local ABCD}&\multicolumn{3}{|c}{Global ABCD}\\
 			
 			&$T_{AL}$&$N_l$&$T_{l}^{abs}$&$T_{l}^{syn}$&$N_g$&$T_g^{abs}$&$T_g^{syn}$\\
@@ -39,19 +39,27 @@
 
 
 %\MS{List the specifications of the cluster machine/laptop with which we have run our experiments.}
-We evaluate a prototype implementation of ALg.~\ref{alg:main}
-on two examples. 
-The design of nominal controller has been performed on a laptop with core i7-4510u CPU at 3.10GHz, with 8GB of
-RAM.
-The formal controller synthesis has been performed
-on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of
-RAM. %\MS{TODO: adding a table with complete information regarding sizes and times for all of the examples}
+We evaluate a prototype implementation of Alg.~\ref{alg:main}
+on two distinct category of problems: local reach-avoid problems with collision avoidance and global formation control problems. We also consider four case studies: multi-drone path planning, crane and vehicle, lane merging and multi-drone formation control. 
+The design of nominal controller has been performed on a laptop with core i7-4510u CPU at 3.10GHz, with 8GB of RAM.
+The formal controller synthesis has been performed on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of RAM. %\MS{TODO: adding a table with complete information regarding sizes and times for all of the examples}
 
-We consider two distinct types of problems, and demonstrate how they can be solved using our approach. In all of our examples, robots and obstacles are located over two-dimensional space. Table~\ref{tab:runtimes} demonstrates  runtimes of different stages for each of the experiment. For local ABCD, the reported numbers correspond to the maximum value among all of the agents. This is sensible because feedback controllers for different agents can be computed independently over different machines. Notice that higher number of input-state pairs does not necessarily result in higher runtime for local ABCD as number of transitions and features of the parallel implementation can play a role. Further, Fig.~\ref{fig:box_plot} illustrates variations of runtimes among different agents for every experiment except the crane and vehicle example for which variance is too high because of different dynamics. Note that using global ABCD, memory requirement exceeds our system's limit (1.5TB of RAM) for all of the experiments. %\MS{For reporting number of input-state pairs and runtimes of local ABCD we could report total, average or maximum values; currently, Tab.~\ref{tab:runtimes} contains maximum values (taken over all of the agents, corresponding to multi-machine implementation), while total and average values are reported in the body of the paper. Data will be unified once the decision is made.}
+%We consider , and demonstrate how they can be solved using our approach.
+In all of our case studies, robots are moving in a two-dimensional space that has obstacles. Table~\ref{tab:runtimes} shows runtimes for different stages of each experiment. For local ABCD, the reported numbers correspond to the maximum value among all of the agents. This choice is due to the fact that feedback controllers for different agents can be computed independently in parallel over different machines. Notice that a higher number of input-state pairs does not necessarily result in a higher runtime for local ABCD as the number of transitions and features of the parallel implementation can play a role. 
+
+We compare our approach with the ABCD applied to the product system to satisfy the global specification. As reflected in Table~\ref{tab:runtimes}, memory requirement for the global ABCD exceeds our system's limit (1.5TB of RAM) in all of the experiments.
+%
+Further, Fig.~\ref{fig:box_plot} illustrates variations of runtimes of the local ABCD among different agents for every experiment solved by our approach. We have excluded in this figure the crane and vehicle case study due to an expectable large variance originating from different dynamics.
+ %\MS{For reporting number of input-state pairs and runtimes of local ABCD we could report total, average or maximum values; currently, Tab.~\ref{tab:runtimes} contains maximum values (taken over all of the agents, corresponding to multi-machine implementation), while total and average values are reported in the body of the paper. Data will be unified once the decision is made.}
 %Note that while reported numbers for local controller synthesis correspond to the total runtimes over all of the robots, significant reduction would be expected if abstraction and synthesis phases were parallelized.
 %\begin{huge}
 
-
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/Box_plot.eps}
+	\caption{Variations of runtimes of local ABCD among different agents for three case studies.}
+	\label{fig:box_plot}
+\end{figure}
 
 \begin{figure*}[t]
     \large
@@ -87,29 +95,30 @@ We consider two distinct types of problems, and demonstrate how they can be solv
 We first consider situations when the robots have got their individual reachability specifications, and they need to ensure a minimum safe distance from each other and the obstacles.
 We show how this case can be captured using the problem description outlined in Sec.~\ref{sec:problem}.
 
-Suppose $\set{\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i)}$ is a set of control systems, $\goal^i\subseteq X^i$ is the individual goal states and $\delta \in \mathbb{R}_{>0}$ is a safety margin.
+Suppose $\set{\Sigma^i}$ with $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i)$ models a set of robots, $\goal^i\subseteq X^i$ is the individual goal sets and $\delta \in \mathbb{R}_{>0}$ is a safety margin.
 %(We could also consider obstacles in the agent' own state spaces, in which case we had to additionally introduce safety margins in the state spaces.)
 %Without loss of generality, we assume that every robot is moving in the two-dimensional space.
-Suppose the specification requires that each robot $\Sigma^i$ eventually reaches $\goal^i$ while avoiding obstacle $\obs\subseteq \reals^2$ and collision with robots by the margin $\delta$.
-This specification can be expressed as a reach-avoid specification of the product system $\Sigma^\times$, as per the required form given in Sec.~\ref{sec:problem}, as follows:
+Suppose the specification requires that each robot $\Sigma^i$ eventually reaches $\goal^i$ while avoiding the obstacle $\obs\subseteq \reals^2$ and collision with robots by the margin $\delta$.
+These requirements can be expressed as a reach-avoid specification on the product system $\Sigma^\times$ %as per the required form given in Sec.~\ref{sec:problem}, 
+as follows:
 \begin{itemize}
 	\item The goal set $\goal\subseteq X^\times$ is defined as $\goal \coloneqq \goal^1\times \ldots \times \goal^N \subseteq X^\times$, and
-	\item The static obstacle $\avoid\subseteq X^\times$ is defined as 
+	\item The avoid set $\avoid\subseteq X^\times$ is defined as 
 		\begin{align}
 			&\avoid \coloneqq\nonumber\\ 
 				&\Set{ x^\times\in X^\times | 
 					\begin{array}{c}
 						\exists i\in [1;N]\;.\; D(x^i,\obs) \leq \delta\\
 						\vee\\
-						 \exists (i,j)\in [1;N]\times [1;N]\;.\;\\ d\left(x^i,x^j\right)\leq\delta
+						 \exists i,j\in [1;N]\;.\;i\neq j\;.\;d\left(x^i,x^j\right)\leq\delta
 					\end{array}},
 		\end{align}
-	where $x^i$ denotes the component of $x^\times$ corresponding to the $i^{th}$ subsystem, $d(\cdot,\cdot)$ denotes a predicate for measuring the geometric distance between positions of two systems located in two-dimensional space, $D(\cdot,\cdot)$ denotes a predicate for measuring the geometric distance between position of one system and an obstacle located in two-dimensional space.
+	where $x^i$ denotes the component of $x^\times$ corresponding to $\Sigma^i$, $d(\cdot,\cdot)$ denotes a predicate for measuring the geometric distance between positions of two systems located in the two-dimensional space, $D(\cdot,\cdot)$ denotes a predicate for measuring the geometric distance between position of one system and the obstacle $\obs\subseteq \reals^2$.
 \end{itemize}
 
 Once the sets $\goal$ and $\avoid$ are obtained as above, we can use Alg.~\ref{alg:main} to find the set of feedback controllers $\set{C^i}$.
 
-In this category of problems, we consider the following three examples.
+In this category of problems, we apply our approach to three case studies as discussed next.
 
 %\textcolor{red}{
 \subsubsection{Multi-drone path planning}\label{sec:Multirobot}
@@ -142,12 +151,7 @@ where $x_1$ and $x_2$ denote the drone's position in two-dimensional space, $x_3
 
 
 %According to our proposed scheme, we first use ALTRO to design a centralized nominal controller for the product state and input space that satisfies the specification in Equation~\eqref{eq:spec} in the absence of disturbance ($W=\{0\}$). 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.45\textwidth]{figures/Box_plot.eps}
-	\caption{Variations of runtimes among different agents for different experiments using local ABCD}
-	\label{fig:box_plot}
-\end{figure}
+
 Selecting the horizon length as $T=102$, %and sampling time $\tau=0.1$. 
 ALTRO computes a valid open-loop trajectory %$x_{nom}$
 in $125$ seconds for the product system with $30$ state and $20$ input variables.  %Next, we show how to synthesize local feedback controllers that guarantee satisfaction of specifications in the presence of disturbance. %hereeeThe open-loop trajectories generated by ALTRO ($\set{(x_{0_\nom}^i,\ldots,x_{K_\nom}^i)}_{i\in [1;N]}$) are depicted in solid in Figure~\ref{fig:MA}. Note that the guarantee that open-loop controller gives is only valid in the absence of disturbance. In Figure~\ref{fig:MA}, dotted trajectories correspond to the first and the second robot's paths in $2D$ plane when constant additive disturbance $w=\{\begin{bmatrix}0.03,0.03,0.03\end{bmatrix}\}$ is being applied throughout the whole horizon. It can be noticed that they collide with each other before reaching their corresponding target sets. Next, we show how to synthesize local controllers that guarantee satisfaction of specifications in the presence of disturbance. \MS{1) Use dashed/dotted for trajectories with added disturbance. 2) use $x_1$ and $x_2$ instead of $x$ and $y$ for different axes 3) don't draw the outer circle.}
