@@ -70,22 +70,26 @@ and $f^\times\coloneqq f^1\otimes \ldots \otimes f^N$.
 We use the state projection operator $\proj^{i}\colon X^\times\to X^i$, $\proj^{i}\colon (x^1,\ldots,x^N)\mapsto x^i$. 
 For brevity, we write $\set{\Sigma^i}$ instead of $\set{\Sigma^i}_{i\in [1;N]}$, when the range of $i$ is irrelevant or clear from context.
 
-
+\smallskip
+\noindent
+\textbf{Sampled-time Systems}
 We define control systems and their product over discrete time.
 Such systems can be obtained as time discretizations of continuous-time nonlinear dynamical systems.
 We sketch the connection. 
-\RM{actually I don't know how to do this.}
 Consider $(X, x_\init, U, W, f)$ as above and
 suppose that $f: X \times U \rightarrow X$ is such that $f(\cdot, u)$ is locally Lipschitz for all $u\in U$.
-Given a time horizon $\tau$, an initial state $x_0$, and a constant input $u$, define the \emph{continuous time trajectory} of the system
-on $[0, \tau]$ as an absolutely continuous function $\zeta: [0, \tau] \rightarrow X$ such that $\zeta(0) = x_0$, and
-$\zeta$ satisfies the differential inclusion $\dot{\zeta} \in f(\zeta(t), u) + W$ for almost all $t\in [0,\tau]$.
+Given a time horizon $\tau$, an initial state $x_0$, and a constant input $u$, define the \emph{continuous time trajectory} $\zeta_{x_0, u}$
+of the system on $[0, \tau]$ as an absolutely continuous function $\zeta_{x_0,u}: [0, \tau] \rightarrow X$ such that $\zeta_{x_0,u}(0) = x_0$, and
+$\zeta_{x_0,u}$ satisfies the differential inclusion $\dot{\zeta}_{x_0,u} \in f(\zeta_{x_0,u}(t), u) + W$ for almost all $t\in [0,\tau]$.
+Given $\tau$, $x_0$, and $u$, we define $\Sol(x_0, u, \tau)$ as the set of all $x\in X$ such that there is a continuous time trajectory
+$\zeta_{x_0,u}$ with $\zeta(\tau) = x$.
+A sequence $x_0,x_1, \ldots$ is a \emph{time-sampled trajectory} if $x_0 = x_\init$ and for each $i\geq 0$, we have
+$x_{i+1} \in \Sol(x_i, u_i, \tau)$ for some $u_i \in U$.
 
-Now, given a sampling time $\tau > 0$, define the \emph{sampled-time} control system $(X, x_\init, U, W, f_\tau)$ as the control
-system for which $f_\tau(x, u)$ ...
-\RM{here} 
-
-
+Given a continuous-time nonlinear dynamical system and a sample time $\tau$, there exist techniques to construct
+a control system $\Sigma = (X, x_\init, U, W, f_\tau)$ such that every time-sampled trajectory of the continuous-time system is
+also a trajectory of $\Sigma$.
+We omit the details of the construction; see, e.g., \cite{FRR?}. 
 
 \begin{comment}
 We assume that each control system $\Sigma^i$ in $\set{\Sigma^i}_{i\in [1;N]}$ is equipped with an output map $h^i\colon X^i\rightarrow Y$ where $Y\subseteq\reals^p$ is a shared output space. Recall our motivating example, wherein the crane's state space consists of the cart's position ($z$), the cart's speed ($v_z$), the pendulum's angular position ($\theta$), and angular speed ($v_\theta$). The state space for the vehicle is described with only one state variable $z'$ describing its position. Note that $X^1\subseteq \reals^4$ and $X^2\subseteq \reals$. By defining $h^1(z,v_z,\theta,v_\theta)=\begin{bmatrix}z+l\sin(\theta)&0.6+l\cos(\theta)\end{bmatrix}^T$ and $h^2(z')=\begin{bmatrix}z'&0.4\end{bmatrix}^T$, both state spaces can be mapped to $Y\subseteq \reals^2$ in which we would like to compute their distance.
@@ -179,16 +183,17 @@ for some $w_{ji} \in W^i$, for each $i\in [1;N]$.
 \noindent
 \textbf{Decentralized Controller Synthesis Problem}
 Let $\set{\Sigma^i}$ be a set of control systems.
-A \emph{control objective} $\mathcal{L}$ is a set of finite sequences in $(X^\times)^*$.
-Intuitively, a control objective specifies a set of ``good behaviors'' of a system.
-We consider \emph{reach-avoid} specifications, written as  $\lnot\avoid\; \mathcal{U}\; \goal$ in linear temporal logic, for two subsets 
+A (global) \emph{control specification} $\mathcal{L}$ is a set of finite sequences in $(X^\times)^*$.
+Intuitively, a control specification specifies a set of ``good behaviors'' of the product system.
+The \emph{decentralized open-loop (resp. feedback) controller synthesis problem} asks, given $\set{\Sigma^i}$ and a global control specification $\mathcal{L}$,
+to construct a set of local open-loop (resp.\ feedback) controllers $\set{C^i}$ such that
+the trajectories of $\set{C^i}\triangleright \set{\Sigma^i}$ (resp.\ $\set{C^i}\parallel \set{\Sigma^i}$ all belong to the global
+control specification $\mathcal{L}$.
+
+In particular, we consider \emph{reach-avoid} specifications, written as  $\lnot\avoid\; \mathcal{U}\; \goal$ in linear temporal logic, for two subsets 
 $\avoid, \goal \subseteq X^\times$.
 A trajectory $x_0, x_1, \ldots$ saisfies the reach avoid specification if there is some $j\in \mathbb{N}$ such that $x_j \in\goal$ and
 for all $i \in [0; j-1]$, we have $x_i \not \in\avoid$.
-
-The \emph{decentralized open-loop (resp. feedback) controller synthesis problem} asks, given $\set{\Sigma^i}$ and a control objective $\mathcal{L}$,
-to construct a set of local open-loop (resp.\ feedback) controllers $C^i$ such that
-the trajectories of $\set{C^i}\triangleright \set{\Sigma^i}$ (resp.\ $\set{C^i}\parallel \set{\Sigma^i}$ all belong to the control objective $\mathcal{L}$.
 
 Our notion of product of control systems is a Cartesian product of each component. Thus, we assume that the dynamics of individual control
 systems are not coupled.
