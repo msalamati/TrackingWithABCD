@@ -280,7 +280,7 @@ When we use ALTRO to compute an open-loop controller $C$, unsurprisingly, the co
 The synthesis of tracking controller using ABCD is indeed successful when we feed this nominal trajectory to our ABCD solver.
 However, if we use a geometric planner for this example that ignores the dynamics, the nominal trajectory would be a straight line path from $(\pi,0)$ to $(0,0)$, which gives an infeasible tracking problem for ABCD, due to the restrictions on possible trajectories of the pendulum coming from the its dynamics.
 	\begin{figure}
-		\includegraphics[scale=0.2]{figures/2d_pendulum_spiral}
+		\includegraphics[scale=0.4]{figures/IP.pdf}
 		\caption{The nominal open-loop trajectory of the $2$-dimensional pendulum. \Sadegh{Text inside the figure is very small, make it larger so that it is readable.}}
 		\label{fig:traj 2d pendulum}
 	\end{figure}

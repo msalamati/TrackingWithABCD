@@ -13,6 +13,16 @@ RAM. %\MS{TODO: adding a table with complete information regarding sizes and tim
 We consider two distinct types of problems, and demonstrate how they can be solved using our approach. Table~\ref{tab:runtimes} demonstrates  runtimes of different stages for each of the experiment. The reported numbers for local ABCD correspond to the agent with maximum number of input-state pairs. On the other hand, Fig.~\ref{fig:box_plot} illustrates variations of runtimes among different agents for every experiment except the crane and vehicle example for which variation is too large due to different dynamics. This is sensible because feedback controllers for different agents can be computed independently over different machines. Note that using global ABCD, memory requirement exceeds our system's limit (1.5TB of RAM) for all of the experiments. %\MS{For reporting number of input-state pairs and runtimes of local ABCD we could report total, average or maximum values; currently, Tab.~\ref{tab:runtimes} contains maximum values (taken over all of the agents, corresponding to multi-machine implementation), while total and average values are reported in the body of the paper. Data will be unified once the decision is made.}
 %Note that while reported numbers for local controller synthesis correspond to the total runtimes over all of the robots, significant reduction would be expected if abstraction and synthesis phases were parallelized.
 %\begin{huge}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/Box_plot.eps}
+	\caption{Variations of runtimes among agents in diffrenet examples}
+	\label{fig:box_plot}
+\end{figure}
+
+
+
 \begin{table*}
 	\large
 	\centering
