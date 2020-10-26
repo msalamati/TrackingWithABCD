@@ -4,7 +4,8 @@
 
 \smallskip
 \noindent\textbf{Notation.}\
-We use the notation $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the set of real numbers and the set of positive real numbers respectively.
+We denote the set of natural numbers including zero by $\mathbb N$.
+We use the notation $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote respectively the set of real numbers and the set of positive real numbers.
 We use superscript $n>0$ with $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the Cartesian product of $n$ copies of $\mathbb{R}$ and $\mathbb{R}_{>0}$ respectively.
 Given two points $x=(x_1,\ldots, x_n)$ and $y=(y_1,\ldots, y_n)$ in $ \mathbb{R}^n$
 %(or $\mathbb{R}^n_{>0}$)
@@ -42,51 +43,50 @@ For detailed syntax and semantics of LTL, we refer to \cite{baier2008principles}
 % \subsection{System Formalisms}
  
 \smallskip
-\noindent\textbf{Control System.}\
+\noindent\textbf{Control Systems.}\
 A \emph{control system} $\Sigma = (X, x_{\init}, U, W, f)$
 consists of a \emph{state space} $X\subseteq \mathbb{R}^n$,
 an \emph{initial state} $x_\init\in X$,
 an \emph{input space} $U\subseteq\mathbb{R}^m$, 
-a compact \emph{disturbance set} $W\subset \mathbb{R}^n$ containing $0$, and
-a \emph{nominal dynamics} $f:X\times U\rightarrow X$. 
+a compact \emph{disturbance set} $W\subset \mathbb{R}^n$ containing $0$, and a vector field $f:X\times U\rightarrow X$ modeling the \emph{nominal dynamics} of the system. 
 A \emph{trajectory} of $\Sigma$ is a finite or infinite sequence $x_0, x_1, \ldots \in X^\infty$
 such that $x_0 = x_{\init}$ and for each $i\geq 0$, there is an $u_i\in U$ and $w_i \in W$ such that
 $x_{i+1} = f(x_i, u_i) + w_i$.
 A trajectory is \emph{nominal} if $w_i = 0$ for all $i\geq 0$.
-Intuitively, a control system represents a (possibly nonlinear) dynamical system with control inputs $U$
-and disturbance from the set $W$.
+Intuitively, a control system represents a (possibly nonlinear) dynamical system with control inputs form $U$
+and disturbances from the set $W$.
 
 \smallskip
-\noindent\textbf{Product Control System.}\
+\noindent\textbf{Product Control Systems.}\
 Let $\set{\Sigma^i}_{i\in [1;N]}$, 
 $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i)$, for $i \in [1;N]$, be a set of $N$ control systems. 
 The \emph{product control system} of $\set{\Sigma^i}_{i\in [1;N]}$ is defined as the control system 
-$\Sigma^\times = (X^\times, x_\init^\times, U^\times, \set{0^n}, f^\times)$,
+$\Sigma^\times = (X^\times, x_\init^\times, U^\times, W^\times, f^\times)$,
 where $X^\times \coloneqq X^1 \times \ldots \times X^N$, 
 $x_\init^\times \coloneqq (x_\init^1, \ldots, x_\init^N)$,
 $U^\times \coloneqq U^1 \times \ldots \times U^N$, 
 $W^\times \coloneqq W^1 \times \ldots \times W^N$, 
 and $f^\times\coloneqq f^1\otimes \ldots \otimes f^N$.
-We use the state projection operator $\proj^{i}\colon X^\times\to X^i$, $\proj^{i}\colon (x^1,\ldots,x^N)\mapsto x^i$. 
+We use the state projection operator $\proj^{i}\colon X^\times\to X^i$ with $\proj^{i} (x^1,\ldots,x^N) = x^i$. 
 For brevity, we write $\set{\Sigma^i}$ instead of $\set{\Sigma^i}_{i\in [1;N]}$, when the range of $i$ is irrelevant or clear from context.
 
 \smallskip
 \noindent
-\textbf{Sampled-time Systems}
+\textbf{Sampled-time Systems.}\
 We define control systems and their product over discrete time.
 Such systems can be obtained as time discretizations of continuous-time nonlinear dynamical systems.
 We sketch the connection. 
-Consider $(X, x_\init, U, W, f)$ as above and
+Consider the tuple $(X, x_\init, U, W, f)$ as above and
 suppose that $f: X \times U \rightarrow X$ is such that $f(\cdot, u)$ is locally Lipschitz for all $u\in U$.
-Given a time horizon $\tau$, an initial state $x_0$, and a constant input $u$, define the \emph{continuous time trajectory} $\zeta_{x_0, u}$
-of the system on $[0, \tau]$ as an absolutely continuous function $\zeta_{x_0,u}: [0, \tau] \rightarrow X$ such that $\zeta_{x_0,u}(0) = x_0$, and
-$\zeta_{x_0,u}$ satisfies the differential inclusion $\dot{\zeta}_{x_0,u} \in f(\zeta_{x_0,u}(t), u) + W$ for almost all $t\in [0,\tau]$.
+Given a time horizon $\tau>0$, an initial state $x_0$, and a constant input $u$, define the \emph{continuous time trajectory} $\zeta_{x_0, u}$
+of the system on the time interval $[0, \tau]$ as an absolutely continuous function $\zeta_{x_0,u}: [0, \tau] \rightarrow X$ such that $\zeta_{x_0,u}(0) = x_0$, and
+$\zeta_{x_0,u}$ satisfies the differential inclusion $\dot{\zeta}_{x_0,u}(t) \in f(\zeta_{x_0,u}(t), u) + W$ for almost all $t\in [0,\tau]$.
 Given $\tau$, $x_0$, and $u$, we define $\Sol(x_0, u, \tau)$ as the set of all $x\in X$ such that there is a continuous time trajectory
 $\zeta_{x_0,u}$ with $\zeta(\tau) = x$.
 A sequence $x_0,x_1, \ldots$ is a \emph{time-sampled trajectory} if $x_0 = x_\init$ and for each $i\geq 0$, we have
 $x_{i+1} \in \Sol(x_i, u_i, \tau)$ for some $u_i \in U$.
 
-Given a continuous-time nonlinear dynamical system and a sample time $\tau$, there exist techniques to construct
+Given a continuous-time nonlinear dynamical system with the tuple $(X, x_\init, U, W, f)$ as above and a sampling time $\tau$, there exist techniques to construct
 a control system $\Sigma = (X, x_\init, U, W, f_\tau)$ such that every time-sampled trajectory of the continuous-time system is
 also a trajectory of $\Sigma$.
 We omit the details of the construction; see, e.g., \cite{FRR?}. 
@@ -151,12 +151,14 @@ From here on, we omit the domain of $i$ and use ``$\set{S^i}$'' and ``$\set{\Sig
 \end{comment}
 
 \smallskip\noindent
-\textbf{Controllers} 
+\textbf{Controllers.} 
 %
 % We introduce the notations for representing different types of controllers used in this paper. 
 An \emph{open-loop controller} for $\Sigma=(X,x_\init,U,W,f)$ over a time interval $[0;T]$ with $T\in\mathbb N$ 
 is a function $C\colon [0;T]\to U$. 
-The open-loop is obtained when we connect $C$ with $\Sigma$ serially, denoted by $C \triangleright \Sigma$. 
+The open-loop is obtained when we connect $C$ with $\Sigma$ serially,
+ %by taking the input $u_i = C(i)$ for all $i$,
+ denoted by $C \triangleright \Sigma$. 
 The set of trajectories of the open-loop system $C\triangleright\Sigma$ consists of all finite trajectories
 $x_0, x_1, \ldots, x_T$ such that $x_0 = x_\init$ and for all $i \in [0; T-1]$, we have $x_{i+1} = f(x_i, C(i)) + w_i$ for some $w_i \in W$.
 
@@ -181,16 +183,16 @@ for some $w_{ji} \in W^i$, for each $i\in [1;N]$.
 
 \smallskip
 \noindent
-\textbf{Decentralized Controller Synthesis Problem}
+\textbf{Decentralized Controller Synthesis Problem.}
 Let $\set{\Sigma^i}$ be a set of control systems.
 A (global) \emph{control specification} $\mathcal{L}$ is a set of finite sequences in $(X^\times)^*$.
 Intuitively, a control specification specifies a set of ``good behaviors'' of the product system.
 The \emph{decentralized open-loop (resp. feedback) controller synthesis problem} asks, given $\set{\Sigma^i}$ and a global control specification $\mathcal{L}$,
 to construct a set of local open-loop (resp.\ feedback) controllers $\set{C^i}$ such that
-the trajectories of $\set{C^i}\triangleright \set{\Sigma^i}$ (resp.\ $\set{C^i}\parallel \set{\Sigma^i}$ all belong to the global
+the trajectories of $\set{C^i}\triangleright \set{\Sigma^i}$ (resp.\ $\set{C^i}\parallel \set{\Sigma^i}$) all belong to the global
 control specification $\mathcal{L}$.
 
-In particular, we consider \emph{reach-avoid} specifications, written as  $\lnot\avoid\; \mathcal{U}\; \goal$ in linear temporal logic, for two subsets 
+In particular, we consider \emph{reach-avoid} specifications, written as  $\lnot\avoid\, \mathcal{U}\,\goal$ in linear temporal logic, for two subsets 
 $\avoid, \goal \subseteq X^\times$.
 A trajectory $x_0, x_1, \ldots$ saisfies the reach avoid specification if there is some $j\in \mathbb{N}$ such that $x_j \in\goal$ and
 for all $i \in [0; j-1]$, we have $x_i \not \in\avoid$.
@@ -209,9 +211,9 @@ Since the formation is defined using the relative positions of the robots, it is
 \begin{example}
 	Consider our motivating example in which there are two control systems: the crane and the factory vehicle. The detailed models for both of the systems are given in Sec.~\ref{subsec}. The crane starts at $x_\init^1=\begin{bmatrix}0&0&\pi&0\end{bmatrix}^T$, while the vehicle starts at $x_\init^2=8$.
 	%The crane is modeled as a control system $\Sigma^1$ with state space $X^1\subseteq\reals^4$, initial state $x_\init^1=\begin{bmatrix}0&0&\pi&0\end{bmatrix}^T$, input space $U^1\subseteq  \reals^2$, a bounded disturbance $W^1\subset\reals^4$ and a fourth-order nominal dynamics $f^c$ (the complete of dynamics can be found in \cite{Barto1983}).
-	The corresponding goal for the crane is defined as $\goal^1=\ball_{r_1}(g_1)$, where $g_1=\begin{bmatrix}5&0&\pi&0\end{bmatrix}^T$ and $r_1\in\reals^4_{> 0}$ determines desired size of the goal set. %is a robustness margin parameter. %Similarly, the factory vehicle can be characterize as a second control system $\Sigma^2$ with state space $X^2\subseteq\reals^2$, initial state $x_\init^2=\begin{bmatrix}8&0\end{bmatrix}^T$, input space $U^2\subseteq  \reals^1$, a bounded disturbance $W^2\subset\reals^2$ and a second-order nominal dynamics $f^l$. 
-	The goal set for the vehicle is similarly defined as $\goal^2=\ball_{r_2}(g_2)$, where $g_2=4$ and $r_2\in\reals_{\geq 0}$ denotes the desired size of the goal set. The goal set over the product space is defined as $\goal=\goal^1\times\goal^2\subseteq \reals^5$. The set $\avoid$ is defined as $\avoid=\set{ x^\times\in X^\times\mid\;D(x^1,x^2)\leq \delta}$ where $x^1$ and $x^2$ denote components of $x^\times$ corresponding to the two systems, $D$ represents geometric distance between the two systems in the two-dimensional space and $\delta$ denotes a minimum safety distance requirement. It can be noticed that despite the fact that dynamics of the two systems are not coupled, to fulfil the reach-avoid specification characterized by the sets $\reach$ and $\avoid$, one has to take both of the dynamics into account.
-\RM{give a simple example that shows the dynamics and the objective. In the objective, you can use the distance between two states, etc.}
+	The goal set for the crane is $\goal^1=\ball_{r_1}(g_1)$, which is a ball centered at $g_1=\begin{bmatrix}5&0&\pi&0\end{bmatrix}^T$ with a desired size $r_1\in\reals^4_{> 0}$. %is a robustness margin parameter. %Similarly, the factory vehicle can be characterize as a second control system $\Sigma^2$ with state space $X^2\subseteq\reals^2$, initial state $x_\init^2=\begin{bmatrix}8&0\end{bmatrix}^T$, input space $U^2\subseteq  \reals^1$, a bounded disturbance $W^2\subset\reals^2$ and a second-order nominal dynamics $f^l$. 
+	The goal set for the vehicle is similarly defined as $\goal^2=\ball_{r_2}(g_2)$ with center $g_2=4$ and size $r_2\in\reals_{> 0}$. The goal set over the product space is defined as $\goal=\goal^1\times\goal^2\subseteq \reals^5$. The set $\avoid$ is defined as $\avoid=\set{ x^\times\in X^\times\mid\;D(x^1,x^2)\leq \delta}$ where $x^1$ and $x^2$ denote components of $x^\times$ corresponding to the two systems, $D$ represents geometric distance between the two systems in the two-dimensional space and $\delta$ denotes a minimum safety distance requirement. It can be noticed that despite the fact that dynamics of the two systems are not coupled, to fulfill the reach-avoid specification $\lnot\avoid\, \mathcal{U}\,\goal$, one has to take both of the dynamics into account.
+%\RM{give a simple example that shows the dynamics and the objective. In the objective, you can use the distance between two states, etc.}
 \qed
 \end{example}
 
