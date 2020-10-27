@@ -57,22 +57,22 @@ For local ABCD, the reported numbers correspond to the maximum value among all o
 This choice is due to the fact that feedback controllers for different agents can be computed independently 
 in parallel over different machines. 
 To provide a more fine-grained comparison,
-Fig.~\ref{fig:box_plot} shows the variations of runtimes of the different local ABCD tasks for every experiment. 
+Fig.~\ref{fig:box_plot} shows the variations of run times of the different local ABCD tasks for every experiment. 
 We have excluded the crane and vehicle case study in the figure due to an expected large variance originating from different dynamics.
-Notice that a higher number of input-state pairs does not necessarily result in a higher runtime for local ABCD as the 
+Notice that a higher number of input-state pairs does not necessarily result in a higher run time for local ABCD as the 
 number of transitions and features of the parallel implementation can play a role. 
 %
 We compare our approach with the ABCD applied to the product system to satisfy the global specification. 
 As reflected in Table~\ref{tab:runtimes}, memory requirement for the global ABCD exceeds our system's limit (1.5TB of RAM) in all of the experiments.
 %
- %\MS{For reporting number of input-state pairs and runtimes of local ABCD we could report total, average or maximum values; currently, Tab.~\ref{tab:runtimes} contains maximum values (taken over all of the agents, corresponding to multi-machine implementation), while total and average values are reported in the body of the paper. Data will be unified once the decision is made.}
-%Note that while reported numbers for local controller synthesis correspond to the total runtimes over all of the robots, significant reduction would be expected if abstraction and synthesis phases were parallelized.
+ %\MS{For reporting number of input-state pairs and run times of local ABCD we could report total, average or maximum values; currently, Tab.~\ref{tab:runtimes} contains maximum values (taken over all of the agents, corresponding to multi-machine implementation), while total and average values are reported in the body of the paper. Data will be unified once the decision is made.}
+%Note that while reported numbers for local controller synthesis correspond to the total run times over all of the robots, significant reduction would be expected if abstraction and synthesis phases were parallelized.
 %\begin{huge}
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.45\textwidth]{figures/boxPlot2.eps}
-	\caption{Variations of runtimes of local ABCD among different agents for three case studies.}
+	\caption{Variations of run times of local ABCD among different agents for three case studies.}
 	\label{fig:box_plot}
 \end{figure}
 
@@ -181,7 +181,7 @@ in $125$ seconds for the product system with $30$ state and $20$ input variables
  %To implement step~\ref{step:tracking} of Alg.~\ref{alg:main}, we need to design local feedback controllers that can keep the agent's trajectories inside $\varepsilon$-balls defined around the nominal trajectories computed by ALTRO. 
  Fig.~\ref{fig:3dtubes} gives time-space illustration for the safe tubes around the nominal trajectories. %We want to robustify the nominal controller against disturbances with $|W|\leq \begin{bmatrix}0&0.025&0.025\end{bmatrix}^T$. 
  We consider state and input spaces to be $X=[-1,11]^2\times[-2,3.3]$ and
-$U=[-2.4,2.4]^2$, respectively. Choosing  $\eta_{X}=\begin{bmatrix}0.02&0.02&0.02\end{bmatrix}^T$ and $\eta_{U}=\begin{bmatrix}0.3&0.3\end{bmatrix}^T$, Tab.~\ref{tab:runtimes} illustrates list of runtimes and number of input-state pairs corresponding to local and global ABCD. Noticeably, for number of agents $N>1$, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). 
+$U=[-2.4,2.4]^2$, respectively. Choosing  $\eta_{X}=\begin{bmatrix}0.02&0.02&0.02\end{bmatrix}^T$ and $\eta_{U}=\begin{bmatrix}0.3&0.3\end{bmatrix}^T$, Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. Noticeably, for number of agents $N>1$, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). 
 %results in $\hat X$ and $\hat U$ with $9.61\times 10^7$ and $289$ points. We compute the transition system over the inter-tube space characterized by $\varepsilon=\begin{bmatrix}0.16&0.16&0.18\end{bmatrix}^T$, which results in finite-state transition system with $4.0\times 10^5$ points. Given the above settings, SCOTS computes abstraction in $340$ seconds ($34.0$ seconds in average) and synthesis in $73$ seconds ($7.3$ seconds in average). %(the ones with red dashed circles around them in Fig~\ref{fig:MA}). 
 %It can be noticed that success in restricting the trajectories generated under the worst-case disturbance within the tubes guarantees a collision-free mission.
 %Fig~\ref{fig:blowup} illustrates the fact that increasing number of agents ($N$) causes an exponential blow-up in the number of transitions if we wanted to solve the given reach-avoid problem over the product state and input spaces. However, since we compute tracking controllers locally, our method experiences linear blow-up as $N$ increases.
@@ -319,7 +319,7 @@ We choose state and input spaces for the crane to be $X^{1}=[-0.195,5.49]\times[
 We choose state and input partition sizes $\eta_{{X}}^{1}=\begin{bmatrix}0.015&0.035&0.016&0.064\end{bmatrix}^T$, $\eta_{U}^1=0.2$,  $\eta_{{X}}^2=\begin{bmatrix}0.01&0.015\end{bmatrix}^T$ and $\eta_{U}^2=0.1$. %These selections yield discretized models with state and input spaces having $2.5\times 10^9$ and $71$ points for the crane, and $2\times 10^5$ and $61$ points for the vehicle. 
 %Next, we limit both of the state spaces into tubes constructed around the open-loop trajectories with sizes specified as $\varepsilon^{1}=\begin{bmatrix}0.135&0.385&0.176 &0.768\end{bmatrix}^T$ and $\varepsilon^{2}=\begin{bmatrix}0.08&0.12\end{bmatrix}$. %This reduces size of state spaces into $1.2\times 10^7$ and $1.5\times 10^4$ for the crane and vehicle, respectively. 
 %Given the above settings, SCOTS was able to compute abstraction in $511$ and $0.22$ seconds for the crane and the vehicle, respectively. Scots performs synthesis in $91$ and $0.037$ seconds for the crane and the vehicle, respectively.
-Tab.~\ref{tab:runtimes} illustrates list of runtimes and number of input-state pairs corresponding to local and global ABCD. Noticeably, for the cart-pole model, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). On the other hand, using ALTRO alone would not provide guarantee against bounded disturbance (Fig~\ref{fig:cr_and_lft}, \textbf{right}). 
+Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. Noticeably, for the cart-pole model, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). On the other hand, using ALTRO alone would not provide guarantee against bounded disturbance (Fig~\ref{fig:cr_and_lft}, \textbf{right}). 
 
 			
 %\begin{figure}[t]
@@ -382,17 +382,16 @@ Finally, we study a lane merging problem wherein multiple controlled vehicles ar
 %\[
 %h^v(x(t))=x(t).
 %\]
-%\RM{shouldn't disturbance model be given up front?Shouldn't $\varepsilon$ be an input to ALTRO?}
 The nominal dynamics for each of the vehicles is the same as the one  for modeling drones (given in Sec.~\ref{sec:Multirobot}). The disturbance set and robustness margin are chosen as $|W|\leq \begin{bmatrix}0.03&0.03&0.03\end{bmatrix}^T$ and $\varepsilon=\begin{bmatrix}0.16&0.16&0.16\end{bmatrix}^T$. %($\Sigma^i=(X,x_\init^i,U,W,f^d_\tau)$). 
 For collision and obstacle avoidance, we choose $\delta=0.37$ (in compliance with
 $\varepsilon$). %$\delta=\begin{bmatrix}0.37&0.37\end{bmatrix}^T$. 
 The horizon length is fixed to $T=110$. 
 Given these settings, ALTRO generates a valid nominal trajectory in $100$ seconds. 
-Next, we use SCOTS in order to compute feedback controllers tolerating additive disturbance $W$.% $|W|\leq\begin{bmatrix}0.03&0.03&0.03\end{bmatrix}^T$. 
+Next, we use SCOTS in order to compute feedback controllers tolerating additive disturbance $W$. % $|W|\leq\begin{bmatrix}0.03&0.03&0.03\end{bmatrix}^T$. 
 We choose state and input spaces for each vehicle's model to be $X=[-0.5,15]\times[0.1,7.4]\times[-1,0.4]$ and $U=[-0.9,3]\times[-2.1,2.1]$, respectively. State and input partition sizes are chosen as $\eta_{X}=\begin{bmatrix}0.02&0.02&0.02\end{bmatrix}^T$ and $\eta_{U}=\begin{bmatrix}0.3&0.15\end{bmatrix}^T$. %These selections yield discretized models with abstract state and input spaces having $2.1\times 10^7$ and $406$ points. 
 %Next, we limit the state spaces into tubes constructed around the open-loop trajectories with sizes specified as $\varepsilon=\begin{bmatrix}0.16&0.16&0.16\end{bmatrix}^T$. 
 %This reduces size of state space into $1.9\times 10^5$ (in average). Given the above settings, SCOTS was able to compute abstraction in $159.6$ seconds ($26.6$ seconds in average) and synthesize controllers in $40.8$ seconds ($6.8$ seconds in average).
-Tab.~\ref{tab:runtimes} illustrates list of runtimes and number of input-state pairs corresponding to local and global ABCD. Noticeably, for number of agents $N>1$, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). Fig.~\ref{fig:merge} demonstrates snapshots of one sample trajectory when feedback controllers are employed under the presence of disturbance. It should be noticed that using ALTRO alone would not provide guarantee against bounded disturbance.
+Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. Noticeably, for number of agents $N>1$, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). Fig.~\ref{fig:merge} demonstrates snapshots of one sample trajectory when feedback controllers are employed under the presence of disturbance. It should be noticed that using ALTRO alone would not provide guarantee against bounded disturbance.
 Fig.~\ref{fig:multi_drone_distance} illustrates the fact that open-loop controller fails in keeping one of the vehicles away from the road's sides under perturbed situation when constant additive disturbance vector $\begin{bmatrix}-0.03 &0.03&-0.03\end{bmatrix}^T$ is being applied throughout the whole horizon. In contrast, emplying feedback controller results in successful lane merging. %Fig.~\ref{fig:multi_drone_distance} illustrates performance of open-loop and feedback controllers on regulating distance between of the vehicles from the road's sides with and without disturbance. In the absence of disturbance open-loop controller is capable of maintaing a minimum distance from the road's sides. Next, we consider the case when constant additive disturbance vector $\begin{bmatrix}-0.03 &0.03&-0.03\end{bmatrix}^T$ is being applied to the vehicle throughout the whole horizon. It can be noticed that applying the open-loop controller causes that distance from the road's side (shown in solid red) becomes smaller than $\delta$. However, the feedback controller is still capable of maintaining distance above the given threshold (shown in solid green).
 
 
@@ -443,7 +442,7 @@ they might first need to accompany the other robots to their goals, before being
 We can express the formation control problem in the product state space as follows:
 \begin{itemize}
 	\item The goal set $\goal\subseteq X^\times$ is defined as $\goal \coloneqq \goal^1\times \ldots \times \goal^N \subseteq X^\times$, and
-	\item The static obstacle $\avoid\subseteq X^\times$ is defined as 
+	\item The set $\avoid\subseteq X^\times$ is defined as 
 		\begin{align}
 %			&\avoid \coloneqq\nonumber\\ 
 			&\Set{ x^\times\in X^\times | 
@@ -454,8 +453,9 @@ We can express the formation control problem in the product state space as follo
 			\end{array}},					
 		\end{align}
 \end{itemize}
-where the last disjunction in the definition of $\avoid$ is the restriction required for maintaining the formation, and the rest are same as in Sec.~\ref{sec:local reach-avoid}.
-Once the sets $\goal$ and $\avoid$ are obtained as above, we can use Alg.~\ref{alg:main} to find the set of feedback controllers $\set{C^i}$.
+where the last disjunction in the definition of $\avoid$ is the restriction required for maintaining the formation, and the rest are 
+same as in Sec.~\ref{sec:local reach-avoid}.
+% Once the sets $\goal$ and $\avoid$ are obtained as above, we can use Alg.~\ref{alg:main} to find the set of feedback controllers $\set{C^i}$.
 
 %\todo{The example goes here...}
 \subsubsection{Multi-drone formation control}
@@ -470,11 +470,12 @@ Next, we synthesize local controllers for every drone such that the specificatio
 %\RM{the state space should go before ALTRO}
 We consider state and input spaces to be $X=[-2,17]\times[-2,17]\times[0.6,1.6]$ and
 $U=[-0.9,4.8]\times[-3,3]$, respectively. We select $\eta_{X}=\begin{bmatrix}0.02&0.02&0.02\end{bmatrix}^T$ and
-$\eta_{U}=\begin{bmatrix}0.3&0.15\end{bmatrix}^T$.% and $\varepsilon=\begin{bmatrix}0.18&0.18&0.18\end{bmatrix}^T$.% results in state and input spaces with $10^9$ and $820$ points. 
+$\eta_{U}=\begin{bmatrix}0.3&0.15\end{bmatrix}^T$. % and $\varepsilon=\begin{bmatrix}0.18&0.18&0.18\end{bmatrix}^T$.% results in state and input spaces with $10^9$ and $820$ points. 
 %Computing the transition system over inter-tube space with width $\varepsilon=\begin{bmatrix}0.18&0.18&0.18\end{bmatrix}^T$ results in smaller transition system with $4.9\times 10^5$ points. Given the above settings, SCOTS computes abstraction in $271$ seconds ($54.2$ seconds in average) and $66.5$ seconds ($13.3$ seconds in average). 
-Tab.~\ref{tab:runtimes} illustrates list of runtimes and number of input-state pairs corresponding to local and global ABCD. 
+Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. 
 When the number of agents $N>1$, the memory requirement for global ABCD exceeds our limits (1.5TB of RAM). 
-Fig.~\ref{fig:formation_ex} illustrates four sequential frames of a sample trajectory generated by employing feedback controllers. Notice that both of the relative position and orientation between drones are kept (almost) constant 
+Fig.~\ref{fig:formation_ex} illustrates four sequential frames of a sample trajectory generated by employing feedback controllers. Notice that both 
+relative position and orientation between drones are kept (almost) constant 
 throughout the journey. 
 On the other hand, using ALTRO alone would not provide guarantee against bounded disturbance. 
 Fig.~\ref{fig:formation_distance} illustrates performance of open-loop and feedback controllers on regulating distance between two of the 
