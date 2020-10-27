@@ -1,19 +1,18 @@
-%! TEX ROOT = ./main.tex
+% !TEX root = main.tex
 
-We consider the decentralized controller synthesis problem for multi-agent control systems for joint reach-avoid specifications.
-Each control system is modeled as a nonlinear dynamical system with disturbance, the control objective is to synthesize \emph{local}
-feedback controllers that guarantee that the overall system meets the specification even under the influence of disturbances.
+We consider the decentralized controller synthesis problem for multi-agent systems with global reach-avoid specifications.
+Each agent is modeled as a nonlinear dynamical system with disturbance. The objective is to synthesize \emph{local} feedback controllers that guarantee that the overall multi-agent system meets the global specification under the influence of disturbances.
 %
 Existing techniques based on planning or trajectory optimization usually ignore the effects of disturbance and produce open-loop
 \emph{nominal} trajectories which may not suffice in the presence of disturbances.
-Techniques based on formal synthesis of temporal controllers do not scale as the number of agents increase.
+Techniques based on formal synthesis that guarantee satisfaction of temporal specifications do not scale as the number of agents increase.
 
-We propose a two-level solution approach that combines fast global nominal trajectory generation and local application of formal synthesis.
+We mitigate these limitations by proposing a two-level solution approach that combines fast global nominal trajectory generation and local application of formal synthesis.
 At the top level, we ignore the effect of disturbances and obtain a joint open-loop plan for the system using a fast trajectory optimizer.
 At the lower level, we use abstraction-based controller design to synthesize a set of decentralized feedback controllers 
-that track the high level plan against worst-case disturbances.
+that track the high level plan against worst-case disturbances thus ensure satisfaction of the global specification.
 We demonstrate the effectiveness of our approach on several multi-robot examples using two particular classes of control specifications.
 In the first type, we assume that the robots need to fulfill their own reach-avoid tasks while avoiding collision with the other robots.
 In the second type, we require the robots to fulfill reach-avoid tasks while maintaining certain formation constraints.
-Our experiments show that the combination technique is able to produce formally guaranteed feedback controllers while scaling to many robots.
-In contrast, nominal open loop controllers did not guarantee the property and formal synthesis approaches did not finish.
+The experiments show that our approach produces formally guaranteed feedback controllers while scaling to many robots.
+In contrast, nominal open loop controllers do not guarantee the satisfaction of the specification and the memory usage of the global formal approach is exponentially larger thus unable to synthesize a controller.
