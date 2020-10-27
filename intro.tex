@@ -1,4 +1,4 @@
-%! TEX ROOT = ./main.tex
+% !TEX root = main.tex
 
 \section{Introduction}
 
@@ -8,25 +8,25 @@ By multi-agent, we mean that the systems under study are composed of a number of
 Each component is modeled as a possibly nonlinear dynamical system that evolves under the influence of a control as well as an environmental
 disturbance.
 Our specifications require that the global state of the system eventually reaches a target while avoiding certain bad states along the way.
-While the dynamics of each component is independent of the others, the overall trajectories can be coupled by the global specification.
+While the dynamics of each component is independent of the others, the overall trajectories are coupled by the global specification.
 Decentralized means that we require a solution in which each component has a local feedback controller that sees only the local
 state, but the combination of all the closed loops satisfy the global specification.
-Above all, our goal is to ensure the resulting controllers are \emph{provably correct} against the worst case model of disturbances.
+Above all, our goal is to ensure the resulting controllers are \emph{provably correct} against the worst-case model of disturbances.
 
 Such multi-agent control problems are ubiquitous in the domain of robotics, where a number of 
 (possibly heterogeneous) mobile robots move concurrently in a shared workspace.
 A global specification can ask, for example, that a set of robots are able to reach certain locations while avoiding collisions among themselves
 or with obstacles in the environment,
 or that a set of drones fly in formation while reaching a target.
-Indeed, automatic generation of decentralized controllers is a classical problem in robotics, AI, and control theory, 
+Indeed, automatic generation of decentralized controllers is a classical problem in robotics, artificial intelligence, and control theory, 
 and there is an enormous literature on the subject---too many to enumerate---across these disciplines.
 
 Despite the large body of research, few techniques today can handle all our desiderata.
 Multi-agent planning algorithms, such as (hybrid variants of) A* search, scale to large systems but typically either disregard or simplify the 
-underlying dynamics and work with geometric or discrete models or disregard the effect of disturbances or nonlinear dynamics.
-Most planning and trajectory optimization techniques handle the \emph{nominal} dynamics, that is, the dynamics free of disturbances,
+underlying dynamics and work with geometric or discrete models, or disregard the effect of disturbances or nonlinear dynamics.
+Most planning and trajectory optimization techniques handle the \emph{nominal} dynamics, i.e., the dynamics free of disturbances,
 and construct \emph{open-loop} controllers.
-However, the open loop behaviors do not guarantee correct behavior in the presence of disturbances.
+However, the open-loop behaviors do not guarantee satisfaction of the specifications in the presence of disturbances.
 On the other hand, correct-by-construction controller synthesis techniques from control theory, 
 such as abstraction-based control or Hamilton-Jacobi techniques,
 handle precise models of nonlinear dynamics and the effects of disturbance, but are difficult to scale beyond tens of dimensions.
@@ -42,7 +42,7 @@ in the presence of disturbances.
 Fig.~\ref{fig:overall} shows the overall algorithm.
 In the first step, 
 given a set of control systems, one for each component, and a reach-avoid specification on the global state space, we use a trajectory planner to
-find a nominal open loop controller for the global system.
+find a nominal open-loop controller for the global system.
 The trajectory planner ignores the effect of disturbances, but takes a \emph{robustness parameter} $\varepsilon$.
 The role of the robustness parameter is to ensure the specification is robustly satisfied: any trajectory within an $\varepsilon$-tube
 of the open loop trajectory also satisfies the specification.
@@ -52,10 +52,9 @@ The robustness of the trajectory means that there is a tube around the nominal t
 In a second step, we solve a number of local \emph{guaranteed tracking control} problems, where we synthesize correct-by-construction
 controllers whose objective is to track the nominal trajectory while staying within the tube.
 
-The overall algorithm is more scalable and provides stronger guarantees
-than each component by itself.
+The overall algorithm is more scalable and provides stronger guarantees than each component by itself.
 Global trajectory planning scales to large state spaces but does not guarantee correctness
-and each controller synthesis problem is solved locally.
+and each formal controller synthesis problem is solved locally.
 Empirically, we show that our algorithm is able to generate provably correct feedback controllers for many
 systems for which neither technique is individually effective.
 Of course, since we decompose the problem, it is possible that there is no controller for a particular choice of the
@@ -73,7 +72,7 @@ In that case, there is an outer loop that searches through the parameter space.
 
 
 
-We have implemented our technique based on two ingredients: the ALTRO open loop trajectory planner \cite{howell2019altro} and the 
+We have implemented our technique based on two ingredients: the ALTRO open-loop trajectory planner \cite{howell2019altro} and the 
 SCOTS correct-by-construction controller synthesis tool \cite{Rungger2016scots}. 
 ALTRO is a state-of-the-art trajectory planning tool based on optimal control.
 It handles nonlinear dynamics and scales to large dimensions, but ignores disturbances or modeling uncertainties.
