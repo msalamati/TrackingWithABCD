@@ -7,7 +7,7 @@ Existing techniques based on planning or trajectory optimization usually ignore 
 \emph{nominal} trajectories which may not suffice in the presence of disturbances.
 Techniques based on formal synthesis that guarantee satisfaction of temporal specifications do not scale as the number of agents increase.
 
-We mitigate these limitations by proposing a two-level solution approach that combines fast global nominal trajectory generation and local application of formal synthesis.
+We address these limitations by proposing a two-level solution approach that combines fast global nominal trajectory generation and local application of formal synthesis.
 At the top level, we ignore the effect of disturbances and obtain a joint open-loop plan for the system using a fast trajectory optimizer.
 At the lower level, we use abstraction-based controller design to synthesize a set of decentralized feedback controllers 
 that track the high level plan against worst-case disturbances thus ensure satisfaction of the global specification.
