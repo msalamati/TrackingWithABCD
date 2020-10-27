@@ -104,7 +104,7 @@ As reflected in Table~\ref{tab:runtimes}, memory requirement for the global ABCD
 \end{figure*}
 
 %\end{huge}
-\subsection{Local reach-avoid problems for each robot}
+\subsection{Local reach-avoid with collision avoidance}
 \label{sec:local reach-avoid}
 
 We first consider situations when each robots has an individual reachability specification, 
@@ -140,7 +140,7 @@ In this category of problems, we apply our approach to three case studies as dis
 
 %\textcolor{red}{
 \subsubsection{Multi-drone path planning}\label{sec:Multirobot}
-In this example, we consider a planning scenario for ten identical drones ($N=10$). A set of initial and target states for each drone are specified and depicted in Fig.~\ref{fig:MA}. The drones must avoid hitting a physical obstacle that is depicted with green square in Fig.~\ref{fig:MA}. %A physical obstacle is added to the problem over the $2D$ plane, depicted in Figure~\ref{fig:MA} with a yellow circle. 
+We consider a planning scenario for ten identical drones ($N=10$). A set of initial and target states for each drone are depicted in Fig.~\ref{fig:MA}. The drones must avoid hitting a physical obstacle that is the green square in Fig.~\ref{fig:MA}. %A physical obstacle is added to the problem over the $2D$ plane, depicted in Figure~\ref{fig:MA} with a yellow circle. 
 %The threshold for minimum distance from the obstacle and other drones is chosen to be $\delta=0.28$. %$\delta=\begin{bmatrix}0.28&0.28\end{bmatrix}^T$. %and $\delta_{obs}=\begin{bmatrix}2&2\end{bmatrix}^T$.
 The control objective is to synthesize a feedback controller for each drone so that in the presence of (bounded) disturbance, beginning from the specified initial state, the corresponding target state is reached within a finite horizon, while avoiding collision with other drones and the physical obstacle at every time point. 
 
@@ -441,15 +441,15 @@ they might first need to accompany the other robots to their goals, before being
 
 We can express the formation control problem in the product state space as follows:
 \begin{itemize}
-	\item The goal set $\goal\subseteq X^\times$ is defined as $\goal \coloneqq \goal^1\times \ldots \times \goal^N \subseteq X^\times$, and
-	\item The set $\avoid\subseteq X^\times$ is defined as 
+	\item The goal set $\goal\!\subseteq\! X^\times$ is defined as $\goal\!\coloneqq\! \goal^1\!\times \ldots \times\! \goal^N$, and
+	\item The avoid set $\avoid\subseteq X^\times$ is 
 		\begin{align}
 %			&\avoid \coloneqq\nonumber\\ 
 			&\Set{ x^\times\in X^\times | 
 				\begin{array}{c}
 					\exists i\in [1;N]\;.\; D(x^i,\obs) \leq \delta\\
 					\vee\\
-					\exists (i,j)\in [1;N]\times [1;N]\;.\;\\ d\left(x^i,x^j\right)\notin\lambda^{i,j}\pm \mu
+					\exists i,j\in [1;N]\;.\; i\neq j\;.\; d\left(x^i,x^j\right)\notin\lambda^{i,j}\pm \mu
 			\end{array}},					
 		\end{align}
 \end{itemize}
