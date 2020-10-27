@@ -271,7 +271,7 @@ Experimentally, this local domain is key to scalability.
 
 Note that Step~\ref{step:tracking} of Alg.~\ref{alg:main} does not use the nominal controller obtained in Step~\ref{step:planning} and requires only the nominal trajectories.
 Then one could argue that, instead of using ALTRO to generate nominal trajectories, a fast \emph{geometric planner} \cite{Kavraki1996rrt} can be employed to generate geometric plans.
-However, fast geometric planners do not usually take into consideration the dynamics and control constraints. In our experience, the plans for nominal trajectories generated while ignoring the system dynamics are often untrackable unless the underlying system has special properties (e.g., differential flatness \cite{}).
+However, fast geometric planners do not usually take into consideration the dynamics and control constraints. In our experience, the plans for nominal trajectories generated while ignoring the system dynamics are often untrackable unless the underlying system has special properties (e.g., differential flatness \cite{Murray95differentialflatness}).
 This is especially true for systems with restricted control capabilities or under-actuated systems.
 We demonstrate this phenomenon on a control system $\Sigma$ that is a simple $2$-dimensional pendulum with the following nominal dynamics:
 	\begin{align*}
