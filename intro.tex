@@ -2,13 +2,10 @@
 
 \section{Introduction}
 
-
-
-We consider the \emph{decentralized} feedback controller synthesis problem for \emph{multi-agent}, nonlinear systems against temporal 
-\emph{reach-avoid} specifications.
+We consider the \emph{decentralized} feedback controller synthesis problem for \emph{multi-agent}, nonlinear systems against temporal \emph{reach-avoid} specifications.
 %
 By multi-agent, we mean that the systems under study are composed of a number of concurrently executing components.
-Each component is a modeled as a possibly nonlinear dynamical system that evolves under the influence of a control as well as an environmental
+Each component is modeled as a possibly nonlinear dynamical system that evolves under the influence of a control as well as an environmental
 disturbance.
 Our specifications require that the global state of the system eventually reaches a target while avoiding certain bad states along the way.
 While the dynamics of each component is independent of the others, the overall trajectories can be coupled by the global specification.
@@ -78,7 +75,7 @@ In that case, there is an outer loop that searches through the parameter space.
 
 We have implemented our technique based on two ingredients: the ALTRO open loop trajectory planner \cite{howell2019altro} and the 
 SCOTS correct-by-construction controller synthesis tool \cite{Rungger2016scots}. 
-ALTRO is a state-of-the-art trajectory planning tool absed on optimal control.
+ALTRO is a state-of-the-art trajectory planning tool based on optimal control.
 It handles nonlinear dynamics and scales to large dimensions, but ignores disturbances or modeling uncertainties.
 SCOTS implements a highly parallelizable \emph{abstraction-based controller synthesis} algorithm that generates a provably
 correct feedback controller for any linear temporal logic specification.
@@ -210,7 +207,7 @@ Among the existing off-the-shelf planning tools we selected ALTRO which is a sca
 
 Since the obtained controller is open-loop, hence we can easily decompose the central controller into individual open-loop controllers---called \emph{local} open-loop controllers---for the crane and the vehicle.
 However, there will be no guarantee that the local open-loop controllers will fulfill the specification when the disturbances come into effect.
-Actually, Fig.~\ref{fig:cr_and_lft}, (\textbf{left}) shows various moments in the simulation of the local open-loop controllers in the absence of the disturbances, and Frame~3 shows that the crane and vehicle get very close to eachother. However, in the presence of disturbances the crane and vehicle can collide as the constraint of the minimum safe distance is violated (Fig.~\ref{fig:cr_and_lft}, (\textbf{right})). 
+Actually, Fig.~\ref{fig:cr_and_lft}, (\textbf{left}) shows various moments in the simulation of the local open-loop controllers in the absence of the disturbances, and Frame~3 shows that the crane and vehicle get very close to each other. However, in the presence of disturbances the crane and vehicle can collide as the constraint of the minimum safe distance is violated (Fig.~\ref{fig:cr_and_lft}, (\textbf{right})). 
 
 To deal with this robustness issue, at the \textbf{bottom level} of our hierarchical approach, we employ a \emph{guaranteed tracking method} to ``robustify'' the local open-loop controllers against disturbances.
 Our choice to achieve guaranteed tracking is ABCD. More concretely, we consider the open-loop controlled trajectory of \emph{each system in isolation}, and use ABCD to synthesize a \emph{tracking controller}.
