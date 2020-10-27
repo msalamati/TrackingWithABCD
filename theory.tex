@@ -13,7 +13,7 @@ The approach is composed of three main steps:
 (2) Project the controller into local controllers and obtain a nominal trajectory for each system; and
 (3) Design local closed-loop controllers to track the nominal trajectory while always staying within the robustness margin.
 % a given distance of the trajectory.  
-The soundess of the technique is summarized below.
+The soundness of the technique is summarized below.
 
 \begin{theorem}
 Local feedback controllers $\set{C^i}$ synthesized by Alg.~\ref{alg:main} guarantees that the global specification is satisfied by the product system $\set{C^i}\parallel \set{\Sigma^i}$. 
@@ -271,14 +271,14 @@ Experimentally, this local domain is key to scalability.
 
 Note that Step~\ref{step:tracking} of Alg.~\ref{alg:main} does not use the nominal controller obtained in Step~\ref{step:planning} and requires only the nominal trajectories.
 Then one could argue that, instead of using ALTRO to generate nominal trajectories, a fast \emph{geometric planner} \cite{Kavraki1996rrt} can be employed to generate geometric plans.
-However, fast geometric planners do not usually take into consideration the dynamics and control constraints. In our experience, the plans for nominal trajectories generated while ignoring the system dynamics are often untracktable unless the underlying system has special properties (e.g., differential flatness \cite{}).
+However, fast geometric planners do not usually take into consideration the dynamics and control constraints. In our experience, the plans for nominal trajectories generated while ignoring the system dynamics are often untrackable unless the underlying system has special properties (e.g., differential flatness \cite{}).
 This is especially true for systems with restricted control capabilities or under-actuated systems.
 We demonstrate this phenomenon on a control system $\Sigma$ that is a simple $2$-dimensional pendulum with the following nominal dynamics:
 	\begin{align*}
 		\dot{x}_1 = x_2\quad
 		\dot{x}_2 = -\sin(x_1) + u/5,
 	\end{align*}
-where $x_1$ represents the angle (in radian) of the pendulum rod measured counter-clockwise from the vertical upright position, and $x_2$ represents the rate of change of $x_1$ or the angular velocity.
+where $x_1$ represents the angle (in Radian) of the pendulum rod measured counter-clockwise from the vertical upright position, and $x_2$ represents the rate of change of $x_1$ or the angular velocity.
 Suppose the initial state of the pendulum is $(\pi,0)$, i.e., when the pendulum is in the vertical downward position and is stationary.
 Suppose we want to find a controller for the goal $\goal = \set{(0,0)}$, i.e., when the pendulum is in the vertical upward position and is stationary.
 The set of unsafe states $\avoid$ is empty, i.e., no safety constraint is imposed.
