@@ -237,6 +237,9 @@ Domain:=\bigcup_{k=0}^T\ball_{\varepsilon}(x_{k,\nom}).
 \end{equation*}
 %
 Experimentally, this local domain is key to scalability.
+\begin{remark}
+Our decentralized controller synthesis approach features an interplay between the global open-loop planning and local formal synthesis via the robustness parameter $\varepsilon$ and the discretization parameters $\eta_x,\eta_u$.  The parameter $\varepsilon$ should be large enough to allow deviation from the nominal trajectory caused by the disturbance. A small $\varepsilon$ makes the local specification $\Phi^i_{track}$ very strong for the ABCD synthesis thus requires large computational complexity with smaller discretization parameters $\eta_x,\eta_u$. On the other hand, large $\varepsilon$ makes the specification $\Phi_\varepsilon$ very conservative or infeasible for the global open-loop planning. Therefore, appropriate parameters should be selected iteratively for successful application of our synthesis approach. 
+\end{remark}
 % 
 % Finally, given the computed finite state abstraction $\widehat \Sigma$ and the specification in Eq.~\eqref{eq:ltl_spec}, we synthesize a symbolic controller using ABCD implemented in SCOTS~\cite{Rungger2016scots}. %\MS{perhaps we can add a discussion here about our actual implementation.}
 
