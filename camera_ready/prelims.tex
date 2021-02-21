@@ -1,0 +1,228 @@
+% !TEX root = main.tex
+
+\section{Systems and Controllers}
+
+\smallskip
+\noindent\textbf{Notation.}\
+We denote the set of natural numbers including zero by $\mathbb N$.
+We use the notation $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote respectively the set of real numbers and the set of positive real numbers.
+We use superscript $n>0$ with $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote the Cartesian product of $n$ copies of $\mathbb{R}$ and $\mathbb{R}_{>0}$ respectively.
+Given two points $x=(x_1,\ldots, x_n)$ and $y=(y_1,\ldots, y_n)$ in $ \mathbb{R}^n$
+%(or $\mathbb{R}^n_{>0}$)
+and a relational symbol $\triangleright\in \set{\leq, <, = , >, \geq}$, we write $x\triangleright y$ if $x_i\triangleright y_i$ for every $i\in\set{1,2,\ldots,n}$.
+The operator $|\cdot |$ is used to denote both the absolute value of a vector and cardinality of a set, depending on the type of the operand, and the operator $\| \cdot \|$ is used to denote the infinity norm.  
+
+Let $f\colon A\to B$ and $g\colon C\to D$ be two functions.
+We define the product function $f\otimes g\colon A\times C\to B\times D $, $f\otimes g \colon (a,c)\mapsto (f(a),g(c))$.
+The product is associative and extends to more than two functions in the obvious way.
+%
+%Throughout, we measure distance between two points, within a space $\mathbb{R}^n$, using the \emph{distance metric} $d\colon \mathbb{R}^p\times \mathbb{R}^p\to \mathbb{R}_{\geq0}$, $d^p\colon \left(u,v\right)\mapsto \|u-v\|$. 
+%We extend the definition of $d^p$ to measure distance between a point and a set: for any given $u\in \mathbb{R}^p$ and $V\in \mathbb{R}^p$, $d^p(u,V) \coloneqq \inf_{v\in V}\|u-v\|$.
+Given $c\in \mathbb{R}^n$ and $\varepsilon\in \mathbb{R}_{>0}^{n}$, the ball with center $c$ and radius $\varepsilon$ in $\mathbb{R}^n$ is denoted by 
+$\ball_\varepsilon(c)\coloneqq \set{x \in \mathbb{R}^n \mid  |x-c|\leq \varepsilon }$.
+
+Let $A$ be a set.
+We use the notation $A^\infty$ to denote the set of all finite and infinite sequences formed using the members of $A$. Our control tasks are defined using a subset of Linear Temporal Logic (LTL). 
+In particular, we use the \emph{until} operator $\mathcal{U}$ and the \emph{next} operator $\bigcirc$ defined as follows. 
+Let $p$ and $q$ be subsets of $\reals^n$ and $\rho=(x_0,x_1,\dots)$ be an infinite sequence of elements from $\reals^n$. 
+We write $\rho\models\bigcirc^k p$ if $x_k\in p$. We write $\rho\models p\mathcal{U}q$ if there exists 
+$i\in\mathbb{N}$ s.t. $x_i\in q$ and $x_j\in p$ for all $0\leq j<i$. 
+For detailed syntax and semantics of LTL, we refer to \cite{baier2008principles} and references therein.
+
+%Let $V$ be a finite set of real-valued variables.
+%We use the notation $\sem{V}$ (same symbol but in boldface blue) to denote the set of every possible valuations of the variables in $V$, i.e.\ an element in $\sem{V}$ assigns an unique real number to every variable in $V$.
+%It is easy to see that $\sem{V} = \mathbb{R}^{|V|}$.
+%Let $U\subset V$ be a set.
+%For any $v\in \sem{V}$, we use the notation $v[U]$ to denote the valuation in $\sem{U}$ that assigns the same values to the variables in $U$ as assigned by $v$; $v[U]$ is called the projection of $v$ on to $U$.
+
+%Let $V$ be a finite set of real-valued variables, as above.
+%Given any two points $u,v\in \sem{V}$ with $u=(u_1,\ldots,u_{|V|})$ and $v=(v_1,\ldots,v_{|V|})$, we introduce the \emph{element-wise distance function} $d_V\colon \sem{V}\times \sem{V}\to \mathbb{R}^{|V|}_{>0} $, $d_V\colon (x,y) \mapsto (|x_1-y_1|,\ldots, |x_{|V|}-y_{|V|}|)$.
+%We sometime exploit the notation and use the same $d_V$ to measure the distance between a set $W\subseteq \sem{V}$ and a point $v\in \sem{V}$, which is defined as follows:
+%$d_V(v,W)= (\inf_{w\in W} |v_1-w_1|, \ldots, \inf_{w\in W} |v_{|V|}-w_{|V|}|)$.
+
+% \subsection{System Formalisms}
+ 
+\smallskip
+\noindent\textbf{Control Systems.}\
+A \emph{control system} $\Sigma = (X, x_{\init}, U, W, f)$
+consists of a \emph{state space} $X\subseteq \mathbb{R}^n$,
+an \emph{initial state} $x_\init\in X$,
+an \emph{input space} $U\subseteq\mathbb{R}^m$, 
+a compact \emph{disturbance set} $W\subset \mathbb{R}^n$ containing $0$, and a vector field $f:X\times U\rightarrow X$ modeling the \emph{nominal dynamics} of the system. 
+A \emph{trajectory} of $\Sigma$ is a finite or infinite sequence $x_0, x_1, \ldots \in X^\infty$
+such that $x_0 = x_{\init}$ and for each $i\geq 0$, there is an $u_i\in U$ and $w_i \in W$ such that
+$x_{i+1} = f(x_i, u_i) + w_i$.
+A trajectory is \emph{nominal} if $w_i = 0$ for all $i\geq 0$.
+Intuitively, a control system represents a (possibly nonlinear) dynamical system with control inputs form $U$
+and disturbances from the set $W$.
+
+\smallskip
+\noindent\textbf{Product Control Systems.}\
+Let $\set{\Sigma^i}_{i\in [1;N]}$, 
+$\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i)$, for $i \in [1;N]$, be a set of $N$ control systems. 
+The \emph{product control system} of $\set{\Sigma^i}_{i\in [1;N]}$ is defined as the control system 
+$\Sigma^\times = (X^\times, x_\init^\times, U^\times, W^\times, f^\times)$,
+where $X^\times \coloneqq X^1 \times \ldots \times X^N$, 
+$x_\init^\times \coloneqq (x_\init^1, \ldots, x_\init^N)$,
+$U^\times \coloneqq U^1 \times \ldots \times U^N$, 
+$W^\times \coloneqq W^1 \times \ldots \times W^N$, 
+and $f^\times\coloneqq f^1\otimes \ldots \otimes f^N$.
+We use the state projection operator $\proj^{i}\colon X^\times\to X^i$ with $\proj^{i} (x^1,\ldots,x^N) = x^i$. 
+For brevity, we write $\set{\Sigma^i}$ instead of $\set{\Sigma^i}_{i\in [1;N]}$, when the range of $i$ is irrelevant or clear from context.
+
+\smallskip
+\noindent
+\textbf{Sampled-time Systems.}\
+We define control systems and their product over discrete time.
+Such systems can be obtained as time discretizations of continuous-time nonlinear dynamical systems.
+We sketch the connection. 
+Consider the tuple $(X, x_\init, U, W, f)$ as above and
+suppose that $f: X \times U \rightarrow X$ is such that $f(\cdot, u)$ is locally Lipschitz for all $u\in U$.
+Given a time horizon $\tau>0$, an initial state $x_0$, and a constant input $u$, define the \emph{continuous time trajectory} $\zeta_{x_0, u}$
+of the system on the time interval $[0, \tau]$ as an absolutely continuous function $\zeta_{x_0,u}: [0, \tau] \rightarrow X$ such that $\zeta_{x_0,u}(0) = x_0$, and
+$\zeta_{x_0,u}$ satisfies the differential inclusion $\dot{\zeta}_{x_0,u}(t) \in f(\zeta_{x_0,u}(t), u) + W$ for almost all $t\in [0,\tau]$.
+Given $\tau$, $x_0$, and $u$, we define $\Sol(x_0, u, \tau)$ as the set of all $x\in X$ such that there is a continuous time trajectory
+$\zeta_{x_0,u}$ with $\zeta(\tau) = x$.
+A sequence $x_0,x_1, \ldots$ is a \emph{time-sampled trajectory} if $x_0 = x_\init$ and for each $i\geq 0$, we have
+$x_{i+1} \in \Sol(x_i, u_i, \tau)$ for some $u_i \in U$.
+
+Given a continuous-time nonlinear dynamical system with the tuple $(X, x_\init, U, W, f)$ as above and a sampling time $\tau$, there exist techniques to construct
+a control system $\Sigma = (X, x_\init, U, W, f_\tau)$ such that every time-sampled trajectory of the continuous-time system is
+also a trajectory of $\Sigma$.
+We omit the details of the construction; see, e.g., \cite{reissig2016feedback}. 
+
+\begin{comment}
+We assume that each control system $\Sigma^i$ in $\set{\Sigma^i}_{i\in [1;N]}$ is equipped with an output map $h^i\colon X^i\rightarrow Y$ where $Y\subseteq\reals^p$ is a shared output space. Recall our motivating example, wherein the crane's state space consists of the cart's position ($z$), the cart's speed ($v_z$), the pendulum's angular position ($\theta$), and angular speed ($v_\theta$). The state space for the vehicle is described with only one state variable $z'$ describing its position. Note that $X^1\subseteq \reals^4$ and $X^2\subseteq \reals$. By defining $h^1(z,v_z,\theta,v_\theta)=\begin{bmatrix}z+l\sin(\theta)&0.6+l\cos(\theta)\end{bmatrix}^T$ and $h^2(z')=\begin{bmatrix}z'&0.4\end{bmatrix}^T$, both state spaces can be mapped to $Y\subseteq \reals^2$ in which we would like to compute their distance.
+%For example, in a multi-robot scenario, all of the robots move within a two or three dimensional space independent of their individual dynamics.
+We define distance between two control systems by $D\colon X^i\times X^j\rightarrow \reals_{\geq 0}$ with $D(u,v) = \| h^i(u)-h^j(v)\|$. We extend the definition of $D$ to measure distance between a system's state and a set defined over the shared output space: for any given $u\in X^i$ and $V\subseteq Y$, $D(u,V) \coloneqq \inf_{v\in V}\|h^i(u)-v\|$ \Sadegh{This is not right}.
+\end{comment}
+
+
+
+\begin{comment}
+There exists a locally Lipschitz function $f_{con}\colon X\times U\rightarrow X$ and an absolutely continuous function $\beta\colon \reals_{\geq 0} \rightarrow X$ such that for every $x\in X$, constant $u\in U$ and fixed sampling time $\tau>0$, 
+\begin{align}
+	&\dot \beta = f_{con}(\beta(t),u) \quad \beta(0) =x\nonumber\\
+	 &f(x,u) =\beta(\tau).\label{eq:cont_to_disc}
+\end{align}
+Therefore, we can characterize nominal dynamics $f$ using $f_{con}$ and $\tau$. %For a given time horizon $T$, a (state) \emph{trajectory} of $\Sigma$ is a function $\xi\colon[0;T]\rightarrow X$ such that $\xi(0)=x_0$ and $\xi(\cdot)$ fulfills the following inclusion relation for every $t\in[0;T]$:
+For an initial state $x_0$ and a control input $u\in U$, we define
+\begin{equation}\label{equ:def_f}
+	\Sol_\Sigma(x_0,u)=\set{x\mid x\in f(x_0,u) + W}. 
+\end{equation} 
+\Sadegh{Trajectory should reflect the discrete nature of the system}
+
+\Sadegh{There are lots of inconsistencies in this definition. I will change this depending on how other things are used in the rest of the paper.}
+%We collect all such solutions in the set $\Sol_\Sigma(x_0,u,T)$. 
+% such that $f(\cdot,u)$ is locally Lipschitz for all $u\in U$.%, an \emph{output space} $Y\subseteq \mathbb{R}^p$, and
+%an \emph{output function} $h\colon X\mapsto Y$. 
+%
+%We call each element of the set $\sem{X}$ a \emph{state}, and the set $\sem{X} = \mathbb{R}^{|X|}$ the \emph{state space} of $\Sigma$.
+%Throughout, we will assume that there is a metric $d\colon \sem{X}\times \sem{X}\to \mathbb{R}$ on the set $\sem{X}$ such that $(\sem{X},d)$ is a metric space. 
+%Given a time horizon $T>0$, and a constant input $u\in U$, 
+%a (state) \emph{trajectory} of $\Sigma$ 
+%on $[0,T]$ is an absolutely continuous function $\xi:[0,T]\rightarrow X$  such that $\xi(0) = x_\init$ and
+%$\xi(\cdot)$ fulfills the following differential inclusion for almost every $t\in[0,T]$:
+%\begin{equation}\label{equ:def_f}
+% \dot{\xi}\in f(\xi(t),u) + W. 
+%\end{equation} 
+%We collect all such solutions in the set $\Sol_\Sigma(x_0,u,T)$. 
+\end{comment}
+
+\begin{comment}
+
+\smallskip
+\noindent\textbf{Transition System.}\
+A \emph{state-transition system} $S=(Z,z_\init,U,\delta)$ consists of a \emph{state space} $Z$, an \emph{initial state} $z_\init\in Z$, an \emph{input space} $U$, and a \emph{transition function} $\delta:Z\times U \rightarrow 2^Z$. 
+A system $S$ is \emph{finite} if $Z$ and $U$ are finite. 
+A \emph{trajectory} of $S$ is a maximal sequence of states $\rho = (z_0,z_1,\ldots) \in Z^\infty$ starting at $z_0=z_\init$ and compatible with $\delta$:
+for all $1\leq k < |\rho|$ there exists $u\in U$ such that $z_k\in \delta(z_{k-1},u)$ and 
+if $|\rho| < \infty$ then $\delta(z_{|\rho|},u)= \emptyset$ for all $u\in U$.
+%For $D\subseteq X$, a $D$-trajectory is a trajectory $\xi$ with $\xi(0)\in D$.
+
+
+\smallskip
+\noindent\textbf{Product Transition System.}\
+Let $\set{S^i}_{i\in [1;N]}$, $S^i=(Z^i,z_\init^i,U^i,\delta^i)$, be a set of $N$ transition systems.
+The \emph{product transition system of } $\set{S^i}_{i\in [1;N]}$ is the transition system $S^\times \coloneqq (Z^\times, z_\init^\times, U^\times, \delta^\times)$ such that $Z^\times \coloneqq Z^1\times \ldots \times Z^N$, $z^\times_\init\coloneqq (z_\init^1,\ldots,z_\init^N)$, $U^\times \coloneqq U^1\times \ldots\times U^N$, and $\delta^\times \coloneqq \delta^1\otimes\ldots \otimes \delta^N$.
+From here on, we omit the domain of $i$ and use ``$\set{S^i}$'' and ``$\set{\Sigma^i}$'' respectively for ``$\set{S^i}_{i\in [1;N]}$'' and ``$\set{\Sigma^i}_{i\in [1;N]}$'' to simplify the notation.
+
+
+\end{comment}
+
+\smallskip\noindent
+\textbf{Controllers.} 
+%
+% We introduce the notations for representing different types of controllers used in this paper. 
+An \emph{open-loop controller} for $\Sigma=(X,x_\init,U,W,f)$ over a time interval $[0;T]$ with $T\in\mathbb N$ 
+is a function $C\colon [0;T]\to U$. 
+The open-loop is obtained when we connect $C$ with $\Sigma$ serially,
+ %by taking the input $u_i = C(i)$ for all $i$,
+ denoted by $C \triangleright \Sigma$. 
+The set of trajectories of the open-loop system $C\triangleright\Sigma$ consists of all finite trajectories
+$x_0, x_1, \ldots, x_T$ such that $x_0 = x_\init$ and for all $i \in [0; T-1]$, we have $x_{i+1} = f(x_i, C(i)) + w_i$ for some $w_i \in W$.
+
+A \emph{feedback controller} for $\Sigma$ over a time interval $[0;T]$, $T\in \mathbb N$, 
+is a function $C\colon X\times[0;T]\to U$. 
+We denote the feedback composition of $\Sigma$ with $C$ as $C \parallel \Sigma$.
+The set of trajectories of the closed-loop system $C\parallel\Sigma$ consists of all finite trajectories
+$x_0, x_1, \ldots, x_T$ such that $x_0 = x_\init$ and for all $i \in [0; T-1]$, we have $x_{i+1} = f(x_i, C(x_i, i)) + w_i$ for some $w_i \in W$.
+For both open-loop and feedback composition, the nominal trajectories are those trajectories for which $w_i = 0$ for all $i\geq 0$.
+
+Now let $\set{\Sigma^i}$ be a set of control systems.
+We can define \emph{global} open-loop and feedback controllers by defining the respective controllers on the product system $\Sigma^\times$.
+We can also define \emph{local} open-loop and feedback controllers $C^i$ for each $\Sigma^i$.
+In this latter case, the set of trajectories of the system $\set{C^i} \triangleright \set{\Sigma^i}$ (respectively, $\set{C^i}\parallel \set{\Sigma^i}$)
+are finite sequences 
+$x_0^\times, x_1^\times, \ldots, x_T^\times$ such that
+$x_0^\times = x_\init^\times$ and for each $j \in [0;T-1]$, we have 
+$\proj^{i}(x_{j+1}^\times) = f^i(\proj^i(x_j^\times), C^i(j))+w_{ji}$
+(respectively, 
+$\proj^{i}(x_{j+1}^\times) = f^i(\proj^i(x_j^\times), C^i(\proj^i(x_j^\times), j))+w_{ji}$)
+for some $w_{ji} \in W^i$, for each $i\in [1;N]$.
+
+\smallskip
+\noindent
+\textbf{Decentralized Controller Synthesis Problem.}
+Let $\set{\Sigma^i}$ be a set of control systems.
+A (global) \emph{control specification} $\mathcal{L}$ is a set of finite sequences in $(X^\times)^*$.
+Intuitively, a control specification specifies a set of ``good behaviors'' of the product system.
+The \emph{decentralized open-loop (resp. feedback) controller synthesis problem} asks, given $\set{\Sigma^i}$ and a global control specification $\mathcal{L}$,
+to construct a set of local open-loop (resp.\ feedback) controllers $\set{C^i}$ such that
+the trajectories of $\set{C^i}\triangleright \set{\Sigma^i}$ (resp.\ $\set{C^i}\parallel \set{\Sigma^i}$) all belong to the global
+control specification $\mathcal{L}$.
+
+In particular, we consider \emph{reach-avoid} specifications, written as  $\lnot\avoid\, \mathcal{U}\,\goal$ in linear temporal logic, for two subsets 
+$\avoid, \goal \subseteq X^\times$.
+A trajectory $x_0, x_1, \ldots$ satisfies the reach avoid specification if there is some $j\in \mathbb{N}$ such that $x_j \in\goal$ and
+for all $i \in [0; j-1]$, we have $x_i \not \in\avoid$.
+
+Our notion of product of control systems is a Cartesian product of each component. Thus, we assume that the dynamics of individual control
+systems are not coupled.
+However, the overall trajectories of the control systems can be coupled through the control objective.
+Indeed, our choice of the specification $\Phi$ on the product state space $X^\times$ subsumes many interesting class of control tasks.
+For example, we can express situations when the robots have their own local reach-avoid specifications, and they 
+need to avoid collision among each other; we consider such a specification in our examples in Sec.~\ref{sec:local reach-avoid}.
+In addition, we can also specify more general tasks which cannot be easily decomposed into individual subtasks for the robots.
+One example is the \emph{formation control problem}, which we consider in the example in Sec.~\ref{sec:global formation control}, where a set of robots need to 
+reach some location while maintaining a given geometric formation. 
+Since the formation is defined using the relative positions of the robots, it is not possible to decompose this task into separate local reach-avoid subtasks.
+
+\begin{example}
+	Consider our motivating example in which there are two control systems: the crane and the factory vehicle. The detailed models for both of the systems are given in Sec.~\ref{subsec}. The crane starts at $x_\init^1=\begin{bmatrix}0&0&\pi&0\end{bmatrix}^T$, while the vehicle starts at $x_\init^2=\begin{bmatrix}8&0\end{bmatrix}^T$.
+	%The crane is modeled as a control system $\Sigma^1$ with state space $X^1\subseteq\reals^4$, initial state $x_\init^1=\begin{bmatrix}0&0&\pi&0\end{bmatrix}^T$, input space $U^1\subseteq  \reals^2$, a bounded disturbance $W^1\subset\reals^4$ and a fourth-order nominal dynamics $f^c$ (the complete of dynamics can be found in \cite{Barto1983}).
+	The goal set for the crane is $\goal^1=\ball_{r_1}(g_1)$, which is a ball centered at $g_1=\begin{bmatrix}5&0&\pi&0\end{bmatrix}^T$ with a desired size $r_1\in\reals^4_{> 0}$. %is a robustness margin parameter. %Similarly, the factory vehicle can be characterize as a second control system $\Sigma^2$ with state space $X^2\subseteq\reals^2$, initial state $x_\init^2=\begin{bmatrix}8&0\end{bmatrix}^T$, input space $U^2\subseteq  \reals^1$, a bounded disturbance $W^2\subset\reals^2$ and a second-order nominal dynamics $f^l$. 
+	The goal set for the vehicle is similarly defined as $\goal^2=\ball_{r_2}(g_2)$ with center $g_2=\begin{bmatrix}4&0\end{bmatrix}^T$ and size $r_2\in\reals_{> 0}$. The goal set over the product space is defined as $\goal=\goal^1\times\goal^2\subseteq \reals^6$. The set $\avoid$ is defined as $\avoid=\set{ x^\times\in X^\times\mid\;D(x^1,x^2)\leq \delta}$ where $x^1$ and $x^2$ denote components of $x^\times$ corresponding to the two systems, $D$ represents geometric distance between the two systems in the two-dimensional space and $\delta$ denotes a minimum safety distance requirement. It can be noticed that despite the fact that dynamics of the two systems are not coupled, to fulfill the reach-avoid specification $\lnot\avoid\, \mathcal{U}\,\goal$, one has to take both of the dynamics into account.
+%\RM{give a simple example that shows the dynamics and the objective. In the objective, you can use the distance between two states, etc.}
+\qed
+\end{example}
+
+
+
+%\subsection{Abstraction-Based Controller Synthesis Background}
+%Let $\Sigma = (X, U, W, f, \cdot, \cdot)$ be a control system, $\tau>0$ be the sampling time, $\bound$ be a subset of $X$ which imposes a safety specification, $\Xh$ be a given \emph{finite partition} of $\bound$, and $\Uh$ be a \emph{finite subset} of equally spaced (w.r.t.\ infinity norm on $\mathbb{R}^m$) points in the set $U$. A \emph{finite-state abstraction} of $\Sigma$ is a finite state-transition system $(\Xh,\Uh,\fh)$, where $\xh'$ is in $\fh(\xh,u)$ if there is a pair of states $x\in \xh$ and $x'\in \xh'$ such that there is a trajectory $\xi\in \Sol_\Sigma(x,u,\tau)$ with $\xi(\tau)=x'$.
+%
+%We assume that the size of the partition elements is provided as a vector $\eta_x\in \mathbb{R}^n_{>0}$ which is an input to the abstraction procedure. We also assume that the set $\Uh$ is chosen based on an input-space discretization parameter $\eta_u\in \mathbb{R}^m_{>0}$. 
+%
+%We assume that there is a black-box procedure named $\findAbs$ which takes as input the description of $\Sigma = (X,U,W,f,\cdot,\cdot)$, a compact subset $\bound$ of the set $X$, a sampling time $\tau>0$, and state space and input space discretization parameters $\eta_x$ and $\eta_u$ respectively, and returns a finite-state abstraction $\widehat{\Sigma} = (\Xh,\Uh,\fh)$ of $\Sigma$ and a feedback refinement relation $Q$ from $\Sigma_\tau$ to $\hat\Sigma$. More details can be found in Sec.~\ref{sec:abcd}.
+%here

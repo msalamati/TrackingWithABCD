@@ -1,0 +1,43 @@
+\documentclass[sigconf,review]{acmart} 
+\settopmatter{printacmref=false} % Removes citation information below abstract
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+% \pagestyle{plain} % removes running headers
+\fancyfoot{} % for removing "manuscript submitted to ACM" running footer
+
+%\bibliographystyle{plainurl}
+
+\include{preamble} % for the packages and the macros
+
+%\title{Multi-Agent Reach-Avoid Control with Formal Guarantees}
+
+\title{Symbolic Reach-Avoid Control of Multi-Agent Systems}
+%\author{Mehrdad, Kaushik, Mahmoud, Rupak, Sadegh}
+
+\makeatletter
+% \@ifclassloaded{acmart}{\keywords{Abstraction Based Controller Design, Tracking Control}}{}
+\makeatother
+
+\sloppy
+
+\begin{document}
+
+\begin{abstract}
+	\input{abstract}
+\end{abstract}
+
+\maketitle
+
+\input{intro}
+\input{related_work}
+\input{prelims}
+\input{problem}	
+\input{theory}
+\input{experiments}
+\input{conclusion}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+
+
+\end{document}
