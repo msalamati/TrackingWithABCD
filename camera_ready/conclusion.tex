@@ -15,18 +15,26 @@ Our experiments show that our method is efficient in solving reach-avoid tasks f
 	\renewcommand{\arraystretch}{1.2}
 	\setlength{\tabcolsep}{0.7em} % for the horizontal padding
 	%\resizebox{1\columnwidth}{!}{
-	\begin{tabular}{l|c|c|c}
+	\begin{tabular}{l|c|c|c|c|c}
 		\toprule
 		Tool&Method&
-		Dynamics&Type of disturbance\\
+		Dynamics&Type of disturbance&Multi-agent& Method \\
 		\midrule
-		Ours(??)&decentralized&non-linear&bounded additive\\
+		Ours &Hybrid&non-linear&bounded additive& yes& ALTRO + ABCD \\
 		\midrule
-		FastTrack&centralized&non-linear&-\\
+		FastTrack\cite{herbert2017fastrack}&centralized&non-linear& bounded(general) & - & RRT + HJ\\
 		\midrule
-		Factest&??&??&??\\
+		RealSyn\cite{fan2018controller}&centralized&linear&bounded additive & - & Synthesis\\
 		\midrule
-		RTD&??&??&??\\
+		Factest\cite{fan2020fast}&centralized&non-linear & implicit* & - &MILP + lyapanov\\
+		\midrule
+		Model mismatch(SOS)\cite{singh2018robust} & centralized &non-linear& implicit*  & - &  SOS\\
+		\midrule
+		RTD\cite{kousik2020bridging}& Centralized &non linear& * & - & NMPC\\
+		\midrule
+		fly by logic\cite{Pant2018multiquad} & centralized & non-linear & implicit* & yes & optimization\\
+		\midrule
+		Distributed Trajectory Optimization \cite{jackson2020scalable}&centralized & nonlinear & - & yes & ALTRO\\
 		\bottomrule
 	\end{tabular}
 \end{table*}
