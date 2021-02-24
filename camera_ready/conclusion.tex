@@ -1,5 +1,5 @@
 \section{discussion}
-\MS{We have presented a decentralized controller synthesis scheme for multi-agent systems with global reach-avoid specifications. In this section, we highlight the features of our work, remaining challenges and the future work.
+\MS{We have presented a decentralized controller synthesis scheme for multi-agent systems with global reach-avoid specifications. In this section, we highlight the features of our work, remaining challenges, and the future work.
 
 \smallskip
 \noindent\textbf{Scalability of the proposed method.}\
@@ -40,14 +40,24 @@ Our experiments show that our method is efficient in solving reach-avoid tasks f
 \end{table*}
 
 \smallskip
-\noindent\textbf{Extension to richer classes of specification.}\
+\noindent\textbf{Extension to richer classes of specifications.}\
 Our proposed method is specific to reach-avoid specifications. However, application of our method can be extended to the problem that can be broken into a sequence of reach-avoid tasks. To that end, one can use high-level languages (e.g., \cite{Majumdar2020,Ghosh2020}) for specifying complex reach-avoid sequences and invoke our tool to solve each individual reach-avoid task.
 
 \smallskip
 \noindent\textbf{Choice of parameters.}\
+Our algorithm takes as input the robustness margin $\varepsilon$ and the abstraction parameters $\eta_x$ and $\eta_u$.
+(The safety margin $\delta$ is also a parameter, but that is considered to be a part of the control problem.)
+The larger the value of $\varepsilon$, more difficult it is to synthesize a nominal controller for the product system using ALTRO.
+On the other hand, the smaller the value of $\varepsilon$, the more difficult it is to synthesize a set of decentralized controllers using SCOTS.
+Also, there is a trade-off between computation time and ease of synthesis when it comes to choosing the parameters $\eta_x$ and $\eta_u$ for SCOTS: Larger values of these parameters will result in faster computation but harder synthesis problem.
+Thus there needs to be a good balance when we choose the parameters for our tool.
+Our approach is to add an outer loop around our tool to search of suitable parameters until the decentralized synthesis is successful (see Fig.~\ref{fig:overall}).
 
 \smallskip
 \noindent\textbf{Conservativeness of our method.}\
+Our method is no more conservative than the standard ABCD approach used in SCOTS:
+Indeed, assuming availability of unbounded resources, if SCOTS is able to find a central controller for the global synthesis problem for a given set of parameters $\varepsilon$, $\eta_x$, and $\eta_u$, then our method will also find a set of decentralized controllers (by consuming much less resource than the global synthesis approach).
+\KM{@Mehrdad: is this true? Is it not the case that ALTRO can occassionally fail to give a nominal controller even if the central SCOTS-based approach would have solution, if we would ignore the memory and time limitations?}
 }
 
 %\section{conclusion}

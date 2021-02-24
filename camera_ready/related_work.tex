@@ -6,15 +6,20 @@ The field of multi-agent planning is too large for a comprehensive survey; we po
 We categorize closely related work into (1) ones combining planning and tracking controller synthesis, 
 (2) ones addressing multi-agent formal controller synthesis, and 
 (3) approaches combining (1) and (2).
+Following are the detailed surveys of these categories:
 
-Techniques combining high-level planning and low-level tracking are a staple of classical planning and control. 
+\begin{enumerate}[(1)]
+	\item Techniques combining high-level planning and low-level tracking are a staple of classical planning and control. 
 More recently, several techniques consider the problem of formal guarantees for such planners.
 Existing methods can be categorized based on the dynamics that they can handle (e.g., linear or nonlinear),
 whether the system is subject to disturbances, considered class of specifications, and scalability. 
 A common approach to solve for reach-avoid specifications is to perform the high-level planning over a lower dimensional dynamical model and then use
 Sum-of-Squares (SOS) programming or Hamilton Jacobi (HJ) or satisfiabiity modulo convex programming (SMC) methods to obtain a low-level controller ensuring a bounded error between the 
-two models \cite{herbert2017fastrack,DBLP:journals/corr/abs-1911-09773,singh2018robust,sun2019,Nilsson:2018}. In contrast to \cite{herbert2017fastrack,singh2018robust}, our method does not require finding 
-a linear mapping between the low and high dimensional models. \MS{Nilsson et al.  proposed a method that decomposes the state space into a lower-order planning space, and a higher-order internal dynamics space, so that planning can be performed fast and accurate tracking can be achieved using a set of control barrier functions that are computed using SOS method \cite{Nilsson:2018}. Despite providing guarantees for the worst-case bounded disturbances, their method is not capable of solving reach-avoid tasks which involve dynamic obstacles as in the multi-agent case.}
+two models \cite{herbert2017fastrack,DBLP:journals/corr/abs-1911-09773,singh2018robust,sun2019,Nilsson:2018}. 
+\KM{Nothing has been stated about \cite{DBLP:journals/corr/abs-1911-09773,sun2019}.}
+In contrast to \cite{herbert2017fastrack,singh2018robust}, our method does not require finding 
+a linear mapping between the low and high dimensional models. 
+Nilsson et al.  proposed a method that decomposes the state space into a lower-order planning space, and a higher-order internal dynamics space, so that planning can be performed fast and accurate tracking can be achieved using a set of control barrier functions that are computed using SOS method \cite{Nilsson:2018}. Despite providing guarantees for the worst-case bounded disturbances, their method is not capable of solving reach-avoid tasks which involve dynamic obstacles as in the multi-agent case.
 %that governs the motion in planning space. 
 %The planning is performed fast since it is restricted to the lower-order space. To guarantee following of the planned trajectory in the lower-order space, control barrier functions are computed using SOS method. This method, however, cannot deal with dynamic obstacles as is needed in tackling collision avoidance.}
 While we choose SCOTS because the algorithm can be effectively parallelized \cite{KhaledZ19pfaces}, in principle, we could
@@ -25,28 +30,14 @@ In contrast, our method supports arbitrary
 %continuous time
  nonlinear dynamics and provides a guarantee 
 against worst-case bounded disturbance.
-	
-	%The hierarchical approach, combining high-level planning and low-level tracking, is not new.
-	%Yet most of the existing works use the hierarchical approach for controller synthesis for a single robot \cite{herbert2017fastrack, fan2020fast, fan2018controller, wongpiromsarn2012receding, tedrake2010lqr, singh2018robust, DBLP:journals/tac/MeyerD19, DBLP:journals/corr/abs-1911-09773, Yang2017milp}.
-	%In contrast, we consider a hierarchical control for decentralized control of a group of robots.
-%	For example, there are methods which can generate nominal controlled trajectories by taking into account the maximum tracking error, assuming that a tracking controller is already in place \cite{fan2020fast, fan2018controller}.
-%	On the other hand, there are methods which compute a tracking controller which minimizes the tracking error for any given nominal trajectory:
-%	Some of them do not consider external disturbances \cite{tedrake2010lqr, singh2018robust}, some of them only consider linear dynamics \cite{wongpiromsarn2012receding}, and all of them consider only a single monolithic system structure \cite{herbert2017fastrack}.
-
-% Many papers address the problem of multi-robot controller synthesis without a hierarchical approach.
-Chen et al.\ proposed a method, using control barrier functions, that requires some form of inter-robot 
+	\item Chen et al.\ proposed a method, using control barrier functions, that requires some form of inter-robot 
 communication and does not consider external disturbances \cite{Chen2018cbf}.
 Sahin et al.\ proposed a method that requires the group of robots to be homogeneous \cite{Shahin2017cltl}.
 There are methods which do not consider external disturbances and do not provide formal guarantees \cite{jackson2020scalable}.
-
-% In contrast, our method can synthesize formally verified controllers for heterogeneous group of robots, subjected 
-% to external disturbances, and lacking any form of communications. 
-% Hierarchical controller synthesis for decentralized control of multi-robot systems is relatively rare.
-Alonso-Mora et al.\ proposed a method for formation control of a group of communicating homogeneous robots \cite{alonso2019distributed}.
+	\item Alonso-Mora et al.\ proposed a method for formation control of a group of communicating homogeneous robots \cite{alonso2019distributed}.
 They first synthesize nominal controller using a fast randomized geometric planning method, namely RRT, and 
 then use optimal control to track the obtained nominal solution.
-Unlike us, they neither consider external disturbances nor provide formal guarantees. \MS{Pant et al. considered STL expressable multi-quadrotor missions \cite{Pant2018multiquad}. They find the reference trajectory by maximizing robustness with respect to the given STL specification, and synthesize tracking controllers so that the reference trajectory is followed closely. Although their method provides some robustness margin, it is not capable of providing guarantee against worst-case bounded additive disturbances as we do. Further, they only consider time-bounded STL specifications.}	
-	%In the first step, they generate a reference trajectory by maximizing robustness with respect to the given STL specification. In the next step, local MPC controllers are used to track the reference trajectory. Their implementations show that their method is tractable and as a plus gives gurantees over the continuous-time trajectory. However, their method is only able to handle bounded-time specifications and more importantly, they do not consider modelling uncertainty unlike us.}
+Unlike us, they neither consider external disturbances nor provide formal guarantees. Pant et al. considered STL expressable multi-quadrotor missions \cite{Pant2018multiquad}. They find the reference trajectory by maximizing robustness with respect to the given STL specification, and synthesize tracking controllers so that the reference trajectory is followed closely. Although their method provides some robustness margin, it is not capable of providing guarantee against worst-case bounded additive disturbances as we do. Further, they only consider time-bounded STL specifications.	
 Recently, Xiao et al.\ \cite{xiao2019merging} proposed a method for synthesis of distributed controllers for a 
 set of autonomous vehicles in a lane merging situation.
 They use optimal control to compute a nominal controller for the product system, 
@@ -54,9 +45,10 @@ whose goal is to ensure some safety constraints together with ensuring optimalit
 After that, they use control barrier functions for each robot for tracking the obtained nominal solution.
 Even though they consider external noise in the system, yet, when there is noise, their controllers can 
 occasionally violate the safety constraints for finite number of time steps.
-Moreover, they only consider simple linear systems (double integrator) as vehicle models. \MS{Nikou et al. studied the problem of robust navigation for multi-agent systems \cite{Nikou2019}. 
+Moreover, they only consider simple linear systems (double integrator) as vehicle models. 
+Nikou et al. studied the problem of robust navigation for multi-agent systems \cite{Nikou2019}. 
 %They consider additive bounded modelling disturbance. 
-They use optimal control to compute a reference trajectory for the nominal dynamics by neglecting disturbance, and invoke a  pre-computed feedback controller to guarantee that the perturbed system's trajectory remains within a bounded hyper-cube around the reference trajectory. In order to avoid collision with obstacles or other agents, their method relies on sensing capabilities of the agents. In contrast, our method does not requires any sensing ability in order to guarantee safe navigation of multi-agents.}
+They use optimal control to compute a reference trajectory for the nominal dynamics by neglecting disturbance, and invoke a  pre-computed feedback controller to guarantee that the perturbed system's trajectory remains within a bounded hyper-cube around the reference trajectory. In order to avoid collision with obstacles or other agents, their method relies on sensing capabilities of the agents. In contrast, our method does not requires any sensing ability in order to guarantee safe navigation of multi-agents.
  %However, they assume that agents are able to communicate while moving; and their target is to satisfy input-to-state stability. In fact, their method is not able to tackle collision avoidance for static/dynamic obstacles.}
 
 There are other works that use a pre-defined motion primitive library to perform planning for multi-robot 
@@ -68,6 +60,23 @@ However, they assume that each robot has its own reach-avoid specification and t
 In contrast, we allow global reach-avoid specifications, which subsume the specifications that they consider.
 In fact, there are control problems which cannot be easily expressed in their problem setting, but can be easily expressed in our problem setting: 
 examples are robots maintaining a formation while fulfilling their tasks \cite{alonso2019distributed}, etc.
+\end{enumerate}
+
+	
+	%The hierarchical approach, combining high-level planning and low-level tracking, is not new.
+	%Yet most of the existing works use the hierarchical approach for controller synthesis for a single robot \cite{herbert2017fastrack, fan2020fast, fan2018controller, wongpiromsarn2012receding, tedrake2010lqr, singh2018robust, DBLP:journals/tac/MeyerD19, DBLP:journals/corr/abs-1911-09773, Yang2017milp}.
+	%In contrast, we consider a hierarchical control for decentralized control of a group of robots.
+%	For example, there are methods which can generate nominal controlled trajectories by taking into account the maximum tracking error, assuming that a tracking controller is already in place \cite{fan2020fast, fan2018controller}.
+%	On the other hand, there are methods which compute a tracking controller which minimizes the tracking error for any given nominal trajectory:
+%	Some of them do not consider external disturbances \cite{tedrake2010lqr, singh2018robust}, some of them only consider linear dynamics \cite{wongpiromsarn2012receding}, and all of them consider only a single monolithic system structure \cite{herbert2017fastrack}.
+
+% Many papers address the problem of multi-robot controller synthesis without a hierarchical approach.
+
+
+% In contrast, our method can synthesize formally verified controllers for heterogeneous group of robots, subjected 
+% to external disturbances, and lacking any form of communications. 
+% Hierarchical controller synthesis for decentralized control of multi-robot systems is relatively rare.
+
 % In contrast, our method provides guarantee against worst-case system noise at all time, and in addition can support nonlinear systems. 
  
 

@@ -19,7 +19,7 @@ The product is associative and extends to more than two functions in the obvious
 %Throughout, we measure distance between two points, within a space $\mathbb{R}^n$, using the \emph{distance metric} $d\colon \mathbb{R}^p\times \mathbb{R}^p\to \mathbb{R}_{\geq0}$, $d^p\colon \left(u,v\right)\mapsto \|u-v\|$. 
 %We extend the definition of $d^p$ to measure distance between a point and a set: for any given $u\in \mathbb{R}^p$ and $V\in \mathbb{R}^p$, $d^p(u,V) \coloneqq \inf_{v\in V}\|u-v\|$.
 Given $c\in \mathbb{R}^n$ and $\varepsilon\in \mathbb{R}_{>0}^{n}$, the ball with center $c$ and radius $\varepsilon$ in $\mathbb{R}^n$ is denoted by 
-$\ball_\varepsilon(c)\coloneqq \set{x \in \mathbb{R}^n \mid  |x-c|\leq \varepsilon }$.
+$\ball_\varepsilon(c)\coloneqq \set{x \in \mathbb{R}^n \mid  \|x-c\|\leq \varepsilon }$.
 
 Let $A$ be a set.
 We use the notation $A^\infty$ to denote the set of all finite and infinite sequences formed using the members of $A$. Our control tasks are defined using a subset of Linear Temporal Logic (LTL). 
@@ -27,7 +27,7 @@ In particular, we use the \emph{until} operator $\mathcal{U}$ and the \emph{next
 Let $p$ and $q$ be subsets of $\reals^n$ and $\rho=(x_0,x_1,\dots)$ be an infinite sequence of elements from $\reals^n$. 
 We write $\rho\models\bigcirc^k p$ if $x_k\in p$. We write $\rho\models p\mathcal{U}q$ if there exists 
 $i\in\mathbb{N}$ s.t. $x_i\in q$ and $x_j\in p$ for all $0\leq j<i$. 
-For detailed syntax and semantics of LTL, we refer to \cite{baier2008principles} and references therein.
+For detailed syntax and semantics of LTL, we refer to the book by Baier et al.~\cite{baier2008principles} and references therein.
 
 %Let $V$ be a finite set of real-valued variables.
 %We use the notation $\sem{V}$ (same symbol but in boldface blue) to denote the set of every possible valuations of the variables in $V$, i.e.\ an element in $\sem{V}$ assigns an unique real number to every variable in $V$.
@@ -53,7 +53,7 @@ A \emph{trajectory} of $\Sigma$ is a finite or infinite sequence $x_0, x_1, \ldo
 such that $x_0 = x_{\init}$ and for each $i\geq 0$, there is an $u_i\in U$ and $w_i \in W$ such that
 $x_{i+1} = f(x_i, u_i) + w_i$.
 A trajectory is \emph{nominal} if $w_i = 0$ for all $i\geq 0$.
-Intuitively, a control system represents a (possibly nonlinear) dynamical system with control inputs form $U$
+Intuitively, a control system represents a (possibly nonlinear) dynamical system with control inputs form the set $U$
 and disturbances from the set $W$.
 
 \smallskip
@@ -91,64 +91,64 @@ a control system $\Sigma = (X, x_\init, U, W, f_\tau)$ such that every time-samp
 also a trajectory of $\Sigma$.
 We omit the details of the construction; see, e.g., \cite{reissig2016feedback}. 
 
-\begin{comment}
-We assume that each control system $\Sigma^i$ in $\set{\Sigma^i}_{i\in [1;N]}$ is equipped with an output map $h^i\colon X^i\rightarrow Y$ where $Y\subseteq\reals^p$ is a shared output space. Recall our motivating example, wherein the crane's state space consists of the cart's position ($z$), the cart's speed ($v_z$), the pendulum's angular position ($\theta$), and angular speed ($v_\theta$). The state space for the vehicle is described with only one state variable $z'$ describing its position. Note that $X^1\subseteq \reals^4$ and $X^2\subseteq \reals$. By defining $h^1(z,v_z,\theta,v_\theta)=\begin{bmatrix}z+l\sin(\theta)&0.6+l\cos(\theta)\end{bmatrix}^T$ and $h^2(z')=\begin{bmatrix}z'&0.4\end{bmatrix}^T$, both state spaces can be mapped to $Y\subseteq \reals^2$ in which we would like to compute their distance.
-%For example, in a multi-robot scenario, all of the robots move within a two or three dimensional space independent of their individual dynamics.
-We define distance between two control systems by $D\colon X^i\times X^j\rightarrow \reals_{\geq 0}$ with $D(u,v) = \| h^i(u)-h^j(v)\|$. We extend the definition of $D$ to measure distance between a system's state and a set defined over the shared output space: for any given $u\in X^i$ and $V\subseteq Y$, $D(u,V) \coloneqq \inf_{v\in V}\|h^i(u)-v\|$ \Sadegh{This is not right}.
-\end{comment}
+%\begin{comment}
+%We assume that each control system $\Sigma^i$ in $\set{\Sigma^i}_{i\in [1;N]}$ is equipped with an output map $h^i\colon X^i\rightarrow Y$ where $Y\subseteq\reals^p$ is a shared output space. Recall our motivating example, wherein the crane's state space consists of the cart's position ($z$), the cart's speed ($v_z$), the pendulum's angular position ($\theta$), and angular speed ($v_\theta$). The state space for the vehicle is described with only one state variable $z'$ describing its position. Note that $X^1\subseteq \reals^4$ and $X^2\subseteq \reals$. By defining $h^1(z,v_z,\theta,v_\theta)=\begin{bmatrix}z+l\sin(\theta)&0.6+l\cos(\theta)\end{bmatrix}^T$ and $h^2(z')=\begin{bmatrix}z'&0.4\end{bmatrix}^T$, both state spaces can be mapped to $Y\subseteq \reals^2$ in which we would like to compute their distance.
+%%For example, in a multi-robot scenario, all of the robots move within a two or three dimensional space independent of their individual dynamics.
+%We define distance between two control systems by $D\colon X^i\times X^j\rightarrow \reals_{\geq 0}$ with $D(u,v) = \| h^i(u)-h^j(v)\|$. We extend the definition of $D$ to measure distance between a system's state and a set defined over the shared output space: for any given $u\in X^i$ and $V\subseteq Y$, $D(u,V) \coloneqq \inf_{v\in V}\|h^i(u)-v\|$ \Sadegh{This is not right}.
+%\end{comment}
 
 
 
-\begin{comment}
-There exists a locally Lipschitz function $f_{con}\colon X\times U\rightarrow X$ and an absolutely continuous function $\beta\colon \reals_{\geq 0} \rightarrow X$ such that for every $x\in X$, constant $u\in U$ and fixed sampling time $\tau>0$, 
-\begin{align}
-	&\dot \beta = f_{con}(\beta(t),u) \quad \beta(0) =x\nonumber\\
-	 &f(x,u) =\beta(\tau).\label{eq:cont_to_disc}
-\end{align}
-Therefore, we can characterize nominal dynamics $f$ using $f_{con}$ and $\tau$. %For a given time horizon $T$, a (state) \emph{trajectory} of $\Sigma$ is a function $\xi\colon[0;T]\rightarrow X$ such that $\xi(0)=x_0$ and $\xi(\cdot)$ fulfills the following inclusion relation for every $t\in[0;T]$:
-For an initial state $x_0$ and a control input $u\in U$, we define
-\begin{equation}\label{equ:def_f}
-	\Sol_\Sigma(x_0,u)=\set{x\mid x\in f(x_0,u) + W}. 
-\end{equation} 
-\Sadegh{Trajectory should reflect the discrete nature of the system}
-
-\Sadegh{There are lots of inconsistencies in this definition. I will change this depending on how other things are used in the rest of the paper.}
-%We collect all such solutions in the set $\Sol_\Sigma(x_0,u,T)$. 
-% such that $f(\cdot,u)$ is locally Lipschitz for all $u\in U$.%, an \emph{output space} $Y\subseteq \mathbb{R}^p$, and
-%an \emph{output function} $h\colon X\mapsto Y$. 
-%
-%We call each element of the set $\sem{X}$ a \emph{state}, and the set $\sem{X} = \mathbb{R}^{|X|}$ the \emph{state space} of $\Sigma$.
-%Throughout, we will assume that there is a metric $d\colon \sem{X}\times \sem{X}\to \mathbb{R}$ on the set $\sem{X}$ such that $(\sem{X},d)$ is a metric space. 
-%Given a time horizon $T>0$, and a constant input $u\in U$, 
-%a (state) \emph{trajectory} of $\Sigma$ 
-%on $[0,T]$ is an absolutely continuous function $\xi:[0,T]\rightarrow X$  such that $\xi(0) = x_\init$ and
-%$\xi(\cdot)$ fulfills the following differential inclusion for almost every $t\in[0,T]$:
+%\begin{comment}
+%There exists a locally Lipschitz function $f_{con}\colon X\times U\rightarrow X$ and an absolutely continuous function $\beta\colon \reals_{\geq 0} \rightarrow X$ such that for every $x\in X$, constant $u\in U$ and fixed sampling time $\tau>0$, 
+%\begin{align}
+%	&\dot \beta = f_{con}(\beta(t),u) \quad \beta(0) =x\nonumber\\
+%	 &f(x,u) =\beta(\tau).\label{eq:cont_to_disc}
+%\end{align}
+%Therefore, we can characterize nominal dynamics $f$ using $f_{con}$ and $\tau$. %For a given time horizon $T$, a (state) \emph{trajectory} of $\Sigma$ is a function $\xi\colon[0;T]\rightarrow X$ such that $\xi(0)=x_0$ and $\xi(\cdot)$ fulfills the following inclusion relation for every $t\in[0;T]$:
+%For an initial state $x_0$ and a control input $u\in U$, we define
 %\begin{equation}\label{equ:def_f}
-% \dot{\xi}\in f(\xi(t),u) + W. 
+%	\Sol_\Sigma(x_0,u)=\set{x\mid x\in f(x_0,u) + W}. 
 %\end{equation} 
-%We collect all such solutions in the set $\Sol_\Sigma(x_0,u,T)$. 
-\end{comment}
+%\Sadegh{Trajectory should reflect the discrete nature of the system}
+%
+%\Sadegh{There are lots of inconsistencies in this definition. I will change this depending on how other things are used in the rest of the paper.}
+%%We collect all such solutions in the set $\Sol_\Sigma(x_0,u,T)$. 
+%% such that $f(\cdot,u)$ is locally Lipschitz for all $u\in U$.%, an \emph{output space} $Y\subseteq \mathbb{R}^p$, and
+%%an \emph{output function} $h\colon X\mapsto Y$. 
+%%
+%%We call each element of the set $\sem{X}$ a \emph{state}, and the set $\sem{X} = \mathbb{R}^{|X|}$ the \emph{state space} of $\Sigma$.
+%%Throughout, we will assume that there is a metric $d\colon \sem{X}\times \sem{X}\to \mathbb{R}$ on the set $\sem{X}$ such that $(\sem{X},d)$ is a metric space. 
+%%Given a time horizon $T>0$, and a constant input $u\in U$, 
+%%a (state) \emph{trajectory} of $\Sigma$ 
+%%on $[0,T]$ is an absolutely continuous function $\xi:[0,T]\rightarrow X$  such that $\xi(0) = x_\init$ and
+%%$\xi(\cdot)$ fulfills the following differential inclusion for almost every $t\in[0,T]$:
+%%\begin{equation}\label{equ:def_f}
+%% \dot{\xi}\in f(\xi(t),u) + W. 
+%%\end{equation} 
+%%We collect all such solutions in the set $\Sol_\Sigma(x_0,u,T)$. 
+%\end{comment}
 
-\begin{comment}
-
-\smallskip
-\noindent\textbf{Transition System.}\
-A \emph{state-transition system} $S=(Z,z_\init,U,\delta)$ consists of a \emph{state space} $Z$, an \emph{initial state} $z_\init\in Z$, an \emph{input space} $U$, and a \emph{transition function} $\delta:Z\times U \rightarrow 2^Z$. 
-A system $S$ is \emph{finite} if $Z$ and $U$ are finite. 
-A \emph{trajectory} of $S$ is a maximal sequence of states $\rho = (z_0,z_1,\ldots) \in Z^\infty$ starting at $z_0=z_\init$ and compatible with $\delta$:
-for all $1\leq k < |\rho|$ there exists $u\in U$ such that $z_k\in \delta(z_{k-1},u)$ and 
-if $|\rho| < \infty$ then $\delta(z_{|\rho|},u)= \emptyset$ for all $u\in U$.
-%For $D\subseteq X$, a $D$-trajectory is a trajectory $\xi$ with $\xi(0)\in D$.
-
-
-\smallskip
-\noindent\textbf{Product Transition System.}\
-Let $\set{S^i}_{i\in [1;N]}$, $S^i=(Z^i,z_\init^i,U^i,\delta^i)$, be a set of $N$ transition systems.
-The \emph{product transition system of } $\set{S^i}_{i\in [1;N]}$ is the transition system $S^\times \coloneqq (Z^\times, z_\init^\times, U^\times, \delta^\times)$ such that $Z^\times \coloneqq Z^1\times \ldots \times Z^N$, $z^\times_\init\coloneqq (z_\init^1,\ldots,z_\init^N)$, $U^\times \coloneqq U^1\times \ldots\times U^N$, and $\delta^\times \coloneqq \delta^1\otimes\ldots \otimes \delta^N$.
-From here on, we omit the domain of $i$ and use ``$\set{S^i}$'' and ``$\set{\Sigma^i}$'' respectively for ``$\set{S^i}_{i\in [1;N]}$'' and ``$\set{\Sigma^i}_{i\in [1;N]}$'' to simplify the notation.
-
-
-\end{comment}
+%\begin{comment}
+%
+%\smallskip
+%\noindent\textbf{Transition System.}\
+%A \emph{state-transition system} $S=(Z,z_\init,U,\delta)$ consists of a \emph{state space} $Z$, an \emph{initial state} $z_\init\in Z$, an \emph{input space} $U$, and a \emph{transition function} $\delta:Z\times U \rightarrow 2^Z$. 
+%A system $S$ is \emph{finite} if $Z$ and $U$ are finite. 
+%A \emph{trajectory} of $S$ is a maximal sequence of states $\rho = (z_0,z_1,\ldots) \in Z^\infty$ starting at $z_0=z_\init$ and compatible with $\delta$:
+%for all $1\leq k < |\rho|$ there exists $u\in U$ such that $z_k\in \delta(z_{k-1},u)$ and 
+%if $|\rho| < \infty$ then $\delta(z_{|\rho|},u)= \emptyset$ for all $u\in U$.
+%%For $D\subseteq X$, a $D$-trajectory is a trajectory $\xi$ with $\xi(0)\in D$.
+%
+%
+%\smallskip
+%\noindent\textbf{Product Transition System.}\
+%Let $\set{S^i}_{i\in [1;N]}$, $S^i=(Z^i,z_\init^i,U^i,\delta^i)$, be a set of $N$ transition systems.
+%The \emph{product transition system of } $\set{S^i}_{i\in [1;N]}$ is the transition system $S^\times \coloneqq (Z^\times, z_\init^\times, U^\times, \delta^\times)$ such that $Z^\times \coloneqq Z^1\times \ldots \times Z^N$, $z^\times_\init\coloneqq (z_\init^1,\ldots,z_\init^N)$, $U^\times \coloneqq U^1\times \ldots\times U^N$, and $\delta^\times \coloneqq \delta^1\otimes\ldots \otimes \delta^N$.
+%From here on, we omit the domain of $i$ and use ``$\set{S^i}$'' and ``$\set{\Sigma^i}$'' respectively for ``$\set{S^i}_{i\in [1;N]}$'' and ``$\set{\Sigma^i}_{i\in [1;N]}$'' to simplify the notation.
+%
+%
+%\end{comment}
 
 \smallskip\noindent
 \textbf{Controllers.} 
@@ -208,14 +208,32 @@ One example is the \emph{formation control problem}, which we consider in the ex
 reach some location while maintaining a given geometric formation. 
 Since the formation is defined using the relative positions of the robots, it is not possible to decompose this task into separate local reach-avoid subtasks.
 
+\KM{I changed the wordings a bit of the following example. But I don't like this example here. To me it fails to convey the idea of why a decomposition of the global reach-avoid task is not always possible. It is not clear what the states of the crane and vehicle physically represent and how their ``distance'' is measured using $D$ (i.e. how we can measure the distance between them by taking into account the height of the cart from the floor and the length of the pendulum rod). On the other hand, explaining all these missing things in detail would kill the purpose of a \emph{simple} motivating example. Consider the example that I have added after this one in highlighted text.}
 \begin{example}
-	Consider our motivating example in which there are two control systems: the crane and the factory vehicle. The detailed models for both of the systems are given in Sec.~\ref{subsec}. The crane starts at $x_\init^1=\begin{bmatrix}0&0&\pi&0\end{bmatrix}^T$, while the vehicle starts at $x_\init^2=\begin{bmatrix}8&0\end{bmatrix}^T$.
+	Consider our motivating example in which there are two control systems: a crane and a factory vehicle. The detailed models for both of the systems are given in Sec.~\ref{subsec}. 
+	The initial states of the crane and the vehicle are given as $x_\init^1=(0,0,\pi,0)$ and $x_\init^2=(8,0)$ respectively.
 	%The crane is modeled as a control system $\Sigma^1$ with state space $X^1\subseteq\reals^4$, initial state $x_\init^1=\begin{bmatrix}0&0&\pi&0\end{bmatrix}^T$, input space $U^1\subseteq  \reals^2$, a bounded disturbance $W^1\subset\reals^4$ and a fourth-order nominal dynamics $f^c$ (the complete of dynamics can be found in \cite{Barto1983}).
-	The goal set for the crane is $\goal^1=\ball_{r_1}(g_1)$, which is a ball centered at $g_1=\begin{bmatrix}5&0&\pi&0\end{bmatrix}^T$ with a desired size $r_1\in\reals^4_{> 0}$. %is a robustness margin parameter. %Similarly, the factory vehicle can be characterize as a second control system $\Sigma^2$ with state space $X^2\subseteq\reals^2$, initial state $x_\init^2=\begin{bmatrix}8&0\end{bmatrix}^T$, input space $U^2\subseteq  \reals^1$, a bounded disturbance $W^2\subset\reals^2$ and a second-order nominal dynamics $f^l$. 
-	The goal set for the vehicle is similarly defined as $\goal^2=\ball_{r_2}(g_2)$ with center $g_2=\begin{bmatrix}4&0\end{bmatrix}^T$ and size $r_2\in\reals_{> 0}$. The goal set over the product space is defined as $\goal=\goal^1\times\goal^2\subseteq \reals^6$. The set $\avoid$ is defined as $\avoid=\set{ x^\times\in X^\times\mid\;D(x^1,x^2)\leq \delta}$ where $x^1$ and $x^2$ denote components of $x^\times$ corresponding to the two systems, $D$ represents geometric distance between the two systems in the two-dimensional space and $\delta$ denotes a minimum safety distance requirement. It can be noticed that despite the fact that dynamics of the two systems are not coupled, to fulfill the reach-avoid specification $\lnot\avoid\, \mathcal{U}\,\goal$, one has to take both of the dynamics into account.
+	The goal sets of the crane and the vehicle are respectively given as the balls $\goal^1=\ball_{r_1}(g_1)$ and $\goal^2=\ball_{r_2}(g_2)$, where the centers are given by $g_1=(5,0,\pi,0)$ and $g_2=(4,0)$, and the radii are given by some small numbers $r_1\in\reals^4_{> 0}$ and $r_2\in\reals_{> 0}$.
+	(Exact values of $r_1$ and $r_2$ are irrelevant here.)
+	%The goal set for the crane is $\goal^1=\ball_{r_1}(g_1)$, which is a ball centered at $g_1=(5,0,\pi,0)$ with a given radius $r_1\in\reals^4_{> 0}$. %is a robustness margin parameter. %Similarly, the factory vehicle can be characterize as a second control system $\Sigma^2$ with state space $X^2\subseteq\reals^2$, initial state $x_\init^2=\begin{bmatrix}8&0\end{bmatrix}^T$, input space $U^2\subseteq  \reals^1$, a bounded disturbance $W^2\subset\reals^2$ and a second-order nominal dynamics $f^l$. 
+	%The goal set for the vehicle is similarly defined as $\goal^2=\ball_{r_2}(g_2)$ with center $g_2=\begin{bmatrix}4&0\end{bmatrix}^T$ and size $r_2\in\reals_{> 0}$. 
+	The goal set over the product space is defined as $\goal=\goal^1\times\goal^2\subseteq \reals^6$. The set $\avoid$ is defined as $\avoid=\set{ (x^1,x^2)\in X^\times\mid\;D(x^1,x^2)\leq \delta}$ where $x^1$ and $x^2$ denote components of $x^\times$ corresponding to the two systems, $D$ represents geometric distance between the two systems in the two-dimensional space and $\delta$ denotes a minimum safety distance requirement. It can be noticed that despite the fact that dynamics of the two systems are not coupled, to fulfill the reach-avoid specification $\lnot\avoid\, \mathcal{U}\,\goal$, one has to take both of the dynamics into account.
 %\RM{give a simple example that shows the dynamics and the objective. In the objective, you can use the distance between two states, etc.}
 \qed
 \end{example}
+
+\new{
+\begin{example}
+	Consider two simple one-dimensional control systems $\Sigma^1=(X^1,x_\init^1,U^1,W^1,f^1)$ and $\Sigma^2=(X^2,x_\init^2,U^2,W^2,f^2)$ whose states evolve over the real line, and at every time step, the values of their states can be either incremented or decremented by $1$ independently.
+	(We ignore the effect of the disturbances for simplicity.)
+	More formally, $X^1=X^2=\mathbb{R}$, $U^1=U^2=\set{-1,1}$, $W^1=W^2=\set{0}$, and $f^1(x^1,u^1)\equiv x^1+u^1$, $f^2(x^2,u^2)\equiv x^2+u^2$.
+	Suppose the initial states of $\Sigma^1$ and $\Sigma^2$ are $x_\init^1=0$ and $x_\init^2=5$ respectively, and assume that the specification requires them to \emph{simultaneously} reach the respective goal sets $\goal^1=\set{10}$ and $\goal^2=\set{20}$ while \emph{maintaining a distance} of at least $5$ among themselves.
+	This specification can be easily formulated as a reach-avoid objective $\left(\lnot\avoid\,\mathcal{U}\, \goal\right)$ for the overall two-dimensional product system, where $\avoid = \set{ (x^1,x^2)\in \mathbb{R}^2  \mid |x^1-x^2| < 5}$ and $\goal = (10,20)$.
+	On the other hand, a decomposition of this objective into independent reach-avoid sub-tasks for $\Sigma^1$ and $\Sigma^2$ is not possible, because the task has been specified in terms of their \emph{relative distance} and their \emph{simultaneous arrival} at the goal sets.
+\end{example}
+}
+
+
 
 
 
