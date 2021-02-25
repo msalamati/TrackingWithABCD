@@ -11,7 +11,7 @@
 	number of input-state pairs of the finite abstraction for the largest ABCD task ($N_l$), 
 	abstraction and synthesis times in SCOTS for that task (respectively $T_{l}^{\mathit{abs}}$ and $T_{l}^{\mathit{syn}}$), 
 	number of input-state pairs of the finite state abstraction for the global ABCD ($N_g$), 
-	abstraction and synthesis times for computing a global controller for the product system using SCOTS (respectively $T_{g}^{\mathit{abs}}$ and $T_{g}^{\mathit{syn}}$). 
+	abstraction and synthesis times for computing a global controller for the product system using SCOTS (respectively $T_{g}^{\mathit{abs}}$ and $T_{g}^{\mathit{syn}}$). \MZ{numbers are going to change again}
 	% For local ABCD, the reported numbers correspond to the maximum value among all of the agents.
 	}
 		\label{tab:runtimes}
@@ -43,7 +43,7 @@
 	\end{tabular}%}
 \end{table*}
 
-We have implemented our approach (as presented in Sec.~\ref{sec:problem}) in the tool called \tool, which is freely available online: \KM{Add the link}.
+We have implemented our approach (as presented in Sec.~\ref{sec:problem}) in the tool called \tool, which is freely available online: https://github.com/MehrdadZareian/GMARA.
 We evaluate the effectiveness of \tool on two distinct categories of problems: 
 local reach-avoid problems with collision avoidance and global formation control problems. 
 We consider four case studies: multi-drone path planning, crane and vehicle, lane merging, and multi-drone formation control. 
@@ -72,7 +72,7 @@ As reflected in Table~\ref{tab:runtimes}, memory requirement for the global ABCD
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.45\textwidth]{figures/updated_box_plot.eps}
-	\caption{Variations of run times of local ABCD among different agents for three case studies. \MS{add time unit to the vertical axis.}}
+	\caption{Variations of run times of local ABCD among different agents for three case studies.}
 	\label{fig:box_plot}
 \end{figure}
 
@@ -327,7 +327,7 @@ We choose state and input spaces for the crane to be $X^{1}=[-0.195,5.49]\times[
 We choose state and input partition sizes $\eta_{{X}}^{1}=\begin{bmatrix}0.015&0.035&0.016&0.064\end{bmatrix}^T$, $\eta_{U}^1=0.2$,  $\eta_{{X}}^2=\begin{bmatrix}0.01&0.015\end{bmatrix}^T$ and $\eta_{U}^2=0.1$. %These selections yield discretized models with state and input spaces having $2.5\times 10^9$ and $71$ points for the crane, and $2\times 10^5$ and $61$ points for the vehicle. 
 %Next, we limit both of the state spaces into tubes constructed around the open-loop trajectories with sizes specified as $\varepsilon^{1}=\begin{bmatrix}0.135&0.385&0.176 &0.768\end{bmatrix}^T$ and $\varepsilon^{2}=\begin{bmatrix}0.08&0.12\end{bmatrix}$. %This reduces size of state spaces into $1.2\times 10^7$ and $1.5\times 10^4$ for the crane and vehicle, respectively. 
 %Given the above settings, SCOTS was able to compute abstraction in $511$ and $0.22$ seconds for the crane and the vehicle, respectively. Scots performs synthesis in $91$ and $0.037$ seconds for the crane and the vehicle, respectively.
-Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. As before, for the cart-pole model, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). \MS{Note that computing feedback controllers for the crane and vehicle takes $??$ and $??$ seconds, respectively. The large difference is due to the difference in the size of transition systems for the two dynamics.} Note that, using ALTRO alone would not provide guarantee against bounded disturbance (Fig~\ref{fig:cr_and_lft}, \textbf{right}). 
+Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. As before, for the cart-pole model, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). Note that computing feedback controllers for the crane and vehicle takes 511 and 0.3 seconds, respectively. The large difference is due to the difference in the size of transition systems for the two dynamics. Note that, using ALTRO alone would not provide guarantee against bounded disturbance (Fig~\ref{fig:cr_and_lft}, \textbf{right}). 
 
 			
 %\begin{figure}[t]
@@ -484,7 +484,7 @@ $\eta_{U}=\begin{bmatrix}0.3&0.15\end{bmatrix}^T$. % and $\varepsilon=\begin{bma
 %Computing the transition system over inter-tube space with width $\varepsilon=\begin{bmatrix}0.18&0.18&0.18\end{bmatrix}^T$ results in smaller transition system with $4.9\times 10^5$ points. Given the above settings, SCOTS computes abstraction in $271$ seconds ($54.2$ seconds in average) and $66.5$ seconds ($13.3$ seconds in average). 
 Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. 
 Already for two drones, the memory requirement for global ABCD exceeds the available memory resource (1.5TB of RAM).
-\KM{Update the RAM if you run the experiment again on desktop.}
+\KM{Update the RAM if you run the experiment again on desktop.}\MZ{I'll update here when I finished redoing experiments}
 Fig.~\ref{fig:formation_ex} illustrates four sequential frames of a sample perturbed trajectory generated by employing feedback controllers. Notice that both 
 relative position and orientation between drones are kept (almost) constant 
 throughout the journey. 
