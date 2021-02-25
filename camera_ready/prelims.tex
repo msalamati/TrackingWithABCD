@@ -208,19 +208,19 @@ One example is the \emph{formation control problem}, which we consider in the ex
 reach some location while maintaining a given geometric formation. 
 Since the formation is defined using the relative positions of the robots, it is not possible to decompose this task into separate local reach-avoid subtasks.
 
-\KM{I changed the wordings a bit of the following example. But I don't like this example here. To me it fails to convey the idea of why a decomposition of the global reach-avoid task is not always possible. It is not clear what the states of the crane and vehicle physically represent and how their ``distance'' is measured using $D$ (i.e. how we can measure the distance between them by taking into account the height of the cart from the floor and the length of the pendulum rod). On the other hand, explaining all these missing things in detail would kill the purpose of a \emph{simple} motivating example. Consider the example that I have added after this one in highlighted text.}
-\begin{example}
-	Consider our motivating example in which there are two control systems: a crane and a factory vehicle. The detailed models for both of the systems are given in Sec.~\ref{subsec}. 
-	The initial states of the crane and the vehicle are given as $x_\init^1=(0,0,\pi,0)$ and $x_\init^2=(8,0)$ respectively.
-	%The crane is modeled as a control system $\Sigma^1$ with state space $X^1\subseteq\reals^4$, initial state $x_\init^1=\begin{bmatrix}0&0&\pi&0\end{bmatrix}^T$, input space $U^1\subseteq  \reals^2$, a bounded disturbance $W^1\subset\reals^4$ and a fourth-order nominal dynamics $f^c$ (the complete of dynamics can be found in \cite{Barto1983}).
-	The goal sets of the crane and the vehicle are respectively given as the balls $\goal^1=\ball_{r_1}(g_1)$ and $\goal^2=\ball_{r_2}(g_2)$, where the centers are given by $g_1=(5,0,\pi,0)$ and $g_2=(4,0)$, and the radii are given by some small numbers $r_1\in\reals^4_{> 0}$ and $r_2\in\reals_{> 0}$.
-	(Exact values of $r_1$ and $r_2$ are irrelevant here.)
-	%The goal set for the crane is $\goal^1=\ball_{r_1}(g_1)$, which is a ball centered at $g_1=(5,0,\pi,0)$ with a given radius $r_1\in\reals^4_{> 0}$. %is a robustness margin parameter. %Similarly, the factory vehicle can be characterize as a second control system $\Sigma^2$ with state space $X^2\subseteq\reals^2$, initial state $x_\init^2=\begin{bmatrix}8&0\end{bmatrix}^T$, input space $U^2\subseteq  \reals^1$, a bounded disturbance $W^2\subset\reals^2$ and a second-order nominal dynamics $f^l$. 
-	%The goal set for the vehicle is similarly defined as $\goal^2=\ball_{r_2}(g_2)$ with center $g_2=\begin{bmatrix}4&0\end{bmatrix}^T$ and size $r_2\in\reals_{> 0}$. 
-	The goal set over the product space is defined as $\goal=\goal^1\times\goal^2\subseteq \reals^6$. The set $\avoid$ is defined as $\avoid=\set{ (x^1,x^2)\in X^\times\mid\;D(x^1,x^2)\leq \delta}$ where $x^1$ and $x^2$ denote components of $x^\times$ corresponding to the two systems, $D$ represents geometric distance between the two systems in the two-dimensional space and $\delta$ denotes a minimum safety distance requirement. It can be noticed that despite the fact that dynamics of the two systems are not coupled, to fulfill the reach-avoid specification $\lnot\avoid\, \mathcal{U}\,\goal$, one has to take both of the dynamics into account.
-%\RM{give a simple example that shows the dynamics and the objective. In the objective, you can use the distance between two states, etc.}
-\qed
-\end{example}
+% *** The old illustrative example ***
+%\begin{example}
+%	Consider our motivating example in which there are two control systems: a crane and a factory vehicle. The detailed models for both of the systems are given in Sec.~\ref{subsec}. 
+%	The initial states of the crane and the vehicle are given as $x_\init^1=(0,0,\pi,0)$ and $x_\init^2=(8,0)$ respectively.
+%	%The crane is modeled as a control system $\Sigma^1$ with state space $X^1\subseteq\reals^4$, initial state $x_\init^1=\begin{bmatrix}0&0&\pi&0\end{bmatrix}^T$, input space $U^1\subseteq  \reals^2$, a bounded disturbance $W^1\subset\reals^4$ and a fourth-order nominal dynamics $f^c$ (the complete of dynamics can be found in \cite{Barto1983}).
+%	The goal sets of the crane and the vehicle are respectively given as the balls $\goal^1=\ball_{r_1}(g_1)$ and $\goal^2=\ball_{r_2}(g_2)$, where the centers are given by $g_1=(5,0,\pi,0)$ and $g_2=(4,0)$, and the radii are given by some small numbers $r_1\in\reals^4_{> 0}$ and $r_2\in\reals_{> 0}$.
+%	(Exact values of $r_1$ and $r_2$ are irrelevant here.)
+%	%The goal set for the crane is $\goal^1=\ball_{r_1}(g_1)$, which is a ball centered at $g_1=(5,0,\pi,0)$ with a given radius $r_1\in\reals^4_{> 0}$. %is a robustness margin parameter. %Similarly, the factory vehicle can be characterize as a second control system $\Sigma^2$ with state space $X^2\subseteq\reals^2$, initial state $x_\init^2=\begin{bmatrix}8&0\end{bmatrix}^T$, input space $U^2\subseteq  \reals^1$, a bounded disturbance $W^2\subset\reals^2$ and a second-order nominal dynamics $f^l$. 
+%	%The goal set for the vehicle is similarly defined as $\goal^2=\ball_{r_2}(g_2)$ with center $g_2=\begin{bmatrix}4&0\end{bmatrix}^T$ and size $r_2\in\reals_{> 0}$. 
+%	The goal set over the product space is defined as $\goal=\goal^1\times\goal^2\subseteq \reals^6$. The set $\avoid$ is defined as $\avoid=\set{ (x^1,x^2)\in X^\times\mid\;D(x^1,x^2)\leq \delta}$ where $x^1$ and $x^2$ denote components of $x^\times$ corresponding to the two systems, $D$ represents geometric distance between the two systems in the two-dimensional space and $\delta$ denotes a minimum safety distance requirement. It can be noticed that despite the fact that dynamics of the two systems are not coupled, to fulfill the reach-avoid specification $\lnot\avoid\, \mathcal{U}\,\goal$, one has to take both of the dynamics into account.
+%%\RM{give a simple example that shows the dynamics and the objective. In the objective, you can use the distance between two states, etc.}
+%\qed
+%\end{example}
 
 \new{
 \begin{example}

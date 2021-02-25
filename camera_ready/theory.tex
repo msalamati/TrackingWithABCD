@@ -26,7 +26,7 @@ This completes the proof.
 
 %The local controllers synthesized by Alg.~\ref{alg:main} is guaranteed to solve Prob.~\ref{problem}.  
 %It can be observed that if every  $C^i\parallel \Sigma^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma^i}_{i\in [1;N]}$ will realize $\Phi$ under the worst-case disturbance.
-Next, we discuss our implementation of Alg.~\ref{alg:main} for the global \emph{open-loop planner} (Step~\ref{step:planning}) and the local \emph{guaranteed trajectory tracking} (Step~\ref{step:tracking}). Note that Step~\ref{step:decompose} is a simple projection from the product space into local spaces.
+Next, we discuss some implementation details of Alg.~\ref{alg:main} for the global \emph{open-loop planner} (Step~\ref{step:planning}) and the local \emph{guaranteed trajectory tracking} (Step~\ref{step:tracking}) in our tool \tool. Note that Step~\ref{step:decompose} is a simple projection from the product space into local spaces.
 While we instantiate particular techniques, our method can be used with other implementations as well.
 
 \begin{algorithm}[t]
