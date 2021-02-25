@@ -17,26 +17,26 @@ Our experiments show that our method is efficient in solving reach-avoid tasks f
 	\renewcommand{\arraystretch}{1.2}
 	\setlength{\tabcolsep}{0.7em} % for the horizontal padding
 	%\resizebox{1\columnwidth}{!}{
-	\begin{tabular}{l|c|c|c|c|c}
+	\begin{tabular}{l|>{\centering}m{18mm}|>{\centering}m{18mm}|>{\centering}m{18mm}|>{\centering\arraybackslash}m{18mm}}
 		\toprule
-		Tool&Method&
-		Dynamics&Type of disturbance&Multi-agent& Method \\
-		\midrule
-		Ours &Hybrid&non-linear&bounded additive& yes& ALTRO + ABCD \\
-		\midrule
-		FastTrack\cite{herbert2017fastrack}&centralized&non-linear& bounded(general) & - & RRT + HJ\\
-		\midrule
-		RealSyn\cite{fan2018controller}&centralized&linear&bounded additive & - & Synthesis\\
-		\midrule
-		Factest\cite{fan2020fast}&centralized&non-linear & implicit* & - &MILP + lyapanov\\
-		\midrule
-		Model mismatch(SOS)\cite{singh2018robust} & centralized &non-linear& implicit*  & - &  SOS\\
-		\midrule
-		RTD\cite{kousik2020bridging}& Centralized &non linear& * & - & NMPC\\
-		\midrule
-		fly by logic\cite{Pant2018multiquad} & centralized & non-linear & implicit* & yes & optimization\\
-		\midrule
-		Distributed Trajectory Optimization \cite{jackson2020scalable}&centralized & nonlinear & - & yes & ALTRO\\
+		Tool &
+		Non-linear Dynamics & Formal Guarantee & Multi-agent & Decentralized controllers\\
+		\hline
+		Ours  & \ding{51} &\ding{51} & \ding{51} &  \ding{51}\\
+		\hline
+		FastTrack\cite{herbert2017fastrack}& \ding{51} & \ding{51} &   &   \\
+		\hline
+		RealSyn\cite{fan2018controller}& &\ding{51} &  &  \\
+		\hline
+		Factest\cite{fan2020fast}& \ding{51} &  &  &  \\
+		\hline
+		Model mismatch(SOS)\cite{singh2018robust}  & \ding{51} &  &  &  \\
+		\hline
+		RTD\cite{kousik2020bridging} & \ding{51} & \ding{51} &  &  \\
+		\hline
+		Fly by logic\cite{Pant2018multiquad}  & \ding{51} & & \ding{51} & \ding{51} \\
+		\hline
+		Distributed team lift \cite{jackson2020scalable} & \ding{51} &  & \ding{51} &  \\
 		\bottomrule
 	\end{tabular}
 \end{table*}
