@@ -63,7 +63,47 @@ In fact, there are control problems which cannot be easily expressed in their pr
 examples are robots maintaining a formation while fulfilling their tasks \cite{alonso2019distributed}, etc.
 \end{enumerate}
 
-	
+%Our experiments show that \tool is efficient in solving reach-avoid tasks for multi-agent systems. 
+%However, there are other tools which claim they can solve similar tasks. 
+Not every approach which are listed above have available implementations.
+In Table~\ref{tab:tools}, we summarize the main features of some of the publicly available tools, which we are aware of.
+We highlight that our tool \tool is the only one that fulfills all the criteria.
+
+\begin{table}
+	\large
+	\centering
+	\caption{Features of the publicly available tools found in the literature.}\label{tab:tools}
+	\renewcommand{\arraystretch}{1.2}
+	\setlength{\tabcolsep}{0.7em} % for the horizontal padding
+	%\resizebox{1\columnwidth}{!}{
+	\begin{tabular}{l 
+							>{\centering}m{5mm}
+							>{\centering}m{5mm} 
+							>{\centering}m{5mm}	
+							>{\centering\arraybackslash}m{5mm}}
+		\toprule
+		Tool name &
+		\rotatebox{90}{Non-linear Dynamics} & \rotatebox{90}{Formal Guarantee} & \rotatebox{90}{Multi-agent} & \rotatebox{90}{Decentralized controllers}\\
+		\hline
+		\rowcolor{black!20} \tool  & \ding{51} &\ding{51} & \ding{51} &  \ding{51}\\
+		\hline
+		FastTrack \cite{herbert2017fastrack}& \ding{51} & \ding{51} &   &   \\
+		\hline
+		RealSyn \cite{fan2018controller}& &\ding{51} &  &  \\
+		\hline
+		Factest \cite{fan2020fast}& \ding{51} &  &  &  \\
+		\hline
+		Model mismatch(SOS) \cite{singh2018robust}  & \ding{51} &  &  &  \\
+		\hline
+		RTD \cite{kousik2020bridging} & \ding{51} & \ding{51} &  &  \\
+		\hline
+		Fly by logic \cite{Pant2018multiquad}  & \ding{51} & & \ding{51} & \ding{51} \\
+		\hline
+		Distributed team lift \cite{jackson2020scalable} & \ding{51} &  & \ding{51} &  \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
 	%The hierarchical approach, combining high-level planning and low-level tracking, is not new.
 	%Yet most of the existing works use the hierarchical approach for controller synthesis for a single robot \cite{herbert2017fastrack, fan2020fast, fan2018controller, wongpiromsarn2012receding, tedrake2010lqr, singh2018robust, DBLP:journals/tac/MeyerD19, DBLP:journals/corr/abs-1911-09773, Yang2017milp}.
 	%In contrast, we consider a hierarchical control for decentralized control of a group of robots.
