@@ -15,7 +15,7 @@ Above all, our goal is to ensure the resulting controllers are \emph{provably co
 
 Such multi-agent control problems are ubiquitous in the domain of robotics, where a number of 
 (possibly heterogeneous) mobile robots move concurrently in a shared workspace.
-A global specification can ask, for example, that a set of robots are able to reach certain locations while avoiding collisions among themselves
+A global specification can ask, for example, that a set of robots be able to reach certain locations while avoiding collisions among themselves
 or with obstacles in the environment,
 or that a set of drones fly in formation while reaching a target.
 Indeed, automatic generation of decentralized controllers is a classical problem in robotics, artificial intelligence, and control theory, 
@@ -29,7 +29,7 @@ and construct \emph{open-loop} controllers.
 However, the open-loop behaviors do not guarantee satisfaction of the specifications in the presence of disturbances.
 On the other hand, correct-by-construction controller synthesis techniques from control theory, 
 such as abstraction-based control or Hamilton-Jacobi techniques,
-handle precise models of nonlinear dynamics and the effects of disturbance, but are difficult to scale beyond tens of dimensions.
+handle precise models of nonlinear dynamics and the effects of disturbance, but are difficult to scale beyond about $10$ dimensions.
 
 \begin{figure}[t]
 \includegraphics[scale=0.28]{figures/Algorithm_outline_updated.pdf}
@@ -48,10 +48,10 @@ In the first step,
 given a set of control systems, one for each component, and a reach-avoid specification on the global state space, we use a trajectory planner to
 find a nominal open-loop controller for the global system.
 The trajectory planner ignores the effect of disturbances, but takes a \emph{robustness parameter} $\varepsilon$.
-The role of the robustness parameter is to ensure the specification is robustly satisfied: 
-Every trajectory within an $\varepsilon$-tube of the open loop trajectory also satisfies the specification.
+The role of the robustness parameter is to ensure that the specification is robustly satisfied: 
+Every trajectory within an $\varepsilon$-tube of the open-loop trajectory also satisfies the specification.
 
-Next, we project the unique open loop trajectory on to a nominal trajectory for each individual component.
+Next, we project the unique open-loop trajectory on to a nominal trajectory for each individual component.
 The robustness of the trajectory means that there is a tube around the nominal trajectory.
 In a second step, we solve a number of local \emph{guaranteed tracking control} problems, where we synthesize correct-by-construction
 controllers whose objective is to track the nominal trajectory while staying within the tube.
@@ -77,7 +77,7 @@ In that case, there is an outer loop that searches through the parameter space.
 
 
 
-We have implemented our approach in an open-source tool called \tool, by combining the following two tools: the ALTRO open-loop trajectory planner \cite{howell2019altro} and the 
+We have implemented our approach in an open-source tool called \tool (stands for GuAranteed Multi-Agent Reach-Avoid control) \KM{Change the abbreviation if the tool name changes}, by combining the following two tools: the ALTRO open-loop trajectory planner \cite{howell2019altro} and the 
 SCOTS correct-by-construction controller synthesis tool \cite{Rungger2016scots}. 
 ALTRO is a state-of-the-art trajectory planning tool based on optimal control.
 It handles nonlinear dynamics and scales to large dimensions, but ignores disturbances or modeling uncertainties.
@@ -85,22 +85,22 @@ SCOTS implements a highly parallelizable \emph{abstraction-based controller synt
 correct feedback controller for any linear temporal logic specification.
 
 We empirically evaluate \tool on a number of multi-robot benchmarks, including coordinated reach-avoid problem for ground robots, formation control problem for drones, and lane merging problem for autonomous vehicles.
-In each case, we demonstrate that \tool can find decentralized and correct controllers within reasonable time after consuming manageable amount of memory.
+In each case, we demonstrate that \tool can find decentralized and correct controllers within reasonable amount of time after consuming manageable amount of memory.
 
 Fig.~\ref{fig:cr_and_lft} shows a concrete multi-robot reach-avoid scenario with an overhead crane hanging from a trolley along a horizontal rail
 and a cart that drives underneath the crane in the same horizontal axis.
 The goal is to move the crane and the vehicle such that they do not collide.
-Fig.~\ref{fig:cr_and_lft} (\textbf{left}) shows an animation of a possible open loop behavior from an initial configuration (Frame~1) to a final
+Fig.~\ref{fig:cr_and_lft} (\textbf{left}) shows an animation of a possible open-loop behavior from an initial configuration (Frame~1) to a final
 one (Frame~4), where the crane and the vehicle have crossed each other.
 The trajectory is generated by accelerating the trolley, causing the crane to swing up and thus creating enough space for the vehicle to pass.
-Unfortunately, in the presence of disturbances, such as wind or a slippery floor, a trajectory may not be free of collisions: the same open loop
+Unfortunately, in the presence of disturbances, such as wind or a slippery floor, a trajectory may not be free of collisions: the same open-loop
 behavior can cause a collision (Fig.~\ref{fig:cr_and_lft} \textbf{right}).
 Instead, \tool computes a global \emph{robust} trajectory for the system; the robustness parameter ensures a ``wider berth.''
 The global trajectory is projected to the crane and the vehicle, and we compute guaranteed tracking controllers that ensure there is no collision despite the disturbances.
 In our experiments, planning with ALTRO took less than a second and feedback controller synthesis with SCOTS about 10 minutes.
 At the same time, a global approach to find a correct solution does not scale. 
 The global state space is $10^{10}$ times larger and SCOTS timed out with 1.5 TB of memory. 
-
+\KM{Update the running times if the experiments are to be re-run.}
 
  
 \begin{comment}
