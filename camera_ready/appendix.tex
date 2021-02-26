@@ -21,7 +21,7 @@ where $f^d_\tau$ is the sampled-time abstraction of the following continuous dyn
 		u_2
 	\end{bmatrix}.
 \end{equation*}
-where $x_1$ and $x_2$ denote the drone's position in two-dimensional space, $x_3$ denotes the rotational angle, and $u_1$ and $u_2$ represent control inputs for each drone. Choosing a sampling time $\tau=0.1s$, the nominal dynamics $f^d_\tau$ can be characterized uniquely. The disturbance set and robustness margin are chosen as $|W|\leq \begin{bmatrix}0&0.025&0.025\end{bmatrix}^T$ and $\varepsilon=\begin{bmatrix}0.16&0.16&0.18\end{bmatrix}^T$.
+where $x_1$ and $x_2$ denote the drone's position in two-dimensional space, $x_3$ denotes the rotational angle, and $u_1$ and $u_2$ represent control inputs for each drone. Choosing a sampling time $\tau=0.1s$, the nominal dynamics $f^d_\tau$ can be characterized uniquely. The disturbance set and robustness margin are chosen as $|W|\leq (0,0.025,0.025)$ and $\varepsilon=(0.16,0.16,0.18)$.
 %Further, the output mapping is defined as
 %\[
 %h^d(x(t))=\begin{bmatrix}
@@ -43,7 +43,7 @@ in $125$ seconds for the product system with $30$ state and $20$ input variables
  %To implement step~\ref{step:tracking} of Alg.~\ref{alg:main}, we need to design local feedback controllers that can keep the agent's trajectories inside $\varepsilon$-balls defined around the nominal trajectories computed by ALTRO. 
  Fig.~\ref{fig:3dtubes} gives time-space illustration for the safe tubes around the nominal trajectories. %We want to robustify the nominal controller against disturbances with $|W|\leq \begin{bmatrix}0&0.025&0.025\end{bmatrix}^T$. 
  We consider state and input spaces to be $X=[-1,11]^2\times[-2,3.3]$ and
-$U=[-2.4,2.4]^2$, respectively. Choosing  $\eta_{X}=\begin{bmatrix}0.02&0.02&0.02\end{bmatrix}^T$ and $\eta_{U}=\begin{bmatrix}0.3&0.3\end{bmatrix}^T$, Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. Noticeably, already when the number of agents is more than $1$, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). 
+$U=[-2.4,2.4]^2$, respectively. Choosing  $\eta_{X}=(0.02,0.02,0.02)$ and $\eta_{U}=(0.3,0.3)$, Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. Noticeably, already when the number of agents is more than $1$, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). 
 %results in $\hat X$ and $\hat U$ with $9.61\times 10^7$ and $289$ points. We compute the transition system over the inter-tube space characterized by $\varepsilon=\begin{bmatrix}0.16&0.16&0.18\end{bmatrix}^T$, which results in finite-state transition system with $4.0\times 10^5$ points. Given the above settings, SCOTS computes abstraction in $340$ seconds ($34.0$ seconds in average) and synthesis in $73$ seconds ($7.3$ seconds in average). %(the ones with red dashed circles around them in Fig~\ref{fig:MA}). 
 %It can be noticed that success in restricting the trajectories generated under the worst-case disturbance within the tubes guarantees a collision-free mission.
 %Fig~\ref{fig:blowup} illustrates the fact that increasing number of agents ($N$) causes an exponential blow-up in the number of transitions if we wanted to solve the given reach-avoid problem over the product state and input spaces. However, since we compute tracking controllers locally, our method experiences linear blow-up as $N$ increases.
@@ -54,8 +54,8 @@ Fig.~\ref{fig:multi_drone_distance} illustrates performance of open-loop and fee
 the drones with and without disturbances. 
 As expected, in the absence of disturbances, the open-loop controllers suffice and the distance between the two drones (shown in solid blue) 
 does not go below the defined threshold. 
-Next, we consider the case when constant additive disturbances $\begin{bmatrix}0 &0.025&0.025\end{bmatrix}^T$ 
-and $\begin{bmatrix}0 &-0.025&-0.025\end{bmatrix}^T$ are being applied to the two drones throughout the whole horizon. 
+Next, we consider the case when constant additive disturbances $(0 ,0.025,0.025)$ 
+and $(0,-0.025,-0.025)$ are being applied to the two drones throughout the whole horizon. 
 %\RM{shouldn't the disturbance bound be stated earlier, before using SCOTS?}
 It can be noticed that applying the open-loop controller causes that distance between the two drones (shown in solid yellow) to 
 go below the predefined threshold. 
@@ -157,7 +157,7 @@ The vehicle's continuous-time dynamics takes the form of
 \dot{x}_1^{(2)}\\ \dot{x}^{(2)}_2 \end{bmatrix}=\begin{bmatrix} x^{(2)}_2\\ u^{(2)} \end{bmatrix},
 \]
 where $x_1^{(2)}$ and $x_2^{(2)}$ denote the vehicle's position and speed and $u^{(2)}$ represents the vehicle's control input (acceleration). 
-On fixing the sampling time $\tau=0.1s$, one can derive $f^c_\tau$ and $f^l_\tau$. For the crane, the disturbance set and robustness margin are chosen as $|W^1|\leq\begin{bmatrix}0&0.05&0&0\end{bmatrix}^T$ and  $\varepsilon^{1}=\begin{bmatrix}0.135&0.385&0.176 &0.768\end{bmatrix}^T$. Similarly, for the vehicle, disturbance set and robustness margin are chosen as $|W^2|\leq\begin{bmatrix}0&0.1\end{bmatrix}^T$ and $\varepsilon^{2}=\begin{bmatrix}0.08&0.12\end{bmatrix}$.
+On fixing the sampling time $\tau=0.1s$, one can derive $f^c_\tau$ and $f^l_\tau$. For the crane, the disturbance set and robustness margin are chosen as $|W^1|\leq(0,0.05,0,0)$ and  $\varepsilon^{1}=(0.135,0.385,0.176 ,0.768)$. Similarly, for the vehicle, disturbance set and robustness margin are chosen as $|W^2|\leq(0,0.1)$ and $\varepsilon^{2}=(0.08,0.12)$.
 %The output mapping for the crane is defined as
 %\[
 %h^l=\begin{bmatrix}
@@ -172,14 +172,14 @@ On fixing the sampling time $\tau=0.1s$, one can derive $f^c_\tau$ and $f^l_\tau
 %
 There is no obstacle for this example and for minimum distance between the crane and the vehicle we choose $\delta=0.035$.
 Fixing the horizon length to $T=70$, ALTRO was capable of generating a valid nominal trajectory in $0.65$ seconds. Fig.~\ref{fig:cr_and_lft} (\textbf{left}) demonstrates snapshots of the produced trajectory. 
-As before, under the nominal open-loop controllers, applying (constant) additive disturbance $W=\begin{bmatrix}0&0.05&0&0\end{bmatrix}^T$ (to the cart-pole system) causes collision between the crane and the vehicle before the end of the mission (Fig.~\ref{fig:cr_and_lft} (\textbf{right})).
+As before, under the nominal open-loop controllers, applying (constant) additive disturbance $W=(0,0.05,0,0)$ (to the cart-pole system) causes collision between the crane and the vehicle before the end of the mission (Fig.~\ref{fig:cr_and_lft} (\textbf{right})).
 %\RM{shouldn't $\varepsilon$ be described here?}
 
 In the next step, we use SCOTS in order to compute a feedback controller tolerating disturbances $W^1$ and $W^2$. %We note that the selection of tube sizes need to satisfy the following inequality:
 %\[ \delta_{col}> \varepsilon_{1}^{(1)} + l\times\varepsilon_{3}^{(1)} + \varepsilon_{1}^{(2)},\]
 %where $\varepsilon_{1}^{(1)}$, $\varepsilon_{3}^{(1)}$ denote tube sizes over $x_1^{(1)}$ and $x_3^{(1)}$, $l$ denotes the length of the rope between the cart and the hook and $\varepsilon_{1}^{(2)}$ denotes the tube size over $x_1^{(2)}$. 
 We choose state and input spaces for the crane to be $X^{1}=[-0.195,5.49]\times[-1.99,4.37]\times[1.20,4.68]\times[-5.44,5.28]$ and $U^{1}=[-7,7]$, respectively. For the vehicle, we set $X^{2}=[3,9]\times[-3,1.995]$ and $U^{2}=[-3,3]$. %Next, we augment both dynamics with time and 
-We choose state and input partition sizes $\eta_{{X}}^{1}=\begin{bmatrix}0.015&0.035&0.016&0.064\end{bmatrix}^T$, $\eta_{U}^1=0.2$,  $\eta_{{X}}^2=\begin{bmatrix}0.01&0.015\end{bmatrix}^T$ and $\eta_{U}^2=0.1$. %These selections yield discretized models with state and input spaces having $2.5\times 10^9$ and $71$ points for the crane, and $2\times 10^5$ and $61$ points for the vehicle. 
+We choose state and input partition sizes $\eta_{{X}}^{1}=(0.015,0.035,0.016,0.064)$, $\eta_{U}^1=0.2$,  $\eta_{{X}}^2=(0.01,0.015)$ and $\eta_{U}^2=0.1$. %These selections yield discretized models with state and input spaces having $2.5\times 10^9$ and $71$ points for the crane, and $2\times 10^5$ and $61$ points for the vehicle. 
 %Next, we limit both of the state spaces into tubes constructed around the open-loop trajectories with sizes specified as $\varepsilon^{1}=\begin{bmatrix}0.135&0.385&0.176 &0.768\end{bmatrix}^T$ and $\varepsilon^{2}=\begin{bmatrix}0.08&0.12\end{bmatrix}$. %This reduces size of state spaces into $1.2\times 10^7$ and $1.5\times 10^4$ for the crane and vehicle, respectively. 
 %Given the above settings, SCOTS was able to compute abstraction in $511$ and $0.22$ seconds for the crane and the vehicle, respectively. Scots performs synthesis in $91$ and $0.037$ seconds for the crane and the vehicle, respectively.
 Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. As before, for the cart-pole model, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). Note that computing feedback controllers for the crane and vehicle takes 511 and 0.3 seconds, respectively. The large difference is due to the difference in the size of transition systems for the two dynamics. Note that, using ALTRO alone would not provide guarantee against bounded disturbance (Fig~\ref{fig:cr_and_lft}, \textbf{right}). 
@@ -246,16 +246,16 @@ We study a lane merging problem wherein multiple controlled vehicles are driving
 %\[
 %h^v(x(t))=x(t).
 %\]
-The nominal dynamics for each of the vehicles is the same as the one  for modeling drones (given in Sec.~\ref{sec:Multirobot}). The disturbance set and robustness margin are chosen as $|W|\leq \begin{bmatrix}0.03&0.03&0.03\end{bmatrix}^T$ and $\varepsilon=\begin{bmatrix}0.16&0.16&0.16\end{bmatrix}^T$. %($\Sigma^i=(X,x_\init^i,U,W,f^d_\tau)$). 
+The nominal dynamics for each of the vehicles is the same as the one  for modeling drones (given in Sec.~\ref{sec:Multirobot}). The disturbance set and robustness margin are chosen as $|W|\leq (0.03,0.03,0.03)$ and $\varepsilon=(0.16,0.16,0.16)$. %($\Sigma^i=(X,x_\init^i,U,W,f^d_\tau)$). 
 For collision and obstacle avoidance, we choose $\delta=0.37$.
 The horizon length is fixed to $T=110$. 
 Given these settings, ALTRO generates a valid nominal trajectory in $100$ seconds. 
 Next, we use SCOTS in order to compute feedback controllers tolerating additive disturbance $W$. % $|W|\leq\begin{bmatrix}0.03&0.03&0.03\end{bmatrix}^T$. 
-We choose state and input spaces for each vehicle's model to be $X=[-0.5,15]\times[0.1,7.4]\times[-1,0.4]$ and $U=[-0.9,3]\times[-2.1,2.1]$, respectively. State and input partition sizes are chosen as $\eta_{X}=\begin{bmatrix}0.02&0.02&0.02\end{bmatrix}^T$ and $\eta_{U}=\begin{bmatrix}0.3&0.15\end{bmatrix}^T$. %These selections yield discretized models with abstract state and input spaces having $2.1\times 10^7$ and $406$ points. 
+We choose state and input spaces for each vehicle's model to be $X=[-0.5,15]\times[0.1,7.4]\times[-1,0.4]$ and $U=[-0.9,3]\times[-2.1,2.1]$, respectively. State and input partition sizes are chosen as $\eta_{X}=(0.02,0.02,0.02)$ and $\eta_{U}=(0.3,0.15)$. %These selections yield discretized models with abstract state and input spaces having $2.1\times 10^7$ and $406$ points. 
 %Next, we limit the state spaces into tubes constructed around the open-loop trajectories with sizes specified as $\varepsilon=\begin{bmatrix}0.16&0.16&0.16\end{bmatrix}^T$. 
 %This reduces size of state space into $1.9\times 10^5$ (in average). Given the above settings, SCOTS was able to compute abstraction in $159.6$ seconds ($26.6$ seconds in average) and synthesize controllers in $40.8$ seconds ($6.8$ seconds in average).
 Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. Noticeably, for number of agents $N>1$, memory requirement for global ABCD exceeds our limits (1.5TB of RAM). Fig.~\ref{fig:merge} demonstrates snapshots of one sample trajectory when feedback controllers are employed under the presence of disturbance. It should be noticed that using ALTRO alone would not provide guarantee against bounded disturbance.
-Fig.~\ref{fig:merging_distance} illustrates the fact that open-loop controller fails in keeping one of the vehicles away from the road's sides under perturbed situation when constant additive disturbance vector $\begin{bmatrix}-0.03 &0.03&-0.03\end{bmatrix}^T$ is being applied throughout the whole horizon. In contrast, emplying feedback controller results in successful lane merging. %Fig.~\ref{fig:multi_drone_distance} illustrates performance of open-loop and feedback controllers on regulating distance between of the vehicles from the road's sides with and without disturbance. In the absence of disturbance open-loop controller is capable of maintaing a minimum distance from the road's sides. Next, we consider the case when constant additive disturbance vector $\begin{bmatrix}-0.03 &0.03&-0.03\end{bmatrix}^T$ is being applied to the vehicle throughout the whole horizon. It can be noticed that applying the open-loop controller causes that distance from the road's side (shown in solid red) becomes smaller than $\delta$. However, the feedback controller is still capable of maintaining distance above the given threshold (shown in solid green).
+Fig.~\ref{fig:merging_distance} illustrates the fact that open-loop controller fails in keeping one of the vehicles away from the road's sides under perturbed situation when constant additive disturbance vector $(-0.03 ,0.03,-0.03)$ is being applied throughout the whole horizon. In contrast, emplying feedback controller results in successful lane merging. %Fig.~\ref{fig:multi_drone_distance} illustrates performance of open-loop and feedback controllers on regulating distance between of the vehicles from the road's sides with and without disturbance. In the absence of disturbance open-loop controller is capable of maintaing a minimum distance from the road's sides. Next, we consider the case when constant additive disturbance vector $\begin{bmatrix}-0.03 &0.03&-0.03\end{bmatrix}^T$ is being applied to the vehicle throughout the whole horizon. It can be noticed that applying the open-loop controller causes that distance from the road's side (shown in solid red) becomes smaller than $\delta$. However, the feedback controller is still capable of maintaining distance above the given threshold (shown in solid green).
 
 
 
@@ -271,14 +271,14 @@ Fig.~\ref{fig:merging_distance} illustrates the fact that open-loop controller f
 Consider a formation control scenario where a set of five drones (identically modeled) need to go from a specified start point to a certain destination (both defined over the corresponding state spaces) within a finite horizon, while four of them forming a diamond around a fifth drone (positioned at the diamond's center) at every time point. There are two square obstacles from which the group needs to keep a certain minimum distance at all of the time points. %As mentioned before, to check the formation the relative positions between the $i^{th}$ and $j^{th}$ drones is measured by euclidean norm ($d_e^p(.,.)$) whereas collision/obstacle avoidance is checked by the infinity norm$d^p(.,.)$.
 
 %The model for each of the drones is the same as the drone model given in Sec.~\ref{sec:Multirobot} ($\Sigma^i=(X,x_\init^i,U,W,f^d)$). 
-The nominal dynamics for each of the drones is the same as the one  given in Sec.~\ref{sec:Multirobot}. The disturbance set and robustness margin are chosen as $|W|\leq \begin{bmatrix}0.03&0.03&0.03\end{bmatrix}^T$ and $\varepsilon=\begin{bmatrix}0.18&0.18&0.18\end{bmatrix}^T$. Distance between each pair of drones positioned at the diamond's vertices is set to be $\lambda^{i,j}=\frac{3\sqrt{2}}{2}$ for $i,j\in\set{1,2,3,4}$, while the drone positioned at the center is supposed to keep distance $\lambda^{5,j}=1.5$ for $j\in\set{1,2,3,4}$. Setting the minimum distance for obstacle avoidance to $\delta=0.4$ and horizon length $T=100$, ALTRO finds a valid solution over the product system with $15$ state and $10$ input variables within $163$ seconds.
+The nominal dynamics for each of the drones is the same as the one  given in Sec.~\ref{sec:Multirobot}. The disturbance set and robustness margin are chosen as $|W|\leq (0.03,0.03,0.03)$ and $\varepsilon=(0.18,0.18,0.18)$. Distance between each pair of drones positioned at the diamond's vertices is set to be $\lambda^{i,j}=\frac{3\sqrt{2}}{2}$ for $i,j\in\set{1,2,3,4}$, while the drone positioned at the center is supposed to keep distance $\lambda^{5,j}=1.5$ for $j\in\set{1,2,3,4}$. Setting the minimum distance for obstacle avoidance to $\delta=0.4$ and horizon length $T=100$, ALTRO finds a valid solution over the product system with $15$ state and $10$ input variables within $163$ seconds.
 %Synthesizing local controllers for every drone such that the specifications hold for the perturbed models, is performed similar to the previous examples. 
 %We follow the steps outlined in Alg.~\ref{alg:abcd-with-time-for-tracking} to 
 Next, we synthesize local controllers for every drone such that the specifications hold for the perturbed models with $\mu=0.5$. %We construct a tube around the (nominal) trajectory produced by ALTRO with the width vector $\varepsilon=\begin{bmatrix}??&??&??\end{bmatrix}^T$.
 %\RM{the state space should go before ALTRO}
 We consider state and input spaces to be $X=[-2,17]\times[-2,17]\times[0.6,1.6]$ and
-$U=[-0.9,4.8]\times[-3,3]$, respectively. We select $\eta_{X}=\begin{bmatrix}0.02&0.02&0.02\end{bmatrix}^T$ and
-$\eta_{U}=\begin{bmatrix}0.3&0.15\end{bmatrix}^T$. % and $\varepsilon=\begin{bmatrix}0.18&0.18&0.18\end{bmatrix}^T$.% results in state and input spaces with $10^9$ and $820$ points. 
+$U=[-0.9,4.8]\times[-3,3]$, respectively. We select $\eta_{X}=(0.02,0.02,0.02)$ and
+$\eta_{U}=(0.3,0.15)$. % and $\varepsilon=\begin{bmatrix}0.18&0.18&0.18\end{bmatrix}^T$.% results in state and input spaces with $10^9$ and $820$ points. 
 %Computing the transition system over inter-tube space with width $\varepsilon=\begin{bmatrix}0.18&0.18&0.18\end{bmatrix}^T$ results in smaller transition system with $4.9\times 10^5$ points. Given the above settings, SCOTS computes abstraction in $271$ seconds ($54.2$ seconds in average) and $66.5$ seconds ($13.3$ seconds in average). 
 Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state pairs corresponding to local and global ABCD. 
 Already for two drones, the memory requirement for global ABCD exceeds the available memory resource (1.5TB of RAM).
@@ -291,6 +291,8 @@ Fig.~\ref{fig:formation_distance} illustrates performance of open-loop and feedb
 drones with and without disturbances. 
 %\RM{disturbance should go before the description of the algorithm's outputs}
 As expected, in the absence of disturbances, the open-loop controllers suffice and the distance between the two drones (shown in solid blue) does not go below the threshold line (showed as the dotted line). 
-However, when constant additive disturbance vectors $\begin{bmatrix}0 &0.03&0.03\end{bmatrix}^T$ and $\begin{bmatrix}0 &-0.03&-0.03\end{bmatrix}^T$ 
+However, when constant additive disturbance vectors 
+$(0 ,0.03,0.03)$ and $(0 ,-0.03,-0.03)$
+%$\begin{bmatrix}0 &0.03&0.03\end{bmatrix}^T$ and $\begin{bmatrix}0 &-0.03&-0.03\end{bmatrix}^T$ 
 are being applied to the two drones throughout the whole horizon, open-loop controller fails, 
 whereas the feedback controller is still capable of maintaining distance above the given threshold.
