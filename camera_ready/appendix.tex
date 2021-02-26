@@ -1,17 +1,4 @@
 \section{Examples}
-
-	\begin{figure}[t]
-		\centering
-		\includegraphics[width=.2\textwidth]{figures/multidrone.pdf}
-		\caption{The mission map for the multi-drone path planning example}
-		\label{fig:MA}
-	\end{figure}
-	\begin{figure}[t]
-		\centering
-		\includegraphics[width=.4\textwidth]{figures/multi_drone2.eps}
-		\caption{Performance of open-loop and feedback controllers in regulating distance between two selected drones for disturbance-free and perturbed situations for the multi-drone path planning example}
-		\label{fig:multi_drone_distance}
-	\end{figure}
 \subsection{Multi-drone path planning}\label{sec:Multirobot}
 %We consider a planning scenario for ten identical drones ($N=10$). A set of initial and target states for each drone is depicted in Fig.~\ref{fig:MA}. The drones must avoid hitting a physical obstacle that is the green square in the center of Fig.~\ref{fig:MA}. %A physical obstacle is added to the problem over the $2D$ plane, depicted in Figure~\ref{fig:MA} with a yellow circle. 
 %The threshold for minimum distance from the obstacle and other drones is chosen to be $\delta=0.28$. %$\delta=\begin{bmatrix}0.28&0.28\end{bmatrix}^T$. %and $\delta_{obs}=\begin{bmatrix}2&2\end{bmatrix}^T$.
@@ -114,6 +101,19 @@ However, the feedback controller is capable of maintaining distance (shown in so
 %	\caption{}
 %\end{figure}
 %\textcolor{red}{
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=.2\textwidth]{figures/multidrone.pdf}
+	\caption{The mission map for the multi-drone path planning example}
+	\label{fig:MA}
+\end{figure}
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=.4\textwidth]{figures/multi_drone2.eps}
+	\caption{Performance of open-loop and feedback controllers in regulating distance between two selected drones for disturbance-free and perturbed situations for the multi-drone path planning example}
+	\label{fig:multi_drone_distance}
+\end{figure}
 \subsection{Crane and Vehicle}
 \label{subsec:crane_vehicle}
 %The goal of this example is to study performance of our method for controlling a number of robots with different dynamics. %Consider a production line wherein a crane (modeled as a cart-pole system) puts some items at certain points and a forklift is in charge of picking these items up. It is assumed that at its lowest height the crane's hook is positioned such that the forklift cannot pass. In particular, Fig.~\ref{fig:cr_and_lft_2} shows a scenario wherein the crane (initially positioned toward left of the boom) needs to unload at the other end of the boom. At the same time, the forklift (initially positioned near the right end of the boom) needs to pick some item locating near the left end of the boom. The goal is to control both the crane and the forklift so that the forklift reaches the object without colliding with the crane. 
