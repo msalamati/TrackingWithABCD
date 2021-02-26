@@ -43,12 +43,12 @@
 	\end{tabular}%}
 \end{table*}
 
-We have implemented our approach (as presented in Sec.~\ref{sec:problem}) in the tool called \tool, which is freely available online: https://github.com/MehrdadZareian/GMARA.
+We have implemented our approach (as presented in Sec.~\ref{sec:problem}) in the tool called \tool, which is freely available online: https://github.com/MehrdadZareian/GAMARA.
 We evaluate the effectiveness of \tool on two distinct categories of problems: 
 local reach-avoid problems with collision avoidance and global formation control problems. 
 We consider four case studies: multi-drone path planning, crane and vehicle, lane merging, and multi-drone formation control. 
-The design of nominal controller using ALTRO was performed on a laptop with core i7-4510u CPU at 3.10GHz, with 8GB of RAM.
-The formal controller synthesis using SCOTS was performed on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of RAM. 
+The design of nominal controller using ALTRO for all experiments was performed on a machine with core i5-4590 CPU at 3.30GHz, with 16GB of RAM.
+The formal controller synthesis using SCOTS for all systems except Crane was performed on the same machine and for crane example it is done on a laptop with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of RAM. 
 
 %In all of our case studies, robots are moving in a two-dimensional space that has obstacles. 
 %\KM{@Mehrdad: this sentence is not true for the crane.}
@@ -65,7 +65,7 @@ Notice that a higher number of input-state pairs does not necessarily result in 
 number of transitions and features of the parallel implementation can play a role. 
 %
 We compare \tool with the ABCD applied to the product system to satisfy the global specification. 
-As reflected in Table~\ref{tab:runtimes}, memory requirement for the global ABCD exceeds our system's limit (1.5TB of RAM) in all of the experiments.
+As reflected in Table~\ref{tab:runtimes}, memory requirement for the global ABCD exceeds both system's (laptop and cluster) limit (1.5TB of RAM) in all of the experiments.
 %
  %\MS{For reporting number of input-state pairs and run times of local ABCD we could report total, average or maximum values; currently, Tab.~\ref{tab:runtimes} contains maximum values (taken over all of the agents, corresponding to multi-machine implementation), while total and average values are reported in the body of the paper. Data will be unified once the decision is made.}
 %Note that while reported numbers for local controller synthesis correspond to the total run times over all of the robots, significant reduction would be expected if abstraction and synthesis phases were parallelized.
