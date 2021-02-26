@@ -50,6 +50,8 @@ We consider four case studies: multi-drone path planning, crane and vehicle, lan
 The design of nominal controller using ALTRO was performed on a laptop with core i7-4510u CPU at 3.10GHz, with 8GB of RAM.
 The formal controller synthesis using SCOTS was performed on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of RAM. 
 
+%In all of our case studies, robots are moving in a two-dimensional space that has obstacles. 
+%\KM{@Mehrdad: this sentence is not true for the crane.}
 In all of our case studies, the robots are moving in a two-dimensional shared workspace (related but not exactly the same as the robots' state spaces) that possibly has obstacles. 
 Table~\ref{tab:runtimes} shows run times for different stages of each experiment. 
 For local ABCD, the reported numbers correspond to the maximum value among all of the agents. 
@@ -74,34 +76,17 @@ As reflected in Table~\ref{tab:runtimes}, memory requirement for the global ABCD
 	\includegraphics[width=0.45\textwidth]{figures/updated_box_plot.eps}
 	\caption{Variations of run times of local ABCD among different agents for three case studies.}
 	\label{fig:box_plot}
+	\vspace{-.5cm}
 \end{figure}
 %\vspace{-cm}
-\begin{figure*}[t]
+\begin{figure}[t]
     \large
      \centering
-     \begin{subfigure}[b]{0.2\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{figures/multidrone.pdf}
-         \caption{}
-         \label{fig:MA}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.39\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{figures/tr10_final.eps}
-         \caption{}
-         \label{fig:3dtubes}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.4\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{figures/multi_drone2.eps}
-         \caption{}
-         \label{fig:multi_drone_distance}
-     \end{subfigure}
-        \caption{(a) The mission map for the multi-drone path planning example, (b) Time-state space illustration of tubes enclosing nominal trajectories for the multi-drone path planning, and (c) Performance of open-loop and feedback controllers in regulating distance between two selected drones for disturbance-free and perturbed situations for the multi-drone path planning example.}
-        \label{fig:three figures}
-\end{figure*}
+         \includegraphics[width=.5\textwidth]{figures/tr10_final.eps}
+        \caption{Time-state space illustration of tubes enclosing nominal trajectories for the multi-drone path planning}
+        \label{fig:3dtubes}
+        \vspace{-.6cm}
+\end{figure}
 
 %\end{huge}
 \subsection{Local reach-avoid with collision avoidance}
@@ -144,29 +129,35 @@ is as follows:
 %
 
 \new{
-In this category of problems, we apply \tool to three multi-robot case studies, namely a multi-drone path planning problem (Fig.~\ref{fig:three figures}), a crane and a vehicle problem (Fig.~\ref{fig:cr_and_lft}), and a lane merging problem (Fig.~\ref{fig:merge}-\ref{fig:merging_distance}); the detailed models for the systems and their different parameters have been presented in Sec.~\ref{sec:Multirobot}-\ref{sec:lane merging} in the appendix, and the performance of \tool for these experiments have been summarized in the first three rows on Table~\ref{tab:runtimes}.
+%In this category of problems, we apply \tool to three multi-robot case studies, namely a multi-drone path planning problem (Fig.~\ref{fig:three figures}), a crane and a vehicle problem (Fig.~\ref{fig:cr_and_lft}), and a lane merging problem (Fig.~\ref{fig:merge}-\ref{fig:merging_distance}); the detailed models for the systems and their different parameters have been presented in Sec.~\ref{sec:Multirobot}-\ref{sec:lane merging} in the appendix, and the performance of \tool for these experiments have been summarized in the first three rows on Table~\ref{tab:runtimes}.
+In this category of problems, we apply our approach to three case studies as briefly discussed next. 
+The detailed models for the systems and their different parameters have been presented in Sec.~\ref{sec:Multirobot}-\ref{sec:lane merging} in the appendix, and the performance of \tool for these experiments have been summarized in the first three rows on Table~\ref{tab:runtimes}.
 }
 %\textcolor{red}{
+\subsubsection{Multi-drone path planning}\label{subsec:Multirobot}
+We consider a planning scenario for ten identical drones ($N=10$). 
+%A set of initial and target states for each drone is depicted in Fig.~\ref{fig:MA}.
+%The drones must avoid hitting a physical obstacle that is the green square in the center of Fig.~\ref{fig:MA}. %A physical obstacle is added to the problem over the $2D$ plane, depicted in Figure~\ref{fig:MA} with a yellow circle. 
+%The threshold for minimum distance from the obstacle and other drones is chosen to be $\delta=0.28$. %$\delta=\begin{bmatrix}0.28&0.28\end{bmatrix}^T$. %and $\delta_{obs}=\begin{bmatrix}2&2\end{bmatrix}^T$.
+The control objective is to synthesize a feedback controller for each drone so that in the presence of (bounded) disturbance, beginning from the specified initial state, the corresponding target state is reached within a finite horizon, while avoiding collision with other drones and the physical obstacle at every time point. Fig.~\ref{fig:3dtubes} gives time-space illustration for the safe tubes around the nominal trajectories. The tracking feedback controllers are synthesized such that every drone remains within its safe tube until reaching its destination, under presence of the worst-case disturbance.  Additional analysis and detailed models for the systems and their different parameters have been presented in Sec.~\ref{sec:Multirobot} in the appendix.
+\subsubsection{Crane and Vehicle}
+The goal of this example is to study performance of our method for controlling a number of robots with different dynamics. As described in Sec.~\ref{sec:intro}, the goal is to move the overhead crane
+and the vehicle such that they do not collide.
+Formally guaranteed controllers are computed such that the generated open loop trajectory (see Fig.~\ref{fig:cr_and_lft} (\textbf{left})) is closely tracked under presence of worst-case disturbance. More detailed discussion on dynamics of systems and further analysis are presented in Sec.~\ref{subsec:crane_vehicle} in the appendix.
 
-
-
+\subsubsection{Lane Merging}
+\label{subsec:lane merging}
+We study a lane merging problem wherein multiple controlled vehicles are driving over two merging lanes (Fig.~\ref{fig:merge}, \textbf{top} frame). A dangerous situation may occur at the merging point of the two lanes if vehicles are not controlled properly. Different variants of this problem have been studied in the literature (see, e.g., \cite{xiao2019merging,xiao2020merging}). Without seeking to optimize fuel consumption or travel time, we set the goal to control the vehicles to pass the merging zone safely. In particular, consider a situation where initially three cars are driving on each of the two lanes (Fig.~\ref{fig:merge}, (\textbf{top})). The control objective for each vehicle is to pass the red dashed line within a finite horizon without hitting the road's sides or colliding with other vehicles. Fig.~\ref{fig:merge} demonstrates snapshots of one sample trajectory when feedback controllers are employed under the presence of bounded disturbance. Additional analysis, systems' dynamics and parameters are reported in Sec.~\ref{sec:lane merging} in the appendix.
 \begin{figure}
 	\centering
 	\includegraphics[scale=.21]{figures/merge_updated.pdf}
 	\caption{Illustration of a sample trajectory generated by formally guaranteed controllers for the lane merging example}
 	\label{fig:merge}
-\vspace*{-0.2cm}
+\vspace*{-0.4cm}
 \end{figure}
 
 %\vspace{-1cm}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.45\textwidth]{figures/Merge_plot2.eps}
-	\caption{Comparison of open-loop and feedback controllers for the lane merging example}
-	\label{fig:merging_distance}
-\vspace*{-0.3cm}
-\end{figure}
 
 \subsection{Global formation control problem}\label{sec:global formation control}
 
@@ -208,25 +199,25 @@ same as in Sec.~\ref{sec:local reach-avoid}.
 %\todo{The example goes here...}
 
 \new{
-We performed a multi-drone formation control experiment (Fig.~\ref{fig:formation_ex}-\ref{fig:formation_distance}), where the models of the systems and the parameters used have been reported in Sec.~\ref{subsec:formation_control} in the appendix.
-The performance of \tool for this experiment has been reported in the last row of Table~\ref{tab:runtimes}.
+%We performed a multi-drone formation control experiment (Fig.~\ref{fig:formation_ex}-\ref{fig:formation_distance}), where the models of the systems and the parameters used have been reported in Sec.~\ref{subsec:formation_control} in the appendix.
+%The performance of \tool for this experiment has been reported in the last row of Table~\ref{tab:runtimes}.
 }
+\subsubsection{Multi-drone formation control}
+\label{subsec:formation_control}
+Consider a formation control scenario where a set of five drones (identically modeled) need to go from a specified start point to a certain destination (both defined over the corresponding state spaces) within a finite horizon, while four of them forming a diamond around a fifth drone (positioned at the diamond's center) at every time point. There are two square obstacles from which the group needs to keep a certain minimum distance at all of the time points. Fig.~\ref{fig:formation_ex} illustrates four sequential frames of a sample perturbed trajectory generated by employing formally guaranteed feedback controllers. Notice that both 
+relative position and orientation between drones are kept (almost) constant 
+throughout the journey. Further analysis can be found in Sec.~\ref{sec:global formation control} in the appendix.
+
+
+
 
  \begin{figure}[t]
 	\centering
 	\includegraphics[scale=0.22]{figures/formation.pdf}
 	\caption{Illustration of a sample trajectory generated by the feedback controllers for the formation control example}
 	\label{fig:formation_ex}
-\end{figure}
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.45\textwidth]{figures/formation_dist2.eps}
-	\caption{Comparison of open-loop and feedback controllers for the formation control example}
-	\label{fig:formation_distance}
-\vspace*{-0.5cm}
-\end{figure}
- 
+	\vspace{-.4cm}
+\end{figure} 
 
 %Note that $\delta_{col} > \varepsilon$.
 %We use SCOTS in order to synthesize (local) feedback controllers that guarantee reachability, formation control and obstacle/collision avoidance in the presence of bounded disturbance such that $|W|\leq \begin{bmatrix}??&??&??\end{bmatrix}^T$. 

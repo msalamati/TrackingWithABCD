@@ -1,9 +1,21 @@
 \section{Examples}
 
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=.2\textwidth]{figures/multidrone.pdf}
+		\caption{The mission map for the multi-drone path planning example}
+		\label{fig:MA}
+	\end{figure}
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=.4\textwidth]{figures/multi_drone2.eps}
+		\caption{Performance of open-loop and feedback controllers in regulating distance between two selected drones for disturbance-free and perturbed situations for the multi-drone path planning example}
+		\label{fig:multi_drone_distance}
+	\end{figure}
 \subsection{Multi-drone path planning}\label{sec:Multirobot}
-We consider a planning scenario for ten identical drones ($N=10$). A set of initial and target states for each drone is depicted in Fig.~\ref{fig:MA}. The drones must avoid hitting a physical obstacle that is the green square in the center of Fig.~\ref{fig:MA}. %A physical obstacle is added to the problem over the $2D$ plane, depicted in Figure~\ref{fig:MA} with a yellow circle. 
+%We consider a planning scenario for ten identical drones ($N=10$). A set of initial and target states for each drone is depicted in Fig.~\ref{fig:MA}. The drones must avoid hitting a physical obstacle that is the green square in the center of Fig.~\ref{fig:MA}. %A physical obstacle is added to the problem over the $2D$ plane, depicted in Figure~\ref{fig:MA} with a yellow circle. 
 %The threshold for minimum distance from the obstacle and other drones is chosen to be $\delta=0.28$. %$\delta=\begin{bmatrix}0.28&0.28\end{bmatrix}^T$. %and $\delta_{obs}=\begin{bmatrix}2&2\end{bmatrix}^T$.
-The control objective is to synthesize a feedback controller for each drone so that in the presence of (bounded) disturbance, beginning from the specified initial state, the corresponding target state is reached within a finite horizon, while avoiding collision with other drones and the physical obstacle at every time point. 
+%The control objective is to synthesize a feedback controller for each drone so that in the presence of (bounded) disturbance, beginning from the specified initial state, the corresponding target state is reached within a finite horizon, while avoiding collision with other drones and the physical obstacle at every time point. 
 
 Every drone is modeled as tuple $\Sigma^i=(X,x_\init^i,U,W,f^d_\tau)$, %The set of state variables $X$ consists of $x_1$, $x_2$ and $x_3$ which denote position in $2D$ plane and movement angle, respectively. The set of input variables includes $u_1$ and $u_2$ which represent linear and angular speeds of each robot. 
 where $f^d_\tau$ is the sampled-time abstraction of the following continuous dynamics:
@@ -103,8 +115,8 @@ However, the feedback controller is capable of maintaining distance (shown in so
 %\end{figure}
 %\textcolor{red}{
 \subsection{Crane and Vehicle}
-\label{subsec}
-The goal of this example is to study performance of our method for controlling a number of robots with different dynamics. %Consider a production line wherein a crane (modeled as a cart-pole system) puts some items at certain points and a forklift is in charge of picking these items up. It is assumed that at its lowest height the crane's hook is positioned such that the forklift cannot pass. In particular, Fig.~\ref{fig:cr_and_lft_2} shows a scenario wherein the crane (initially positioned toward left of the boom) needs to unload at the other end of the boom. At the same time, the forklift (initially positioned near the right end of the boom) needs to pick some item locating near the left end of the boom. The goal is to control both the crane and the forklift so that the forklift reaches the object without colliding with the crane. 
+\label{subsec:crane_vehicle}
+%The goal of this example is to study performance of our method for controlling a number of robots with different dynamics. %Consider a production line wherein a crane (modeled as a cart-pole system) puts some items at certain points and a forklift is in charge of picking these items up. It is assumed that at its lowest height the crane's hook is positioned such that the forklift cannot pass. In particular, Fig.~\ref{fig:cr_and_lft_2} shows a scenario wherein the crane (initially positioned toward left of the boom) needs to unload at the other end of the boom. At the same time, the forklift (initially positioned near the right end of the boom) needs to pick some item locating near the left end of the boom. The goal is to control both the crane and the forklift so that the forklift reaches the object without colliding with the crane. 
 We model the crane and vehicle by tuples $\Sigma^1=(X^1,x_\init^1,U^1,W^1,f_\tau^c)$ and $\Sigma^2=(X^2,x_\init^2,U^2,W^2,f_\tau^l)$, respectively. 
 The crane is modeled as cart-pole system \cite{Barto1983}:
 \begin{align*}
@@ -224,10 +236,17 @@ Tab.~\ref{tab:runtimes} illustrates list of run times and number of input-state 
 
 %} 
 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/Merge_plot2.eps}
+	\caption{Comparison of open-loop and feedback controllers for the lane merging example}
+	\label{fig:merging_distance}
+	\vspace*{-0.3cm}
+\end{figure}
 
 \subsection{Lane Merging}
 \label{sec:lane merging}
-We study a lane merging problem wherein multiple controlled vehicles are driving over two merging lanes (Fig.~\ref{fig:merge}, \textbf{top} frame). A dangerous situation may occur at the merging point of the two lanes if vehicles are not controlled properly. Different variants of this problem have been studied in the literature (see, e.g., \cite{xiao2019merging,xiao2020merging}). Without seeking to optimize fuel consumption or travel time, we set the goal to control the vehicles to pass the merging zone safely. In particular, consider a situation where initially three cars are driving on each of the two lanes (Fig.~\ref{fig:merge}, (\textbf{top})). The control objective for each vehicle is to pass the red dashed line within a finite horizon without hitting the road's sides or colliding with other vehicles. 
+%We study a lane merging problem wherein multiple controlled vehicles are driving over two merging lanes (Fig.~\ref{fig:merge}, \textbf{top} frame). A dangerous situation may occur at the merging point of the two lanes if vehicles are not controlled properly. Different variants of this problem have been studied in the literature (see, e.g., \cite{xiao2019merging,xiao2020merging}). Without seeking to optimize fuel consumption or travel time, we set the goal to control the vehicles to pass the merging zone safely. In particular, consider a situation where initially three cars are driving on each of the two lanes (Fig.~\ref{fig:merge}, (\textbf{top})). The control objective for each vehicle is to pass the red dashed line within a finite horizon without hitting the road's sides or colliding with other vehicles. 
 
 %Every vehicle is modeled as tuple $\Sigma=(X,U,W,f^v,Y,h^v)$. 
 %Dynamics for each vehicle takes the form
@@ -265,10 +284,17 @@ Fig.~\ref{fig:merging_distance} illustrates the fact that open-loop controller f
 %consider the situation which is found in ref[??]. In this situation we consider 6 numbers of car in two different lanes(merging lane and main lane) . Here the goal is reaching the red line ( x position should get bigger than 15) which is shown in fig ?? while they satisfying specifications ( avoid collision with other cars and border of lanes) .
 %Number of cars is fixed it means number of cars not changing during simulation time. but it also doesn't mean all of the cars reach the target at same time.\\
 %The problem that we are solving has several differences with the example on the paper. they optimize time and fuel for each car and tehy consider several constraints for speed and positions. they also consider 2d linear model for each car. Here we only try to solve the reachability problem. we consider reach top speed limitation and angle acceleration and lanesborders As constraints. For each car we consider the model represented in eq[6] (same model as multi-car example) which has more dimension and is nonlinear.
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/formation_dist2.eps}
+	\caption{Comparison of open-loop and feedback controllers for the formation control example}
+	\label{fig:formation_distance}
+	\vspace*{-0.5cm}
+\end{figure}
 
 \subsection{Multi-drone formation control}
-\label{subsec:formation_control}
-Consider a formation control scenario where a set of five drones (identically modeled) need to go from a specified start point to a certain destination (both defined over the corresponding state spaces) within a finite horizon, while four of them forming a diamond around a fifth drone (positioned at the diamond's center) at every time point. There are two square obstacles from which the group needs to keep a certain minimum distance at all of the time points. %As mentioned before, to check the formation the relative positions between the $i^{th}$ and $j^{th}$ drones is measured by euclidean norm ($d_e^p(.,.)$) whereas collision/obstacle avoidance is checked by the infinity norm$d^p(.,.)$.
+\label{sec:formation_control}
+%Consider a formation control scenario where a set of five drones (identically modeled) need to go from a specified start point to a certain destination (both defined over the corresponding state spaces) within a finite horizon, while four of them forming a diamond around a fifth drone (positioned at the diamond's center) at every time point. There are two square obstacles from which the group needs to keep a certain minimum distance at all of the time points. %As mentioned before, to check the formation the relative positions between the $i^{th}$ and $j^{th}$ drones is measured by euclidean norm ($d_e^p(.,.)$) whereas collision/obstacle avoidance is checked by the infinity norm$d^p(.,.)$.
 
 %The model for each of the drones is the same as the drone model given in Sec.~\ref{sec:Multirobot} ($\Sigma^i=(X,x_\init^i,U,W,f^d)$). 
 The nominal dynamics for each of the drones is the same as the one  given in Sec.~\ref{sec:Multirobot}. The disturbance set and robustness margin are chosen as $|W|\leq (0.03,0.03,0.03)$ and $\varepsilon=(0.18,0.18,0.18)$. Distance between each pair of drones positioned at the diamond's vertices is set to be $\lambda^{i,j}=\frac{3\sqrt{2}}{2}$ for $i,j\in\set{1,2,3,4}$, while the drone positioned at the center is supposed to keep distance $\lambda^{5,j}=1.5$ for $j\in\set{1,2,3,4}$. Setting the minimum distance for obstacle avoidance to $\delta=0.4$ and horizon length $T=100$, ALTRO finds a valid solution over the product system with $15$ state and $10$ input variables within $163$ seconds.
