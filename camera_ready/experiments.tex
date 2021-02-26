@@ -50,8 +50,7 @@ We consider four case studies: multi-drone path planning, crane and vehicle, lan
 The design of nominal controller using ALTRO was performed on a laptop with core i7-4510u CPU at 3.10GHz, with 8GB of RAM.
 The formal controller synthesis using SCOTS was performed on a cluster with 4 Intel Xeon E7-8857 v2 CPUs (48 cores in total) at 3GHz, with 1.5TB of RAM. 
 
-In all of our case studies, robots are moving in a two-dimensional space that has obstacles. 
-\KM{@Mehrdad: this sentence is not true for the crane.}
+In all of our case studies, the robots are moving in a two-dimensional shared workspace (related but not exactly the same as the robots' state spaces) that possibly has obstacles. 
 Table~\ref{tab:runtimes} shows run times for different stages of each experiment. 
 For local ABCD, the reported numbers correspond to the maximum value among all of the agents. 
 This choice is due to the fact that feedback controllers for different agents can be computed independently 
