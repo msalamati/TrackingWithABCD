@@ -28,14 +28,15 @@ Most planning and trajectory optimization techniques handle the \emph{nominal} d
 and construct \emph{open-loop} controllers.
 However, the open-loop behaviors do not guarantee satisfaction of the specifications in the presence of disturbances.
 On the other hand, correct-by-construction controller synthesis techniques from control theory, 
-such as abstraction-based control or Hamilton-Jacobi techniques,
+such as abstraction-based control design (ABCD) or Hamilton-Jacobi techniques,
 handle precise models of nonlinear dynamics and the effects of disturbance, but are difficult to scale beyond about $10$ dimensions.
 
 \begin{figure}[t]
 \includegraphics[scale=0.28]{figures/Algorithm_outline_updated.pdf}
 \vspace*{-0.5cm}
 \caption{Overall algorithm: The blue block on the left (centrally) computes joint open-loop nominal trajectory for the overall system, and the green block on the right computes decentralized controllers for tracking the nominal trajectory using Abstraction Based Controller Design (ABCD).
-$\Set{\Sigma^i}_{i\in [1;N]}$ is a set of $N$ agents, $\Phi$ is a global reach-avoid specification, $\varepsilon$ is a robustness margin, $\rho_1,\ldots,\rho_N$ are the local projections of the nominal trajectory, $\eta_x,\eta_u$ are parameters used in ABCD, and $C_1,\ldots,C_N$ are the sought local feedback controllers for the individual agents.}
+$\Set{\Sigma^i}_{i\in [1;N]}$ is a set of $N$ agents, $\Phi$ is a global reach-avoid specification, $\varepsilon$ is a robustness margin, $\rho_1,\ldots,\rho_N$ are the local projections of the nominal trajectory, $\eta_x,\eta_u$ are parameters used in ABCD, and $C_1,\ldots,C_N$ are the sought local feedback controllers for the individual agents.
+\Sadegh{Please indicate the direction of arrow in "controller not found?" }}
 \label{fig:overall}
 \vspace*{-0.2cm}
 \end{figure}
@@ -55,12 +56,11 @@ Next, we project the unique open-loop trajectory on to a nominal trajectory for 
 The robustness of the trajectory means that there is a tube around the nominal trajectory.
 In a second step, we solve a number of local \emph{guaranteed tracking control} problems, where we synthesize correct-by-construction
 controllers whose objective is to track the nominal trajectory while staying within the tube.
+The overall algorithm is more scalable and guarantees satisfaction of the global specification.
 
-The overall algorithm is more scalable and provides stronger guarantees than each component by itself.
-\KM{What does this last sentence mean? What "stronger guarantee than each component" do we provide?}
-Global trajectory planning scales to large state spaces but does not guarantee correctness
-and each formal controller synthesis problem is solved locally.
-Empirically, we show that our algorithm is able to generate provably correct feedback controllers for many
+%\KM{What does this last sentence mean? What "stronger guarantee than each component" do we provide?}
+%Global trajectory planning scales to large state spaces but does not guarantee correctness and each formal controller synthesis problem is solved locally.
+We show Empirically that our algorithm is able to generate provably correct feedback controllers for many
 systems for which neither technique is individually effective.
 Of course, since we decompose the problem, it is possible that there is no controller for a particular choice of the
 robustness parameter, or indeed, for other parameters used by the individual tools.
@@ -77,14 +77,15 @@ In that case, there is an outer loop that searches through the parameter space.
 
 
 
-We have implemented our approach in an open-source tool called \tool (stands for GuAranteed Multi-Agent Reach-Avoid control) \KM{Change the abbreviation if the tool name changes}, by combining the following two tools: the ALTRO open-loop trajectory planner \cite{howell2019altro} and the 
+We have implemented our approach in an open-source tool called \tool (stands for GuAranteed Multi-Agent Reach-Avoid control)
+%\KM{Change the abbreviation if the tool name changes},
+by combining the following two tools: the ALTRO open-loop trajectory planner \cite{howell2019altro} and the 
 SCOTS correct-by-construction controller synthesis tool \cite{Rungger2016scots}. 
 ALTRO is a state-of-the-art trajectory planning tool based on optimal control.
 It handles nonlinear dynamics and scales to large dimensions, but ignores disturbances or modeling uncertainties.
-SCOTS implements a highly parallelizable \emph{abstraction-based controller synthesis} algorithm that generates a provably
-correct feedback controller for any linear temporal logic specification.
+SCOTS implements a highly parallelizable \emph{abstraction-based controller synthesis} algorithm that generates a feedback controller for satisfying temporal specification.
 
-We empirically evaluate \tool on a number of multi-robot benchmarks, including coordinated reach-avoid problem for ground robots, formation control problem for drones, and lane merging problem for autonomous vehicles.
+We empirically evaluate \tool on a number of multi-robot benchmarks, including coordinated reach-avoid problem for ground robots, formation control problem for drones, and lane merging for autonomous vehicles.
 In each case, we demonstrate that \tool can find decentralized and correct controllers within reasonable amount of time after consuming manageable amount of memory.
 
 Fig.~\ref{fig:cr_and_lft} shows a concrete multi-robot reach-avoid scenario with an overhead crane hanging from a trolley along a horizontal rail
