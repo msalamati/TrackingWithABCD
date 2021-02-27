@@ -83,7 +83,7 @@ by combining the following two tools: the ALTRO open-loop trajectory planner \ci
 SCOTS correct-by-construction controller synthesis tool \cite{Rungger2016scots}. 
 ALTRO is a state-of-the-art trajectory planning tool based on optimal control.
 It handles nonlinear dynamics and scales to large dimensions, but ignores disturbances or modeling uncertainties.
-SCOTS implements a highly parallelizable \emph{abstraction-based controller synthesis} algorithm that generates a feedback controller for satisfying temporal specification.
+SCOTS implements a highly parallelizable ABCD algorithm that generates a feedback controller for satisfying temporal specification.
 
 We empirically evaluate \tool on a number of multi-robot benchmarks, including coordinated reach-avoid problem for ground robots, formation control problem for drones, and lane merging for autonomous vehicles.
 In each case, we demonstrate that \tool can find decentralized and correct controllers within reasonable amount of time after consuming manageable amount of memory.
