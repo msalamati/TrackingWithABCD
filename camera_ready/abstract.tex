@@ -4,7 +4,7 @@ We consider the decentralized controller synthesis problem for multi-agent syste
 Each agent is modeled as a nonlinear dynamical system with disturbances. The objective is to synthesize \emph{local} feedback controllers which guarantee that the overall multi-agent system meets the global specification under the influence of disturbances.
 %
 On the one hand, existing techniques based on planning or trajectory optimization usually ignore the effects of disturbances and produce open-loop
-\emph{nominal} trajectories which may not suffice in the presence of disturbances.
+\emph{nominal} trajectories which are not generally sufficient in the presence of disturbances.
 On the other hand, techniques based on formal synthesis which guarantee satisfaction of temporal specifications do not scale as the number of agents increase.
 
 We address these limitations by proposing a two-level solution approach that combines fast global nominal trajectory generation and local application of formal synthesis.
@@ -12,9 +12,9 @@ At the top level, we ignore the effect of disturbances and obtain a joint open-l
 At the lower level, we use abstraction-based controller design to synthesize a set of decentralized feedback controllers 
 that track the high level plan against worst-case disturbances, thus ensuring satisfaction of the global specification.
 
-We implemented our approach in an open-source tool called \tool.
+We provide the implementation of our approach in an open-source tool called \tool.
 We demonstrate the effectiveness of \tool on several multi-robot examples using two particular classes of control specifications.
-In the first type, we assume that the robots need to fulfill their own reach-avoid tasks while avoiding collision with the other robots.
+In the first type, we assume that the robots need to fulfill their own reach-avoid tasks while avoiding collision with each other.
 In the second type, we require the robots to fulfill reach-avoid tasks while maintaining certain formation constraints.
 The experiments show that \tool produces formally guaranteed feedback controllers while scaling to many robots.
-In contrast, nominal open loop controllers do not guarantee the satisfaction of the specification, and the exponentially large memory usage of the global formal approach prevents synthesis of a controller.
+In contrast, nominal open-loop controllers do not guarantee the satisfaction of the specification, and the exponentially large memory usage of the global formal approach prevents synthesis of a controller.
