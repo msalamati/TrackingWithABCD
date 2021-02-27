@@ -283,13 +283,13 @@ We demonstrate this phenomenon on a control system $\Sigma$ that is a simple $2$
 where $x_1$ represents the angle (in Radian) of the pendulum rod measured counter-clockwise from the vertical upright position, and $x_2$ represents the rate of change of $x_1$ or the angular velocity.
 \begin{wrapfigure}{r}{0.2\textwidth}
 		\includegraphics[width=0.2\textwidth]{figures/inv_final.eps}
-		\caption{The nominal trajectory (the blue spiral) for the inverted pendulum, the initial state is the red point, and the final state is the green point.} %\Sadegh{Text inside the figure is very small, make it larger so that it is readable.}}
+		\caption{The state trajectory of the inverted pendulum: the red point is the initial state, the green point is the final state, the blue spiral is the nominal trajectory obtained from ALTRO, and the dashed straight line is a geometric plan.} %\Sadegh{Text inside the figure is very small, make it larger so that it is readable.}}
 		\label{fig:traj 2d pendulum}
 	\end{wrapfigure}
 Suppose the initial state of the pendulum is $(\pi,0)$, i.e., when the pendulum is in the vertical downward position and is stationary.
 Suppose we want to find a controller for the goal $\goal = \set{(0,0)}$, i.e., when the pendulum is in the vertical upward position and is stationary.
 The set of unsafe states $\avoid$ is empty, i.e., no safety constraint is imposed.
-When we use ALTRO to compute an open-loop controller $C$, unsurprisingly, the controlled trajectory of $C\triangleright \Sigma$ looks like a spiral, as shown in Fig.~\ref{fig:traj 2d pendulum}.
+When we use ALTRO to compute an open-loop controller $C$, unsurprisingly, the controlled trajectory of $C\triangleright \Sigma$ looks like a spiral, as shown in blue Fig.~\ref{fig:traj 2d pendulum}.
 The synthesis of tracking controller using ABCD is indeed successful when we feed this nominal trajectory to our ABCD solver.
-However, if we use a geometric planner for this example that ignores the dynamics, the nominal trajectory would be a straight line path from $(\pi,0)$ to $(0,0)$, which gives an infeasible tracking problem for ABCD, due to the restrictions on possible trajectories of the pendulum coming from the its dynamics.
+However, if we use a geometric planner for this example that ignores the dynamics, the nominal trajectory would be a straight line path from $(\pi,0)$ to $(0,0)$ (shown using a dashed line in Fig.~\ref{fig:traj 2d pendulum}), which gives an infeasible tracking problem for ABCD, due to the restrictions on possible trajectories of the pendulum coming from the its dynamics.
 	
