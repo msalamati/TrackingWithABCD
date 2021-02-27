@@ -26,7 +26,7 @@ Nilsson et al. \cite{Nilsson:2018} provide a method that decomposes the state sp
 %that governs the motion in planning space. 
 %The planning is performed fast since it is restricted to the lower-order space. To guarantee following of the planned trajectory in the lower-order space, control barrier functions are computed using SOS method. This method, however, cannot deal with dynamic obstacles as is needed in tackling collision avoidance.}
 While we have chosen SCOTS since the underlying algorithm can be effectively parallelized \cite{KhaledZ19pfaces}, in principle, we could
-also use SOS, Hamilton Jacobi, or SMC approaches. %The existing schemes that solve the guaranteed motion planning problems in a centralized manner (e.g. \cite{sun2019}) cannot scale well.
+also use SOS, HJ, or SMC approaches. %The existing schemes that solve the guaranteed motion planning problems in a centralized manner (e.g. \cite{sun2019}) cannot scale well.
 
 Other works only consider special classes of models such as linear \cite{fan2018controller,wongpiromsarn2012receding,Rodionova2020LearningtoFlyLC}, 
 disturbance-free \cite{tedrake2010lqr,fan2020fast,Srinivasan2018}, or finite transition systems \cite{Yang2017milp}. 

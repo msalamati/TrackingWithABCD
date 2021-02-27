@@ -206,12 +206,12 @@ where $U_{\Sigma}(x):=\set{u\in U \mid f(x,u)\neq \emptyset}$ and $\Uh_{\widehat
 We write $\Sigma \frr{Q} \widehat{\Sigma}$ if $Q$ is an FRR from $\Sigma$ to $\widehat{\Sigma}$.
 
 \smallskip
-\noindent\textbf{Abstraction-based Controller Design.}\
+\noindent\textbf{Abstraction-Based Controller Design.}\
 The abstraction-based controller design (ABCD) \cite{reissig2016feedback} is a $3$-step method to find a robust controller for the control system $\Sigma$:
 First, we compute a finite state abstraction $\widehat{\Sigma}$ s.t.\ $\Sigma \frr{Q} \widehat{\Sigma}$.
 Second, we synthesize an abstract controller of the form $\widehat{C}:\Xh\rightarrow \Uh$ for $\widehat{\Sigma}$ using methods from the reactive synthesis literature.
 Finally, we obtain the desired controller $C$ as $C:=\widehat{C}\circ Q$.
-It is known that this three step process produces a feedback controller $C$ such that $C\parallel \Sigma$ satisfies the specification \cite{reissig2016feedback}.
+It is known that this three step process produces a controller $C$ such that $C\parallel \Sigma$ satisfies the specification \cite{reissig2016feedback}.
 
 If a controller cannot be found, we reduce the discretization parameters $\eta_x$ and $\eta_u$ and try again,
 or use a larger robustness margin $\varepsilon$.

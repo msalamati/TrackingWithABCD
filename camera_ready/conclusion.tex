@@ -1,3 +1,4 @@
+% !TEX root = main.tex
 \section{Discussion and Future Work}
 We have presented a method for synthesizing provably correct decentralized controllers for multi-agent systems with global reach-avoid specifications. 
 Our approach is hierarchical: At the top level, we obtain a high-level joint plan by solving a centralized synthesis problem on a simplified model of the product system, and at the bottom level we synthesize local controllers for robustly tracking the high-level plan for each individual agent.
@@ -9,19 +10,19 @@ We compute the reference trajectory for the product system using ALTRO. Our expe
 
 \smallskip
 \noindent\textbf{Extension to richer classes of specifications.}\
-Our proposed method is specific to reach-avoid specifications. However, application of our method can be extended to the problem that can be broken into a sequence of reach-avoid tasks. To that end, one can use high-level languages (e.g., \cite{Majumdar2020,Ghosh2020}) for specifying complex reach-avoid sequences and invoke \tool to solve each individual reach-avoid task.
+Our proposed method is specific to reach-avoid specifications but it can be extended to other specifications by decomposing them into a sequence of reach-avoid tasks. To that end, one can use high-level languages (e.g., \cite{Majumdar2020,Ghosh2020}) for specifying complex reach-avoid sequences and invoke \tool to solve each individual reach-avoid task.
 
 \smallskip
 \noindent\textbf{Choice of parameters.}\
 Our algorithm takes as input the robustness margin $\varepsilon$ and the abstraction parameters $\eta_x$ and $\eta_u$.
-(The safety margin $\delta$ is also a parameter, but that is considered to be a part of the control problem.)
+%(The safety margin $\delta$ is also a parameter, but that is considered to be a part of the control problem.)
 The larger the value of $\varepsilon$, more difficult it is to synthesize a nominal controller for the product system using ALTRO.
 On the other hand, the smaller the value of $\varepsilon$, the more difficult it is to synthesize a set of decentralized controllers using SCOTS.
 Also, there is a trade-off between computation time and ease of synthesis when it comes to choosing the parameters $\eta_x$ and $\eta_u$ for SCOTS: Larger values of these parameters will result in faster computation but harder synthesis problem.
 Thus there needs to be a good balance when we choose the parameters for our tool.
 Indeed, it is not always easy to come up with a good set of parameters.
-Our current approach is to add an outer loop around our tool to search of suitable parameters until the decentralized synthesis is successful (see Fig.~\ref{fig:overall}).
-In future, we plan to investigate if the parameters can be systematically discovered by separately analyzing the dynamics of the systems.
+Our current approach adds an outer loop around our tool to search for suitable parameters until the decentralized synthesis is successful (see Fig.~\ref{fig:overall}).
+In the future, we plan to investigate if the parameters can be systematically discovered by separately analyzing the dynamics of the systems.
 
 %\smallskip
 %\noindent\textbf{Conservativeness of our method.}\
