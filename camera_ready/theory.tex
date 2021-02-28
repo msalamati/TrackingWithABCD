@@ -28,7 +28,7 @@ This completes the proof.
 %It can be observed that if every  $C^i\parallel \Sigma^i$ can realize $\Phi_\track^i$, then because the simultaneous satisfaction of $\rho^i$-s for every $i$ implies satisfaction of $\Phi_\varepsilon$ by design, and because $\Phi_\varepsilon$ is an $\varepsilon$-robust version of $\Phi$, hence it follows that $\set{C^i}_{i\in [1;N]}\parallel \set{\Sigma^i}_{i\in [1;N]}$ will realize $\Phi$ under the worst-case disturbance.
 Next, we discuss some implementation details of Alg.~\ref{alg:main} for the global \emph{open-loop planner} (Step~\ref{step:planning}) and the local \emph{guaranteed trajectory tracking} (Step~\ref{step:tracking}) in our tool \tool. Note that Step~\ref{step:decompose} is a simple projection from the product space into local spaces.
 While we instantiate particular techniques, our method can be used with other implementations as well.
-
+%
 \begin{algorithm}[t]
 	\caption{Multi-agent Controller Synthesis}
 	\label{alg:main}
@@ -270,7 +270,7 @@ Our decentralized controller synthesis approach features an interplay between th
 
 
 \subsection{Hybrid vs Geometric Planning}
-	
+%
 Note that Step~\ref{step:tracking} of Alg.~\ref{alg:main} does not use the nominal controller obtained in Step~\ref{step:planning} and requires only the nominal trajectories.
 Then one could argue that, instead of using ALTRO to generate nominal trajectories, a fast \emph{geometric planner} \cite{Kavraki1996rrt} can be employed to generate geometric plans.
 However, fast geometric planners do not usually take into consideration the dynamics and control constraints. In our experience, the plans for nominal trajectories generated while ignoring the system dynamics are often untrackable unless the underlying system has special properties (e.g., differential flatness \cite{Murray95differentialflatness}).

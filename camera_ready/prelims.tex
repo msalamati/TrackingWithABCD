@@ -221,9 +221,12 @@ Since the formation is defined using the relative positions of the robots, it is
 %%\RM{give a simple example that shows the dynamics and the objective. In the objective, you can use the distance between two states, etc.}
 %\qed
 %\end{example}
+%\vspace{-1.5cm}
 \begin{example}
 \new{
-	Consider two simple one-dimensional control systems $\Sigma^1=(X^1,x_\init^1,U^1,W^1,f^1)$ and $\Sigma^2=(X^2,x_\init^2,U^2,W^2,f^2)$ whose states evolve over the real line, and at every time step, the values of their states can be either incremented or decremented by $1$ independently.
+	Consider two simple one-dimensional control systems $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i)$, $i\in\{1,2\}$,
+	 %and $\Sigma^2=(X^2,x_\init^2,U^2,W^2,f^2)$ 
+	 whose states evolve over the real line, and at every time step, the values of their states can be either incremented or decremented by $1$ independently.
 	We ignore the effect of the disturbances for simplicity.
 	More formally, $X^1=X^2=\mathbb{R}$, $U^1=U^2=\set{-1,1}$, $W^1=W^2=\set{0}$, and $f^1(x^1,u^1)\equiv x^1+u^1$, $f^2(x^2,u^2)\equiv x^2+u^2$.
 	Suppose the initial states are $x_\init^1=0$ and $x_\init^2=5$, and assume that the specification requires them to \emph{simultaneously} reach the respective goal sets $\goal^1=\set{10}$ and $\goal^2=\set{20}$ while \emph{maintaining a distance} of at least $5$ among themselves.
