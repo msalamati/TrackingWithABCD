@@ -1,8 +1,7 @@
 % !TEX root = main.tex
 
 \section{Systems and Controllers}
-
-\smallskip
+%
 \noindent\textbf{Notation.}\
 We denote the set of natural numbers including zero by $\mathbb N$.
 We use the notation $\mathbb{R}$ and $\mathbb{R}_{>0}$ to denote respectively the set of real numbers and the set of positive real numbers.
@@ -156,18 +155,18 @@ We omit the details of the construction; see, e.g., \cite{reissig2016feedback}.
 % We introduce the notations for representing different types of controllers used in this paper. 
 An \emph{open-loop controller} for $\Sigma=(X,x_\init,U,W,f)$ over a time interval $[0;T]$ with $T\in\mathbb N$ 
 is a function $C\colon [0;T]\to U$. 
-The open-loop is obtained when we connect $C$ with $\Sigma$ serially,
+The open loop is obtained when we connect $C$ with $\Sigma$ serially,
  %by taking the input $u_i = C(i)$ for all $i$,
  denoted by $C \triangleright \Sigma$. 
 The set of trajectories of the open-loop system $C\triangleright\Sigma$ consists of all finite trajectories
-$x_0, x_1, \ldots, x_T$ such that $x_0 = x_\init$ and for all $i \in [0; T-1]$, we have $x_{i+1} = f(x_i, C(i)) + w_i$ for some $w_i \in W$.
+$x_0, x_1, \ldots, x_T$ such that $x_0 = x_\init$ and $x_{i+1} = f(x_i, C(i)) + w_i$ for some $w_i \in W$ for all $i \in [0; T-1]$.
 
 A \emph{feedback controller} for $\Sigma$ over a time interval $[0;T]$, $T\in \mathbb N$, 
 is a function $C\colon X\times[0;T]\to U$. 
 We denote the feedback composition of $\Sigma$ with $C$ as $C \parallel \Sigma$.
 The set of trajectories of the closed-loop system $C\parallel\Sigma$ consists of all finite trajectories
 $x_0, x_1, \ldots, x_T$ such that $x_0 = x_\init$ and for all $i \in [0; T-1]$, we have $x_{i+1} = f(x_i, C(x_i, i)) + w_i$ for some $w_i \in W$.
-For both open-loop and feedback composition, the nominal trajectories are those trajectories for which $w_i = 0$ for all $i\geq 0$.
+For both open-loop and feedback composition, the nominal trajectories are the ones for which $w_i = 0$ for all $i\geq 0$.
 
 Now let $\set{\Sigma^i}$ be a set of control systems.
 We can define \emph{global} open-loop and feedback controllers by defining the respective controllers on the product system $\Sigma^\times$.
@@ -223,7 +222,7 @@ Since the formation is defined using the relative positions of the robots, it is
 %\end{example}
 %\vspace{-1.5cm}
 \begin{example}
-\new{
+%\new{
 	Consider two simple one-dimensional control systems $\Sigma^i=(X^i,x_\init^i,U^i,W^i,f^i)$, $i\in\{1,2\}$,
 	 %and $\Sigma^2=(X^2,x_\init^2,U^2,W^2,f^2)$ 
 	 whose states evolve over the real line, and at every time step, the values of their states can be either incremented or decremented by $1$ independently.
@@ -232,7 +231,7 @@ Since the formation is defined using the relative positions of the robots, it is
 	Suppose the initial states are $x_\init^1=0$ and $x_\init^2=5$, and assume that the specification requires them to \emph{simultaneously} reach the respective goal sets $\goal^1=\set{10}$ and $\goal^2=\set{20}$ while \emph{maintaining a distance} of at least $5$ among themselves.
 	This specification can be easily formulated as a reach-avoid objective $\left(\lnot\avoid\,\mathcal{U}\, \goal\right)$ for the overall two-dimensional product system, where $\avoid = \set{ (x^1,x^2)\in \mathbb{R}^2  \mid |x^1-x^2| < 5}$ and $\goal = (10,20)$.
 	On the other hand, a decomposition of this objective into independent reach-avoid sub-tasks for $\Sigma^1$ and $\Sigma^2$ is not possible, because the task has been specified in terms of their \emph{relative distance} and their \emph{simultaneous arrival} at the goal sets.
-	}
+%	}
 \end{example}
 
 
