@@ -17,7 +17,7 @@ where $f^d_\tau$ is the sampled-time abstraction of the following continuous dyn
 		u_2
 	\end{bmatrix}.
 \end{equation*}
-where $x_1$ and $x_2$ denote the drone's position (Meter) in two-dimensional space, $x_3$ denotes the rotational angle (Radian), and $u_1$ and $u_2$ represent control inputs for each drone. Choosing a sampling time $\tau=0.1s$, the nominal dynamics $f^d_\tau$ can be characterized uniquely. 
+where $x_1$ and $x_2$ denote the drone's position \MZ{(Meter)} in two-dimensional space, $x_3$ denotes the rotational angle \MZ{(Radian)}, and $u_1$ and $u_2$ represent control inputs for each drone. Choosing a sampling time $\tau=0.1s$, the nominal dynamics $f^d_\tau$ can be characterized uniquely. 
 We consider state and input spaces to be $X=[-1,11]^2\times[-2,3.3]$ and $U=[-2.4,2.4]^2$, respectively. 
 The disturbance set and robustness margin are chosen as $|W|\leq (0,0.025,0.025)$ and $\varepsilon=(0.20,0.20,0.24)$.
 
@@ -115,8 +115,8 @@ where
 	$M_t=M_c+M_p$ denotes the total mass,
 and
 	$l=0.5$ m is the half-pole length.
-Further, the cart's position, the pole's angle, and input force to the cart are denoted by $x_1^{(1)}=z$ (in $m$), $x_3^{(1)}=\theta$ (in $Radian$), 
-and $u^{(1)}=F$ (in $kg *m/s^2$), respectively. 
+Further, the cart's position, the pole's angle, and input force to the cart are denoted by $x_1^{(1)}=z$ \MZ{(in $m$)}, $x_3^{(1)}=\theta$ \MZ{(in $Radian$)}, 
+and $u^{(1)}=F$ \MZ{(in $kg *m/s^2$)}, respectively. 
 The continuous-time dynamics of the crane is of the following form:
 \[f^{c}(x^{(1)}(t),u^{(1)}(t)):=\begin{bmatrix}
 	\dot{x}_1^{(1)}\\
@@ -152,7 +152,7 @@ The vehicle's continuous-time dynamics takes the form of
 \[f^{l}(x^{(2)}(t),u^{(2)}(t))=\begin{bmatrix}
 \dot{x}_1^{(2)}\\ \dot{x}^{(2)}_2 \end{bmatrix}=\begin{bmatrix} x^{(2)}_2\\ u^{(2)} \end{bmatrix},
 \]
-where $x_1^{(2)}$ and $x_2^{(2)}$ denote the vehicle's position in $m$ and speed in $m/s$ and $u^{(2)}$ represents the vehicle's control input (acceleration). 
+where $x_1^{(2)}$ and $x_2^{(2)}$ denote the vehicle's position \MZ{in $m$} and speed \MZ{in $m/s$} and $u^{(2)}$ represents the vehicle's control input (acceleration). 
 On fixing the sampling time $\tau=0.1s$, one can derive $f^c_\tau$ and $f^l_\tau$. For the crane, the disturbance set and robustness margin are chosen as $|W^1|\leq(0,0.05,0,0)$ and  $\varepsilon^{1}=(0.135,0.385,0.176 ,0.768)$. Similarly, for the vehicle, disturbance set and robustness margin are chosen as $|W^2|\leq(0,0.1)$ and $\varepsilon^{2}=(0.08,0.12)$.
 %The output mapping for the crane is defined as
 %\[
