@@ -1,36 +1,36 @@
 % !TEX root = main.tex
 \section{Discussion and Future Work}
 We have presented a method for synthesizing provably correct decentralized controllers for multi-agent systems with global reach-avoid specifications. 
-Our approach is hierarchical: At the top level, we obtain a high-level joint plan by solving a centralized synthesis problem on a simplified model of the product system, and at the bottom level we synthesize local controllers for robustly tracking the high-level plan for each individual agent.
-In this section, we discuss different features of our work, remaining challenges, and the future work.
+Our approach is hierarchical. 
+At the top level, we obtain a high-level joint plan by solving a centralized synthesis problem on a simplified model of the product system, 
+and at the bottom level we synthesize local controllers for robustly tracking the high-level plan for each individual agent.
+In this section, we discuss different features of our work, limitations, and future work.
 
 \smallskip
 \noindent\textbf{Scalability of the proposed method.}\
-We compute the reference trajectory for the product system using ALTRO. Our experiments show that ALTRO generates reference trajectories for high-dimension systems quite fast. On the other hand, for tracking controllers, our method synthesizes controllers in a decentralized manner and thus scalability is not affected by increasing the number of agents. We use SCOTS for computing tracking controllers because the algorithm can be effectively parallelized \cite{KhaledZ19pfaces}. While \tool uses ALTRO and SCOTS for solving the given reach-avoid problem, we emphasize that one could replace them with any other off-the-shelf method that can perform similar tasks.
+We compute the reference trajectory for the product system using ALTRO. 
+Our experiments show that ALTRO generates reference trajectories for high-dimension systems quite fast. 
+On the other hand, for tracking controllers, our method synthesizes controllers in a decentralized manner and 
+thus scalability is not affected by increasing the number of agents. 
+We use SCOTS for computing tracking controllers because the algorithm can be effectively parallelized \cite{KhaledZ19pfaces}. 
+While \tool uses ALTRO and SCOTS for solving the given reach-avoid problem, 
+one could replace them with any other off-the-shelf method that can perform similar tasks.
 
 \smallskip
 \noindent\textbf{Extension to richer classes of specifications.}\
-Our proposed method is specific to reach-avoid specifications but it can be extended to other specifications by decomposing them into a sequence of reach-avoid tasks. To that end, one can use high-level languages (e.g., \cite{Majumdar2020,Ghosh2020}) for specifying complex reach-avoid sequences and invoke \tool to solve each individual reach-avoid task.
+Our proposed method is specific to reach-avoid specifications but it can be extended to other specifications by 
+decomposing them into a sequence of reach-avoid tasks. 
+To that end, one can use high-level languages (e.g., \cite{Majumdar2020,Ghosh2020}) for specifying complex reach-avoid 
+sequences and invoke \tool to solve each individual reach-avoid task.
 
 \smallskip
 \noindent\textbf{Choice of parameters.}\
 Our algorithm takes as input the robustness margin $\varepsilon$ and the abstraction parameters $\eta_x$ and $\eta_u$.
-%(The safety margin $\delta$ is also a parameter, but that is considered to be a part of the control problem.)
 The larger the value of $\varepsilon$, more difficult it is to synthesize a nominal controller for the product system using ALTRO.
 On the other hand, the smaller the value of $\varepsilon$, the more difficult it is to synthesize a set of decentralized controllers using SCOTS.
-Also, there is a trade-off between computation time and ease of synthesis when it comes to choosing the parameters $\eta_x$ and $\eta_u$ for SCOTS: Larger values of these parameters will result in faster computation but harder synthesis problem.
-Thus there needs to be a good balance when we choose the parameters for our tool.
-Indeed, it is not always easy to come up with a good set of parameters.
+Also, there is a trade-off between computation time and ease of synthesis when it comes to choosing the parameters $\eta_x$ and $\eta_u$ for SCOTS:
+Larger values of these parameters will result in faster computation but there may be no solution to the synthesis problem.
+It is not always easy to come up with a good set of parameters.
 Our current approach adds an outer loop around our tool to search for suitable parameters until the decentralized synthesis is successful.
-% (see Fig.~\ref{fig:overall}).
-In the future, we plan to investigate if the parameters can be systematically discovered by separately analyzing the dynamics of the systems.
+We do not know a good heuristic to systematically explore the parameter space by analyzing the dynamics of the systems.
 
-%\smallskip
-%\noindent\textbf{Conservativeness of our method.}\
-%Our method is no more conservative than the standard ABCD approach used in SCOTS:
-%Indeed, assuming availability of unbounded resources, if SCOTS is able to find a central controller for the global synthesis problem for a given set of parameters $\varepsilon$, $\eta_x$, and $\eta_u$, then our method will also find a set of decentralized controllers (by consuming much less resource than the global synthesis approach).
-%\KM{@Mehrdad: is this true? Is it not the case that ALTRO can occassionally fail to give a nominal controller even if the central SCOTS-based approach would have solution, if we would ignore the memory and time limitations?}
-
-
-%\section{conclusion}
-%\MS{We have presented a decentralized controller synthesis scheme for multi-agent systems with global reach-avoid specifications. Our experiments demonstrate effectiveness of our approach for solving reach-avoid problems that may require formation to be preserved. Note that one can connect our work to the high-level languages for robotic applications by formulating more complicated tasks as a sequence of reach-avoid problems together with correct synchronization skleton. It remains to choose the right values of parameters for robustness parameter $\varepsilon$ and discretization parameters $\eta_x$ and $\eta_u$.}
