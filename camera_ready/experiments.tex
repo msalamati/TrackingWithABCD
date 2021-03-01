@@ -101,7 +101,7 @@ Suppose $\set{\Sigma^i}$
 models a set of robots, 
 $\goal^i\subseteq X^i$ are the individual goal sets, and $\delta \in \mathbb{R}_{>0}$ is a safety margin for collisions. 
 We consider each robot as a point object with a bounding box for its physical dimensions. 
-The parameter $\delta$ is chosen to be a constant greater than \new{twice} the radius of the bounding box around each robot. 
+The parameter $\delta$ is chosen to be a constant greater than twice the radius of the bounding box around each robot. 
 By keeping a distance at least $\delta$ from the other robots and the obstacles, the robots can avoid collision in their physical domain.
 The parameter $\delta$ can additionally take into account statutory minimum safe distances among the robots, 
 such as in autonomous driving-like scenarios.
@@ -153,8 +153,8 @@ More detailed discussion on dynamics of systems and further analysis are present
 
 \subsubsection{Lane Merging}
 \label{subsec:lane merging}
-We study a lane merging problem wherein multiple \RM{What is $N$?}
-controlled vehicles are driving over two merging lanes (Fig.~\ref{fig:merge}, \textbf{top} frame). 
+We study a lane merging problem wherein multiple
+controlled vehicles ($N=6$) are driving over two merging lanes (Fig.~\ref{fig:merge}, \textbf{top} frame). 
 A dangerous situation may occur at the merging point of the two lanes if vehicles are not controlled properly. 
 Different variants of this problem have been studied in the literature (see, e.g., \cite{xiao2019merging,xiao2020merging}). Without seeking to optimize fuel consumption or travel time, we set the goal to control the vehicles to pass the merging zone safely. In particular, consider a situation where initially three cars are driving on each of the two lanes (Fig.~\ref{fig:merge}, (\textbf{top})). The control objective for each vehicle is to pass the red dashed line within a finite horizon without hitting the road's sides or colliding with other vehicles. Fig.~\ref{fig:merge} demonstrates snapshots of one sample trajectory when feedback controllers are employed under the presence of bounded disturbance. Additional analysis, systems' dynamics and parameters are reported in Sec.~\ref{sec:lane merging} in the appendix.
 \begin{figure}
