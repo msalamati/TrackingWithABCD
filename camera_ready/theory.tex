@@ -2,7 +2,7 @@
 
 % \section{Robust Reach-Avoid for Multi-Agent Systems}
 
- \subsection{Solution Outline}
+\subsection{Solution Outline}
 To solve the decentralized control problem, 
 we first plan a high-level nominal trajectory for the product system by ignoring the disturbances, and then synthesize low-level formally verified controllers for robustly tracking the nominal trajectory under worst-case disturbances.
 We summarize our approach for solving Prob.~\ref{problem} in Alg.~\ref{alg:main}.
@@ -14,7 +14,8 @@ The approach is composed of three main steps:
 The soundness of the technique is summarized below.
 
 \begin{theorem}
-Local feedback controllers $\set{C^i}$ synthesized by Alg.~\ref{alg:main} guarantee that the global specification is satisfied by the product system $\set{C^i}\parallel \set{\Sigma^i}$. 
+Local feedback controllers $\set{C^i}$ synthesized by Alg.~\ref{alg:main} guarantee that the 
+the product system $\set{C^i}\parallel \set{\Sigma^i}$ realizes the global specification $\Phi$. 
 \end{theorem}
 \begin{proof}
 Note that $\Phi_\varepsilon$ is a stronger version of $\Phi$ and is intentionally made conservative to allow for $\varepsilon$-deviation in the trajectory of the product system.
@@ -132,7 +133,11 @@ While we instantiate particular techniques, our method can be used with other im
 %In the following, we summarize some ALTRO-specific implementation details.
 
 \subsection{Open-loop Planning}
-The planner used for generating nominal trajectories in Step~\ref{step:planning} of our algorithm should be fast and scalable. In addition, it should be capable of handling non-linear dynamics and constraints. Our choice for the planner is ALTRO \cite{howell2019altro}. ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and and is capable of handling nonlinear state and input constraints. Given a product system $\Sigma_{\nom}^\times$, reach-avoid specification $\Phi_\varepsilon$ and time horizon $T$, ALTRO computes an open-loop controller $C^\times_{\nom}:[0;T]\rightarrow U^\times$ by solving the optimization
+The planner used for generating nominal trajectories in Step~\ref{step:planning} of our algorithm should be fast and scalable. 
+In addition, it should be capable of handling non-linear dynamics and constraints. 
+Our choice for the planner is ALTRO \cite{howell2019altro}. 
+ALTRO is a fast and numerically robust solver for constrained trajectory optimization problems and and is 
+capable of handling nonlinear state and input constraints. Given a product system $\Sigma_{\nom}^\times$, reach-avoid specification $\Phi_\varepsilon$ and time horizon $T$, ALTRO computes an open-loop controller $C^\times_{\nom}:[0;T]\rightarrow U^\times$ by solving the optimization
 \begin{equation*}
 	\begin{aligned}
 		& \underset{u^\times_0,u^\times_1,\ldots,u^\times_T}{\text{minimize}}
@@ -150,10 +155,9 @@ Note that the reach-avoid specification is fulfilled if the corresponding equali
 %Following step~\ref{step:decompose} of Alg.~\ref{alg:main}, we get open-loop nominal trajectories $\rho^i$ for every agent.
 
 \begin{remark}
-	ALTRO supports only bounded horizon control problem.
+	ALTRO only supports bounded horizon control problems.
 	For this reason, we model the states in $\goal'$ as a sink state and select a time horizon $T$ for solving the planning task on the nominal product system. We increase the horizon $T$ if ALTRO is not able to find a controller.
-	%we were forced to specify a horizon while solving the synthesis problem in Step~\ref{step:planning} of Alg.~\ref{alg:main}.
-	We stress that this is an ALTRO-specific implementation detail, and our overall method does not rely on a fixed time horizon.
+	We remark that this is an ALTRO-specific implementation detail, and our overall method does not rely on a fixed time horizon.
 \end{remark}
 
 
@@ -162,9 +166,10 @@ Note that the reach-avoid specification is fulfilled if the corresponding equali
 
 Trajectories computed in the planning stage might not be followed in the presence of disturbance and therefore we need to use a 
 formally guaranteed tracking controller to satisfy the given reach-avoid specification. 
-Our choice for this purpose is the so-called abstraction-based controller design (ABCD). 
-ABCD can handle nonlinear dynamics, (bounded) uncertainties and $\omega$-regular specifications. In particular, we use the tool called SCOTS~\cite{Rungger2016scots} 
-for implementing ABCD. Next, we introduce briefly the basics of ABCD.
+We use abstraction-based controller design (ABCD) for Step~\ref{step:tracking}. 
+ABCD can handle nonlinear dynamics, (bounded) uncertainties, and $\omega$-regular specifications. 
+In particular, we use the implementation of ABCD in the tool called SCOTS~\cite{Rungger2016scots}.
+Next, we introduce briefly the basics of ABCD.
 For simpler notation, we omit the control system index $i$ in the rest of this section.
 
 % \subsubsection{Preliminaries of Abstraction-Based Controller Design}\hfill
@@ -237,7 +242,8 @@ Next, we compute finite state abstraction for $\Sigma$ for the chosen parameters
 %
 In practice, this local computation of the abstraction is the key to scalability.
 \begin{remark}
-Our decentralized controller synthesis approach features an interplay between the global open-loop planning and local formal synthesis via the robustness parameter $\varepsilon$ and the discretization parameters $\eta_x,\eta_u$.  The parameter $\varepsilon$ should be large enough to allow deviation from the nominal trajectory caused by the disturbance. A small $\varepsilon$ makes the local specification $\Phi^i_{track}$ very strong for the ABCD synthesis thus requiring large computational complexity with smaller discretization parameters $\eta_x,\eta_u$. On the other hand, large $\varepsilon$ makes the specification $\Phi_\varepsilon$ very conservative or infeasible for the global open-loop planning. Therefore, appropriate parameters should be selected iteratively for successful application of our synthesis approach. 
+Our decentralized controller synthesis approach features an interplay between the global open-loop planning and local formal synthesis via the robustness parameter $\varepsilon$ and the discretization parameters $\eta_x,\eta_u$.  The parameter $\varepsilon$ should be large enough to allow deviation from the nominal trajectory caused by the disturbance. A small $\varepsilon$ makes the local specification $\Phi^i_{track}$ difficult for ABCD synthesis thus requiring large computational complexity with smaller discretization parameters $\eta_x,\eta_u$. On the other hand, large $\varepsilon$ makes the specification $\Phi_\varepsilon$ very conservative or infeasible for the global open-loop planning. 
+Therefore, appropriate parameters should be selected iteratively for a successful controller synthesis. 
 \end{remark}
 % 
 % Finally, given the computed finite state abstraction $\widehat \Sigma$ and the specification in Eq.~\eqref{eq:ltl_spec}, we synthesize a symbolic controller using ABCD implemented in SCOTS~\cite{Rungger2016scots}. %\MS{perhaps we can add a discussion here about our actual implementation.}

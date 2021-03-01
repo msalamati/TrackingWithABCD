@@ -5,78 +5,50 @@
 %
 The field of multi-agent planning is too large for a comprehensive survey; we point to the text books
 \cite{LaValle2006,LaValle1998planning,choset2005principles,russel2010AIplanning} for an introduction.
-We categorize closely related work into (1) the ones combining planning and tracking controller synthesis, 
-(2) the ones addressing formal multi-agent controller synthesis, and 
-(3) the ones combining (1) and (2). We provide a survey of these categories as follows:
-%
-\begin{enumerate}[(1)]
-	\item Techniques combining high-level planning and low-level tracking are a staple of classical planning and control. 
+We categorize closely related work into 
+(1) those combining planning and tracking controller synthesis, 
+(2) those addressing formal multi-agent controller synthesis, and 
+(3) those combining (1) and (2). We provide a survey of these categories. 
+
+	\smallskip\noindent\emph{Combining planning and tracking.} 
+Techniques combining high-level planning and low-level tracking are a staple of classical planning and control. 
 More recently, several techniques consider the problem of formal guarantees for such planners.
 Existing works differ in the dynamics that they can handle (e.g., linear or nonlinear),
 considered class of specifications, including disturbances, and scalability. 
 A common approach is to perform the high-level planning over a lower dimensional model and then use
-Sum-of-Squares programming (SOS), Hamilton Jacobi (HJ), or satisfiability modulo convex programming (SMC) to obtain a low-level controller ensuring a bounded error between the 
+Sum-of-Squares programming (SOS), Hamilton Jacobi (HJ), or satisfiability modulo convex programming (SMC) 
+to obtain a low-level controller ensuring a bounded error between the 
 two models \cite{herbert2017fastrack,meyer2019,singh2018robust,Nilsson:2018}. 
 
 %\KM{Nothing has been stated about \cite{DBLP:journals/corr/abs-1911-09773,sun2019}.} 
 In contrast to \cite{herbert2017fastrack,singh2018robust}, our method does not require finding 
-a linear mapping between the low and high dimensional models. Meyer et al. \cite{meyer2019} considered reach-avoid problems for perturbed non-linear control affine systems. They create a lower dimensional model and use SOS programming to compute a controller ensuring a bounded error between the two models. Then, they use ABCD to compute a controller for the low-order model while taking the error into account. While their method can provide guarantee against worst-case disturbances, it is not clear if SOS always scales to the higher dimensions.
+a linear mapping between the low and high dimensional models. 
+Meyer et al.~\cite{meyer2019} considered reach-avoid problems for perturbed non-linear control affine systems. 
+They create a lower dimensional model and use SOS programming to compute a controller ensuring a bounded error between the two models. 
+Then, they use ABCD to compute a controller for the low-order model while taking the error into account. 
+While their method can provide guarantee against worst-case disturbances, it is not clear if SOS always scales to the higher dimensions.
 
-Nilsson et al. \cite{Nilsson:2018} provide a method that decomposes the state space into a lower-order planning space, and a higher-order internal dynamics space, so that fast planning and accurate tracking can be achieved using a set of control barrier functions computed based on SOS. Despite providing guarantees for the worst-case bounded disturbances, their method is not capable of solving reach-avoid tasks which involve dynamic obstacles as in the multi-agent case.
+Nilsson et al.~\cite{Nilsson:2018} provide a method that decomposes the state space into a lower-order planning space, 
+and a higher-order internal dynamics space, so that fast planning and accurate tracking can be achieved using a set of control barrier functions computed based on SOS. Despite providing guarantees for the worst-case bounded disturbances, their method is not capable of solving reach-avoid tasks which involve dynamic obstacles as in the multi-agent case.
 %that governs the motion in planning space. 
 %The planning is performed fast since it is restricted to the lower-order space. To guarantee following of the planned trajectory in the lower-order space, control barrier functions are computed using SOS method. This method, however, cannot deal with dynamic obstacles as is needed in tackling collision avoidance.}
 While we have chosen SCOTS since the underlying algorithm can be effectively parallelized \cite{KhaledZ19pfaces}, in principle, we could
-also use SOS, HJ, or SMC approaches. %The existing schemes that solve the guaranteed motion planning problems in a centralized manner (e.g. \cite{sun2019}) cannot scale well.
+also use SOS, HJ, or SMC approaches. 
+%The existing schemes that solve the guaranteed motion planning problems in a centralized manner (e.g. \cite{sun2019}) cannot scale well.
 
 Other works only consider special classes of models such as linear \cite{fan2018controller,wongpiromsarn2012receding,Rodionova2020LearningtoFlyLC}, 
 disturbance-free \cite{tedrake2010lqr,fan2020fast,Srinivasan2018}, or finite transition systems \cite{Yang2017milp}. 
 In contrast, our method supports arbitrary 
-%continuous time
- nonlinear dynamics and provides a guarantee 
+nonlinear dynamics and provides a guarantee 
 against worst-case bounded disturbances.
-	\item Chen et al.\ \cite{Chen2018cbf} provide a method, using control barrier functions, that requires some form of inter-robot 
+
+	\smallskip\noindent\emph{Formal multi-agent synthesis.} 
+Chen et al.\ \cite{Chen2018cbf} provide a method, using control barrier functions, that requires some form of inter-robot 
 communication and does not consider external disturbances.
 Sahin et al.\ \cite{Shahin2017cltl} propose a method that requires the group of robots to be homogeneous.
 There are methods which do not consider external disturbances and do not provide formal guarantees \cite{jackson2020scalable}.
-	\item Alonso-Mora et al.\ \cite{alonso2019distributed} provide a method for formation control of a group of communicating homogeneous robots.
-They first synthesize nominal controller using a fast randomized geometric planning method, namely RRT, and 
-then use optimal control to track the obtained nominal solution.
-Unlike us, they neither consider external disturbances nor provide formal guarantees. Pant et al.\ \cite{Pant2018multiquad} have studied multi-quadrotor missions with signal temporal logic (STL) specifications. They find the reference trajectory by maximizing robustness of the STL specification, and then synthesize tracking controllers. Their method can handle only specifications with bounded horizon and does not provide guarantee against disturbances.
 
-Recently, Xiao et al.\ \cite{xiao2019merging} propose a method for synthesis of distributed controllers for a 
-set of autonomous vehicles in a lane merging situation. They consider only simple linear systems as vehicle models, use global optimal control to find a nominal controller, and employ local control barrier functions with safety constraints.
-Their designed controllers is not provably safe when there is noise and can occasionally violate the safety constraints.
- %
-Nikou et al.\ \cite{Nikou2019} have studied the problem of robust navigation for multi-agent systems based on nominal reference trajectory and pre-computed feedback controllers. Their approach requires sensing capabilities of the agents to avoid collision. In contrast, our method does not requires any sensing capabilities of the agents.
-
-%They consider additive bounded modelling disturbance. 
-%They use optimal control to compute a  and employ a  to keep the trajectories within a bounded distance from the reference trajectory.
-Sun et al.\ \cite{sun2019} have studied motion planning of multi-agent systems with linear temporal logic (LTL) specifications, under the presence of disturbances and denial of service attacks.
-Their approach uses SMC programming to compute a feasible nominal trajectory and employs feedback controllers to gain robustness.
-%First, they compute a feedback controller that forces the system's trajectories to remain within a robust control invariant set under the worst-case disturbance scenario. 
-%For piecewise-affine systems, there exist effective algorithms for computing the feedback controller and the corresponding invariant set. 
-%Next, they use  together with an open-loop controller, and by adding up the nominal open-loop control input and the feedback control law they construct the final control input.
-Despite being able to provide guarantees against disturbances, their implementation is centralized, thus the required time increases significantly for high-dimensional reach-avoid specifications.%The main drawback of their method is central implementation, since tackling reach-avoid problems in higher dimensions takes significantly longer time.
- %However, they assume that agents are able to communicate while moving; and their target is to satisfy input-to-state stability. In fact, their method is not able to tackle collision avoidance for static/dynamic obstacles.}
-%
-There are other works that use a pre-defined motion primitive library to perform planning for multi-robot 
-systems \cite{saha2016implan,BanusicMPSZ19pgcd,Gavran2017antlab,desai2017drona}. 
-In contrast, our method deals with the dynamical model directly.
-
-Our construction can also be seen as an \emph{assume-guarantee} technique that decomposes the global problem based on nominal trajectory tubes. Similar decompositions have been studied in the discrete case \cite{alur2015pattern,majumdarassume}.
-The closest related work that matches our level of generality is the work by Bansal et al.\ \cite{bansal2017safe}.
-However, they assume that each robot has its own reach-avoid specification while avoiding collision with the other robots.
-In contrast, we allow global reach-avoid specifications, which subsume their class of specifications.
-In fact, there are control problems that can be easily handled by our approach and cannot be encoded in their setting. An example is robots maintaining a formation while fulfilling their tasks \cite{alonso2019distributed}.
-\end{enumerate}
-
-%Our experiments show that \tool is efficient in solving reach-avoid tasks for multi-agent systems. 
-%However, there are other tools which claim they can solve similar tasks. 
-A subset of approaches listed above have available implementations.
-In Table~\ref{tab:tools}, we summarize the main features of the publicly available tools.
-We highlight that our tool \tool is the only one that fulfills all the criteria.
-
-\begin{table}
+\begin{table}[t]
 	%\large
 	\centering
 	\caption{Features of the publicly available tools compared to \tool. Note that some of these tools can handle richer classes of specifications, compared to the reach-avoid problem handled by \tool.}\label{tab:tools}
@@ -114,6 +86,54 @@ We highlight that our tool \tool is the only one that fulfills all the criteria.
 		\bottomrule
 	\end{tabular}
 \end{table}
+	\smallskip\noindent\emph{Combinations.} 
+Alonso-Mora et al.\ \cite{alonso2019distributed} provide a method for formation control of a group of communicating homogeneous robots.
+They first synthesize a nominal controller using a fast randomized geometric planning method, namely RRT, and 
+then use optimal control to track the obtained nominal solution.
+Unlike us, they neither consider external disturbances nor provide formal guarantees. 
+Pant et al.~\cite{Pant2018multiquad} have studied multi-quadrotor missions with signal temporal logic (STL) specifications. 
+They find the reference trajectory by maximizing robustness of the STL specification, and then synthesize tracking controllers. 
+Their method can only handle specifications with bounded horizon and does not provide any guarantee against disturbances.
+
+Xiao et al.\ \cite{xiao2019merging} propose a method for synthesis of distributed controllers for a 
+set of autonomous vehicles in a lane merging situation. 
+They consider only linear systems as vehicle models, use global optimal control to find a nominal controller, 
+and employ local control barrier functions with safety constraints.
+Their designed controllers is not provably safe in the presence of disturbance and can occasionally violate the safety constraints.
+ %
+Nikou et al.\ \cite{Nikou2019} have studied the problem of robust navigation for multi-agent systems based on nominal reference 
+trajectory and pre-computed feedback controllers. 
+Their approach requires sensing capabilities of the agents to avoid collision. 
+In contrast, our method does not requires any sensing capabilities of the agents.
+%
+%They consider additive bounded modelling disturbance. 
+%They use optimal control to compute a  and employ a  to keep the trajectories within a bounded distance from the reference trajectory.
+Sun et al.\ \cite{sun2019} have studied motion planning of multi-agent systems with linear temporal logic (LTL) specifications, under the presence of disturbances and denial of service attacks.
+Their approach uses SMC programming to compute a feasible nominal trajectory and employs feedback controllers to gain robustness.
+%First, they compute a feedback controller that forces the system's trajectories to remain within a robust control invariant set under the worst-case disturbance scenario. 
+%For piecewise-affine systems, there exist effective algorithms for computing the feedback controller and the corresponding invariant set. 
+%Next, they use  together with an open-loop controller, and by adding up the nominal open-loop control input and the feedback control law they construct the final control input.
+Despite being able to provide guarantees against disturbances, their implementation is centralized, thus 
+the required time increases significantly for high-dimensional reach-avoid specifications.
+%The main drawback of their method is central implementation, since tackling reach-avoid problems in higher dimensions takes significantly longer time.
+%However, they assume that agents are able to communicate while moving; and their target is to satisfy input-to-state stability. In fact, their method is not able to tackle collision avoidance for static/dynamic obstacles.}
+
+There are other works that use a pre-defined motion primitive library to perform planning for multi-robot 
+systems \cite{saha2016implan,BanusicMPSZ19pgcd,Gavran2017antlab,desai2017drona}. 
+In contrast, our method deals with the dynamical model directly.
+
+Our construction can also be seen as an \emph{assume-guarantee} technique that decomposes the global problem based on nominal trajectory tubes. Similar decompositions have been studied in the discrete case \cite{alur2015pattern,majumdarassume}.
+The closest related work that matches our level of generality is the work by Bansal et al.\ \cite{bansal2017safe}.
+However, they assume that each robot has its own reach-avoid specification while avoiding collision with the other robots.
+In contrast, we allow global reach-avoid specifications, which subsume their class of specifications.
+In fact, there are control problems that can be easily handled by our approach and cannot be encoded in their setting. An example is robots maintaining a formation while fulfilling their tasks \cite{alonso2019distributed}.
+
+%Our experiments show that \tool is efficient in solving reach-avoid tasks for multi-agent systems. 
+%However, there are other tools which claim they can solve similar tasks. 
+A subset of approaches listed above have available implementations.
+In Table~\ref{tab:tools}, we summarize the main features of the publicly available tools.
+We highlight that our tool \tool is the only one that fulfills all the criteria.
+
 
 	%The hierarchical approach, combining high-level planning and low-level tracking, is not new.
 	%Yet most of the existing works use the hierarchical approach for controller synthesis for a single robot \cite{herbert2017fastrack, fan2020fast, fan2018controller, wongpiromsarn2012receding, tedrake2010lqr, singh2018robust, DBLP:journals/tac/MeyerD19, DBLP:journals/corr/abs-1911-09773, Yang2017milp}.
