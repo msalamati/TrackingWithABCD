@@ -29,7 +29,7 @@ Fig.~\ref{fig:3dtubes} gives time-space illustration for the safe tubes around t
 For ABCD, we set  $\eta_{X}=(0.025,0.025,0.03)$ and $\eta_{U}=(0.3,0.3)$. 
 Tab.~\ref{tab:runtimes} shows the run times and number of state-input pairs corresponding to both local and global ABCD. 
 Noticeably, already when $N=2$, memory requirement for global ABCD exceeds memory limits, 
-even 1.5TB RAM on a cluster machine is not sufficient to synthesize a controller.
+even 1.5 TB RAM on a cluster machine is not sufficient to synthesize a controller.
 
 On the other hand, using ALTRO alone would not provide guarantee against bounded disturbance.  
 Fig.~\ref{fig:multi_drone_distance} illustrates the performance of open-loop and feedback controllers in regulating distance between two particular 
@@ -169,13 +169,13 @@ Fig.~\ref{fig:cr_and_lft} (\textbf{left}) demonstrates snapshots of the produced
 As before, under the nominal open-loop controllers, applying (constant) additive disturbance $W=(0,0.05,0,0)$ (to the cart-pole system) 
 causes a collision between the crane and the vehicle before the end of the mission (Fig.~\ref{fig:cr_and_lft} (\textbf{right})).
 
-In the next step, we use SCOTS in order to compute a feedback controller tolerating disturbances $W^1$ and $W^2$. 
+In the next step, we use SCOTS in order to compute a feedback controller tolerating disturbances. 
 We choose state and input spaces for the crane to be $X^{1}=[-0.195,5.49]\times[-1.99,4.37]\times[1.20,4.68]\times[-5.44,5.28]$ and $U^{1}=[-7,7]$, respectively. For the vehicle, we set $X^{2}=[3,9]\times[-3,1.995]$ and $U^{2}=[-3,3]$. %Next, we augment both dynamics with time and 
 We choose state and input partition sizes $\eta_{{X}}^{1}=(0.015,0.035,0.016,0.064)$, $\eta_{U}^1=0.2$,  $\eta_{{X}}^2=(0.01,0.015)$ and $\eta_{U}^2=0.1$. %These selections yield discretized models with state and input spaces having $2.5\times 10^9$ and $71$ points for the crane, and $2\times 10^5$ and $61$ points for the vehicle. 
 %Next, we limit both of the state spaces into tubes constructed around the open-loop trajectories with sizes specified as $\varepsilon^{1}=\begin{bmatrix}0.135&0.385&0.176 &0.768\end{bmatrix}^T$ and $\varepsilon^{2}=\begin{bmatrix}0.08&0.12\end{bmatrix}$. %This reduces size of state spaces into $1.2\times 10^7$ and $1.5\times 10^4$ for the crane and vehicle, respectively. 
 %Given the above settings, SCOTS was able to compute abstraction in $511$ and $0.22$ seconds for the crane and the vehicle, respectively. Scots performs synthesis in $91$ and $0.037$ seconds for the crane and the vehicle, respectively.
 Tab.~\ref{tab:runtimes} shows the run times and number of state-input pairs corresponding to local and global ABCD. 
-As before, for the cart-pole model, global ABCD exceeds our 1.5TB  memory limit. 
+As before, for the cart-pole model, global ABCD exceeds our 1.5 TB  memory limit. 
 Note that computing feedback controllers for the crane and vehicle takes 511 seconds and 0.3 seconds, respectively. 
 The large difference is due to the difference in the size of transition systems for the two dynamics. 
 % \RM{we said the following already:}
@@ -307,4 +307,5 @@ However, when constant additive disturbance vectors
 $(0 ,0.03,0.03)$ and $(0 ,-0.03,-0.03)$
 are being applied to the two drones throughout the whole horizon, open-loop controller fails, 
 whereas the feedback controller is still capable of maintaining distance above the given threshold.
+
 
