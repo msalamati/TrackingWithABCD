@@ -1,56 +1,52 @@
 # GAMARA
+It stands for GuAranteed Multi-Agent Reach Avoid.
 
-**GAMARA** stands for **GuAranteed Multi-Agent Reach Avoid**.  
-This repository implements our method on top of the following tools:
 
-- [SCOTS](https://gitlab.lrz.de/matthias/SCOTSv0.2)  
-- [ALTRO](https://github.com/RoboticExplorationLab/TrajectoryOptimization.jl) (we use **ALTRO v0.1**, included in this repository)
 
----
 
-## Requirements
-- **Julia**: 1.3.1  
-- **Plots** library in Julia (`] add Plots`)  
-- **C++11**
+We implement our method on top these two tools:
+1. Scots : https://gitlab.lrz.de/matthias/SCOTSv0.2
+2. ALTRO : https://github.com/RoboticExplorationLab/TrajectoryOptimization.jl
 
----
+we used ALTRO v0.1 which is uploaded in this repository.
 
-## Execution Steps
+# Requirements
+1. Julia version : 1.3.1
+* Install "Plots" library before execution.
+2. c++ 11
 
-1. **Run ALTRO code**  
-   - Set Julia’s working directory to the repository root.  
-   - Running will generate `nom_tr.txt` (nominal controller).  
+## Steps for execution
+1. Run Altro code 
+* Be careful to set julia working directory same as the <example name> directory
+* nom_tr.txt will be generated which is nominal controller
 
-2. **Compile the project**  
-   - Run the provided `Makefile`.  
-   - This produces two executables:  
-     - `run_abs_syn`: performs abstraction and synthesis.  
-     - `simulation`: tests the synthesized controller with a perturbed model.  
+2. Run Makefile to compile project
+* there will be two execution files
+3. run abs_syn to do abstraction and synthesis
+* if you faced segmentation fault or std::bad_alloc() it means there is not enough ram
+4. run simulation to test the synthesized controller to see the performance of controller with perturbed model
 
-⚠️ If you encounter `segmentation fault` or `std::bad_alloc()`, it indicates insufficient RAM.  
 
----
 
-## Development Guide
+## Steps for developement
 
-### ALTRO (Planner)
-- Create a new `*.jl` file (see examples).  
-- Update the `dynamics!` function with your model.  
-- Select number of points and sampling time.  
-- Define penalty functions.  
+1. Modify ALTRO (Planner):
+* create *.jl file similar to examples
+* change your model in dynamics! function
+* select number of points and sampling time
+* enter the penalty functions 
 
-### SCOTS (Robustifier)
-- Create a new `*.hh` file (see examples).  
-- Enter time-augmented dynamics (`x_dot = 1`).  
-- Set all parameters in the `parameters` class.  
-- No need to modify `.cpp` files.  
+2. Modify Scots (Robustifier)
+* create a *.hh similar to examples (you dont need to change cpp files)
+* enter time augmented dynamics ( one extra state variabe x_dot=1)
+* select all paramets in parameters class
 
----
+## Directories structure
 
-## Directory Structure
-- **src/** → SCOTS library files  
-- **TrajectoryOptimization/** → ALTRO library files  
-- **Examples/** → Example cases (Julia files for ALTRO + ABCD example code)  
-
----
+### src
+This folder contains Scots library files. 
+### TrajectoryOptimization
+ALTRO Library files.
+### Examples
+Here there is a folder for each example which includes a Julia file for Altro and also example codes for ABCD.  
 
