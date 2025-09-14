@@ -50,3 +50,4 @@ ALTRO Library files.
 ### Examples
 Here there is a folder for each example which includes a Julia file for Altro and also example codes for ABCD.  
 
+📄 For further details, see our paper: [link](link:https://dl.acm.org/doi/abs/10.1145/3450267.3450548).
